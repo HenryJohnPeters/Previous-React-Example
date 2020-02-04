@@ -48,6 +48,9 @@ class DisplayQuestions extends React.Component {
         });
     } catch (error) {}
   }
+  refresh() {
+    window.location.reload();
+  }
 
   render() {
     var self = this;
@@ -65,6 +68,17 @@ class DisplayQuestions extends React.Component {
             style={{ float: "left " }}
           >
             Edit Questions
+          </button>
+
+          <button style={{ float: "right" }} className="btn btn-primary ">
+            +
+          </button>
+          <button
+            onClick={this.refresh}
+            style={{ float: "right" }}
+            className="btn btn-secondary"
+          >
+            ⟳
           </button>
           <Link>
             <button className="btn btn-secondary" style={{ float: "left " }}>
@@ -95,22 +109,81 @@ class WorkStations extends React.Component {
   constructor(props) {
     super(props);
     console.log(props);
-    this.state = { ...props };
+    this.state = { ...props, show: false };
+    this.deleteQuestion = this.deleteQuestion.bind(this);
+    this.EditQuestion = this.EditQuestion.bind(this);
+  }
+  deleteQuestion(e) {
+    e.preventDefault();
+    let QuestionId = this.state.questions.QuestionId;
+    alert(`${QuestionId}`);
+    // fetch(`/NullifyQuestions/${QuestionId}`);
+  }
+  EditQuestion() {
+    let QuestionId = this.state.questions.QuestionId;
+    if (this.state.ShowInput) {
+      this.setState({ ShowInput: false });
+      alert(this.state.ShowInput);
+    } else if (!this.state.ShowInput) {
+      this.setState({ ShowInput: true });
+      alert(this.state.ShowInput);
+    }
+
+    this.state.ShowInput = true;
+
+    alert(`${QuestionId}`);
   }
 
   render() {
-    return (
-      <div className="jumbotron">
-        <button className="btn btn-primary" style={{ float: "right" }}>
-          Edit
-        </button>
-        <button className="btn btn-primary" style={{ float: "right" }}>
-          Delete
-        </button>
-        <br />
-        <li> Question ID: {this.state.questions.QuestionId}</li>
-        <li> Question:{this.state.questions.Question}</li>
-      </div>
-    );
+    if (!this.state.ShowInput) {
+      return (
+        <div className="jumbotron">
+          <button
+            onClick={this.EditQuestion}
+            className="btn btn-secondary"
+            style={{ float: "right" }}
+          >
+            Edit
+          </button>
+          <button
+            onClick={this.deleteQuestion}
+            className="btn btn-secondary"
+            style={{ float: "right" }}
+          >
+            Delete
+          </button>
+          <br />
+          <li> Question ID: {this.state.questions.QuestionId}</li>
+          <li> Question:{this.state.questions.Question}</li>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <li>Question Id: {this.state.questions.QuestionId}</li>
+          <li>
+            <textarea
+              placeholder={this.state.questions.Question}
+              style={{ width: "100%" }}
+            />
+          </li>
+          <button
+            style={{ float: "right", padding: "2px" }}
+            className="btn btn-primary"
+          >
+            Commit
+          </button>
+
+          <button
+            onClick={this.EditQuestion}
+            style={{ float: "right", padding: "2px" }}
+            className="btn btn-secondary"
+          >
+            Revert
+          </button>
+          <br />
+        </div>
+      );
+    }
   }
 }
