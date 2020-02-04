@@ -17,9 +17,9 @@ function Header() {
       />
       <br />
       <br />
-      <Link to="/home">
+      {/* <Link to="/home">
         <button className="btn btn-secondary"> Home</button>
-      </Link>
+      </Link> */}
     </div>
   );
 }

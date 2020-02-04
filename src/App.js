@@ -21,7 +21,7 @@ import DisplayWorkStationMangmentPage from "./Components/Pages/DisplayWorkStatio
 
 import History from "./Components/History";
 
-import AdminQuestionEditor from "./AdminComponents/AdminQuestionEditor";
+import AdminCenter from "./Components/Pages/AdminCenter";
 
 import AdminViewUsersSeverityHigh from "./AdminComponents/AdminViewUsersSeverityHigh";
 import AdminViewUsersSeverityMedium from "./AdminComponents/AdminViewUsersSeverityMedium";
@@ -88,17 +88,14 @@ function Routing() {
           path="/profile-display-work-stations"
           component={DisplayWorkStationMangmentPage}
         />
-
+        <AuthRoute exact path="/admin-center" component={AdminCenter} />
         <AuthRoute exact path="/profile" component={ProfilePage} />
         <AuthRoute exact path="/home" component={Home} />
         <AuthRoute exact path="/user-questions" component={UserQuestions} />
         <AuthRoute exact path="/user-history" component={History} />
 
-        <AuthRoute
-          exact
-          path="/admin-question-editor"
-          component={AdminQuestionEditor}
-        />
+        <AuthRoute exact path="/admin-center" component={AdminCenter} />
+
         <AuthRoute exact path="/admin-view-users" component={AdminViewUsers} />
         <AuthRoute
           exact

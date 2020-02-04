@@ -4,8 +4,9 @@ import logo from "../codestone logo.png";
 import "../bootstrap.min.css";
 
 import NavBar from "../PageDetails/Headers/NavBarUsers";
-import LogOutButton from "../PageDetails/LogOutButton/LogOutButton";
-import ProfileButton from "../PageDetails/ProfileButton/ProfileButton";
+import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
+import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
+import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 
 function Home() {
   return (
@@ -21,6 +22,7 @@ function Header() {
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
+        <AdminButton />
       </div>
 
       <div className="User-Menu"></div>

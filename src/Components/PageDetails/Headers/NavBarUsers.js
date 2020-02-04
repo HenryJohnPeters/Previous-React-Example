@@ -16,16 +16,6 @@ function NavBarUsers() {
           History
         </button>
       </Link>
-
-      <Link to="/admin-center">
-        <button
-          style={{ float: "right" }}
-          type="button"
-          className="btn btn-light"
-        >
-          Admin Center
-        </button>
-      </Link>
     </div>
   );
 }

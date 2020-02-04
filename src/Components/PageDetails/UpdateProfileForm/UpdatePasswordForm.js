@@ -27,7 +27,7 @@ class ConfirmResetPasswordForm extends React.Component {
       var today = new Date(),
         date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
           1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-
+      console.log(today);
       console.log(date);
       const data = { email, password: this.state.password, date };
 

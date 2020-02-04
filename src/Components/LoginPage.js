@@ -2,12 +2,8 @@ import React from "react";
 
 import "../bootstrap.min.css";
 import logo from "../codestone logo.png";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Home from "./Home";
-import ResetPassword from "./ResetPassword";
-import LoginPage from "./LoginPage";
+
 import { Link } from "react-router-dom";
-import { withAlert } from "react-alert";
 
 import Popup from "reactjs-popup";
 

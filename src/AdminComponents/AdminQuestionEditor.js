@@ -7,7 +7,6 @@ function Home() {
   return (
     <div>
       <Header />
-      <SeveritySearch />
 
       <p>admin question editor </p>
     </div>
@@ -17,9 +16,6 @@ function Home() {
 function Header() {
   return (
     <div class="jumbotron">
-      <div className="User-Menu">
-        <Link>User details </Link>
-      </div>
       <img
         className="profile-image"
         alt="icon"
@@ -27,44 +23,6 @@ function Header() {
         width="340"
         height="60"
       />
-
-      <Navigation />
-    </div>
-  );
-}
-
-function Navigation() {
-  return (
-    <div>
-      <br />
-      <Link to="/home">
-        <button type="button" class="btn btn-light">
-          Home
-        </button>
-      </Link>
-      <Link to="/admin-view-users">
-        <button type="button" class="btn btn-light">
-          View Users(Admin)
-        </button>
-      </Link>
-    </div>
-  );
-}
-
-function SeveritySearch() {
-  return (
-    <div>
-      <br />
-      <Link to="/home">
-        <button type="button" class="btn btn-light">
-          Home
-        </button>
-      </Link>
-      <Link to="/admin-view-users">
-        <button type="button" class="btn btn-light">
-          View Users(Admin)
-        </button>
-      </Link>
     </div>
   );
 }

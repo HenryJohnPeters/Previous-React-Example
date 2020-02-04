@@ -3,10 +3,17 @@ import logo from "../codestone logo.png";
 import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
 
+import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
+import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
+import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+import AdminDisplayQuestions from "../AdminComponents/AdminDisplayQuestions/AdminDisplayQuestions";
+
 function Home() {
   return (
     <div>
       <Header />
+
+      <AdminDisplayQuestions />
 
       <p>Admin section of the webpage </p>
     </div>
@@ -15,10 +22,14 @@ function Home() {
 
 function Header() {
   return (
-    <div class="jumbotron">
-      <div className="User-Menu">
-        <Link>User details </Link>
+    <div className="jumbotron">
+      <div style={{ textAlign: "right" }}>
+        <ProfileButton />
+        <LogOutButton />
+        <AdminButton />
       </div>
+
+      <div className="User-Menu"></div>
       <img
         className="profile-image"
         alt="icon"
@@ -26,6 +37,11 @@ function Header() {
         width="340"
         height="60"
       />
+      <br />
+      <br />
+      <Link to="./home">
+        <button className="btn btn-secondary">Home </button>
+      </Link>
     </div>
   );
 }
