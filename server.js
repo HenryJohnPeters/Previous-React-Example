@@ -33,7 +33,7 @@ app.get("/admin-view-users", function(req, res) {
     var request = new sql.Request();
 
     // query to the database and get the records
-    request.query("select * from Users ", function(err, recordset) {
+    request.query("select * from RegisteredUsers ", function(err, recordset) {
       if (err) console.log(err);
 
       // send records as a response
@@ -186,6 +186,69 @@ app.post("/login", async (req, response) => {
   }
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// app.post("/edit-question/:QuestionId", async (req, response) => {
+//   try {
+//     await sql.connect(config);
+
+//       // var Email = req.body.email;
+
+//     var QuestionId = req.params.QuestionId;
+//     var request = new sql.Request();
+
+//     console.log({ Email, Password });
+
+//     request.input("Email", sql.VarChar, Email);
+
+//     let result = await request.execute("dbo.CheckEmailExists");
+
+//     if (result.recordsets[0].length > 0) {
+//       console.info("This email exists");
+//       request.input("Password", sql.VarChar, Password);
+//       let result = await request.execute("dbo.LoginUser");
+
+//       if (result.recordsets[0].length > 0) {
+//         console.info("/login: login successful..");
+//         console.log(req.body);
+
+//         request.input("LastLogin", sql.DateTime, LastLogin);
+//         let result = await request.execute("dbo.AddLastLoginToRegisteredUsers");
+
+//         const token = jwt.sign({ user: Email }, "SECRET_KEY", {
+//           expiresIn: 3600000
+//         });
+
+//         var decoded = jwt.verify(token, "SECRET_KEY");
+//         console.log(decoded);
+
+//         response.status(200).json({
+//           ok: true,
+//           user: Email,
+//           jwt: token
+//         });
+//       } else {
+//         console.info("Incorrect Password");
+//         AccountValidationMessage = "Incorrecrt password to account";
+//         response.status(409).json({
+//           AccountValidationMessage: AccountValidationMessage
+//         });
+//       }
+//     } else {
+//       console.log("pending");
+//       AccountValidationMessage = "Email does not exists";
+//       response.status(409).json({
+//         AccountValidationMessage: AccountValidationMessage
+//       });
+//     }
+//   } catch (err) {
+//     console.log("Err: ", err);
+//     response.status(500).send("Check api console.log for the error");
+//   }
+// });
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 app.post("/reset-password-email", async (req, response) => {
   var Email = req.body.email;
 
@@ -480,5 +543,27 @@ app.post("/add-workstation", async (req, response) => {
   }
 });
 //////////////////////////////////////////////////////////////////////////
+
+app.post("/admin-update-question", async (req, response) => {
+  try {
+    await sql.connect(config);
+    let QuestionId = req.body.QuestionId;
+    let QuestionUpdate = req.body.QuestionUpdate;
+    //let date = req.body.QuestionUpdate;
+
+    var request = new sql.Request();
+
+    request.input("QuestionId", sql.Int, QuestionId);
+    request.input("QuestionUpdate", sql.NVarChar, QuestionUpdate);
+    //request.input("Date", sql.DateTime, date);
+
+    const update = await request.execute("dbo.UpdateQuestions");
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

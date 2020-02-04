@@ -22,6 +22,7 @@ import DisplayWorkStationMangmentPage from "./Components/Pages/DisplayWorkStatio
 import History from "./Components/History";
 
 import AdminCenter from "./Components/Pages/AdminCenter";
+import AdminCenterViewUsers from "./Components/Pages/AdminCenterViewUsers";
 
 import AdminViewUsersSeverityHigh from "./AdminComponents/AdminViewUsersSeverityHigh";
 import AdminViewUsersSeverityMedium from "./AdminComponents/AdminViewUsersSeverityMedium";
@@ -82,6 +83,11 @@ function Routing() {
           exact
           path="/confirm-Password"
           component={ConfirmPassword}
+        />
+        <AuthRoute
+          exact
+          path="/admin-center-view-users"
+          component={AdminCenterViewUsers}
         />
         <AuthRoute
           exact

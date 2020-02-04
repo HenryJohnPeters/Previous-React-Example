@@ -80,7 +80,7 @@ class DisplayQuestions extends React.Component {
           >
             ⟳
           </button>
-          <Link>
+          <Link to="./admin-center-view-users">
             <button className="btn btn-secondary" style={{ float: "left " }}>
               View Users
             </button>
@@ -109,9 +109,11 @@ class WorkStations extends React.Component {
   constructor(props) {
     super(props);
     console.log(props);
-    this.state = { ...props, show: false };
+    this.state = { ...props, show: false, QuestionUpdate: "" };
     this.deleteQuestion = this.deleteQuestion.bind(this);
     this.EditQuestion = this.EditQuestion.bind(this);
+    this.QuestionOnChange = this.QuestionOnChange.bind(this);
+    this.OnCommit = this.OnCommit.bind(this);
   }
   deleteQuestion(e) {
     e.preventDefault();
@@ -119,7 +121,8 @@ class WorkStations extends React.Component {
     alert(`${QuestionId}`);
     // fetch(`/NullifyQuestions/${QuestionId}`);
   }
-  EditQuestion() {
+  EditQuestion(e) {
+    e.preventDefault();
     let QuestionId = this.state.questions.QuestionId;
     if (this.state.ShowInput) {
       this.setState({ ShowInput: false });
@@ -132,6 +135,39 @@ class WorkStations extends React.Component {
     this.state.ShowInput = true;
 
     alert(`${QuestionId}`);
+  }
+
+  QuestionOnChange(e) {
+    this.setState({ QuestionUpdate: e.target.value });
+  }
+  OnCommit(e) {
+    e.preventDefault();
+    alert(this.state.QuestionUpdate);
+
+    var today = new Date(),
+      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+
+    const data = {
+      QuestionId: this.state.questions.QuestionId,
+      QuestionUpdate: this.state.QuestionUpdate
+      //date
+    };
+
+    fetch("/admin-update-question", {
+      method: "POST", // or 'PUT'
+      headers: {
+        Accept: "application/json,",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(response => {
+      console.log("response before it is broken down " + response);
+
+      // return response.json();
+    });
+
+    window.location.reload();
   }
 
   render() {
@@ -165,11 +201,13 @@ class WorkStations extends React.Component {
             <textarea
               placeholder={this.state.questions.Question}
               style={{ width: "100%" }}
+              onChange={this.QuestionOnChange}
             />
           </li>
           <button
             style={{ float: "right", padding: "2px" }}
             className="btn btn-primary"
+            onClick={this.OnCommit}
           >
             Commit
           </button>

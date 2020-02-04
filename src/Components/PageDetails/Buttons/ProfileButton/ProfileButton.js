@@ -5,7 +5,7 @@ class ProfileButton extends React.Component {
   render() {
     return (
       <Link to="/profile">
-        <button type="button" class="btn btn-secondary" onClick={this.LogOut}>
+        <button type="button" class="btn btn-secondary">
           Profile
         </button>
       </Link>
