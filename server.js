@@ -15,7 +15,7 @@ var config = {
   password: "Mypassword123",
   server: "WIN10-LAP-HJP", // You can use 'localhost\\instance' to connect to named instance
   database: "CDA",
-  enableArithAbort: true
+  enableArithAbort: false
 };
 
 app.use(bodyParser.json());
