@@ -580,4 +580,27 @@ app.post("/admin-update-question", async (req, response) => {
   }
 });
 
+//////////////////////////////////////////////////////////////////////////
+
+app.post("/admin-add-question", async (req, response) => {
+  try {
+    await sql.connect(config);
+    let NewQuestion = req.body.Question;
+    //let QuestionUpdate = req.body.QuestionUpdate;
+    //let date = req.body.QuestionUpdate;
+    //console.info(Question);
+
+    var request = new sql.Request();
+
+    request.input("Question", sql.NVarChar, NewQuestion);
+    //request.input("Date", sql.DateTime, date);
+
+    const update = await request.execute("dbo.AddQuestion");
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
 app.listen(port, () => console.log(`Server running on port ${port}`));

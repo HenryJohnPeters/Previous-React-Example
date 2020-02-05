@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-
+import AddQuestion from "./AdminAddQuestion";
 class DisplayQuestions extends React.Component {
   constructor() {
     super();
@@ -71,7 +71,7 @@ class DisplayQuestions extends React.Component {
             Edit Questions
           </button>
 
-          <AddQuestion />
+          <DisplayAddQuestion />
 
           <button
             onClick={this.refresh}
@@ -175,18 +175,18 @@ class WorkStations extends React.Component {
       return (
         <div className="jumbotron">
           <button
+            onClick={this.deleteQuestion}
+            className="btn btn-danger"
+            style={{ float: "right" }}
+          >
+            X
+          </button>
+          <button
             onClick={this.EditQuestion}
-            className="btn btn-secondary"
+            className="btn btn-primary"
             style={{ float: "right" }}
           >
             Edit
-          </button>
-          <button
-            onClick={this.deleteQuestion}
-            className="btn btn-secondary"
-            style={{ float: "right" }}
-          >
-            Delete
           </button>
           <br />
           <li> Question ID: {this.state.questions.QuestionId}</li>
@@ -226,7 +226,7 @@ class WorkStations extends React.Component {
   }
 }
 
-class AddQuestion extends React.Component {
+class DisplayAddQuestion extends React.Component {
   constructor(props) {
     super(props);
 
@@ -273,7 +273,10 @@ class AddQuestion extends React.Component {
 
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton></Modal.Header>
-          <Modal.Body></Modal.Body>
+          <Modal.Body>
+            {" "}
+            <AddQuestion />
+          </Modal.Body>
         </Modal>
       </div>
     );

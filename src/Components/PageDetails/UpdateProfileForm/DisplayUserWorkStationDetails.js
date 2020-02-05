@@ -21,7 +21,7 @@ class ManageWorkstations extends React.Component {
           this.setState({ AccountDetails: results.recordset });
         });
     } else {
-      alert("user not  set");
+      alert("user not set");
     }
   }
   //when the component mounts make the sql questions the
@@ -164,7 +164,7 @@ class DisplayAddWorkstation extends React.Component {
 
     this.handleClose = this.handleClose.bind(this);
     this.handleShow = this.handleShow.bind(this);
-    this.handleShow1 = this.handleShow1.bind(this);
+
     this.handleRefresh = this.handleRefresh.bind(this);
 
     this.state = {
@@ -186,12 +186,6 @@ class DisplayAddWorkstation extends React.Component {
     });
   }
 
-  handleShow1() {
-    this.setState({
-      show1: true
-    });
-  }
-
   handleRefresh() {
     window.location.reload();
   }
@@ -208,13 +202,6 @@ class DisplayAddWorkstation extends React.Component {
         >
           +
         </button>
-        <button
-          className="btn btn-primary"
-          style={{ float: "right" }}
-          onClick={this.handleShow1}
-        >
-          -
-        </button>
 
         <button
           style={{ float: "right" }}
@@ -229,11 +216,6 @@ class DisplayAddWorkstation extends React.Component {
           <Modal.Body>
             <AddWorkstation />
           </Modal.Body>
-        </Modal>
-
-        <Modal show={this.state.show1} onHide={this.handleClose}>
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body></Modal.Body>
         </Modal>
       </div>
     );
