@@ -347,6 +347,28 @@ app.post("/delete-work-station", async (req, response) => {
   }
 });
 /////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post("/delete-question", async (req, response) => {
+  try {
+    await sql.connect(config);
+    let QuestionId = req.body.QuestionId;
+
+    console.info(`${QuestionId}`);
+    var request = new sql.Request();
+
+    request.input("QuestionId", sql.Int, QuestionId);
+
+    const DeleteWorkStation = await request.execute("dbo.DeleteQuestion");
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+/////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/register", async (req, response) => {
@@ -596,6 +618,30 @@ app.post("/admin-add-question", async (req, response) => {
     //request.input("Date", sql.DateTime, date);
 
     const update = await request.execute("dbo.AddQuestion");
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////
+
+app.post("/password-profile-update", async (req, response) => {
+  try {
+    await sql.connect(config);
+    let Email = req.body.email;
+    let Password = req.body.password;
+    let date = req.body.date;
+
+    var request = new sql.Request();
+
+    request.input("Email", sql.NVarChar, Email);
+    request.input("Password", sql.NVarChar, Password);
+    request.input("Date", sql.DateTime, date);
+
+    const update = await request.execute("dbo.PasswordProfileUpdate");
 
     console.log("done done");
   } catch (err) {

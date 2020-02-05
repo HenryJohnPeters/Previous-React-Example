@@ -105,10 +105,10 @@ class WorkStations extends React.Component {
     super(props);
     console.log(props);
     this.state = { ...props };
-    this.itemClick = this.itemClick.bind(this);
+    this.deleteWorkStation = this.deleteWorkStation.bind(this);
   }
 
-  itemClick(e) {
+  deleteWorkStation(e) {
     //console.log(`${this.state.AccountDetails.UDId}`);
     let QuestionId = this.state.AccountDetails.UDId;
     console.log(QuestionId);
@@ -131,7 +131,7 @@ class WorkStations extends React.Component {
     return (
       <div className="jumbotron">
         <button
-          onClick={this.itemClick}
+          onClick={this.deleteWorkStation}
           style={{ float: "right" }}
           className="btn btn-secondary"
         >

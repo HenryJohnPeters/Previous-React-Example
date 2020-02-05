@@ -116,10 +116,21 @@ class WorkStations extends React.Component {
     this.OnCommit = this.OnCommit.bind(this);
   }
   deleteQuestion(e) {
-    e.preventDefault();
     let QuestionId = this.state.questions.QuestionId;
-    alert(`${QuestionId}`);
-    // fetch(`/NullifyQuestions/${QuestionId}`);
+    console.log(QuestionId);
+
+    let data = { QuestionId };
+
+    fetch("/delete-question", {
+      method: "POST", // or 'PUT'
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+    alert("Item Deleted");
+    window.location.reload();
   }
   EditQuestion(e) {
     e.preventDefault();
