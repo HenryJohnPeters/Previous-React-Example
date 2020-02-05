@@ -24,7 +24,7 @@ class DisplayQuestions extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     const data = {
-      QuestionID: this.QuestionID,
+      QuestionID: this.state.QuestionID,
       QuestionsAnswer: this.state.QuestionsAnswer,
       QuestionSeverity: this.state.QuestionsSeverity
     };
@@ -53,28 +53,25 @@ class DisplayQuestions extends React.Component {
     console.log(this.state.questions);
     return (
       <ul>
+        <h2 style={{ textAlign: "center" }}>User Questions</h2>
         {this.state.questions &&
-          this.state.questions.map(function(question, index) {
+          this.state.questions.map(function(questions, index) {
             return (
-              <div className="jumbotron">
-                <li> Question ID: {question.QuestionId}</li>
-                <li> Question:{question.Question}</li>
-                <li>
-                  <button onClick={self.onSubmit}>Accepted</button>
-                  <button>Declined</button>
-                </li>
-
-                <li>
-                  <textarea
-                    onChange={e =>
-                      this.setState({ QuestionsAnswer: e.target.value })
-                    }
-                    rows="4"
-                    cols="160"
-                    id="TITLE"
-                  ></textarea>
-                </li>
-              </div>
+              // <div className="jumbotron">
+              //   <li> Question ID: {question.QuestionId}</li>
+              //   <li> Question:{question.Question}</li>
+              //   <li>
+              //     <div>
+              //       <button onClick={self.onSubmit} className="btn btn-primary">
+              //         Accept
+              //       </button>
+              //       <button className="btn btn-primary">Decline</button>
+              //     </div>
+              //   </li>
+              // </div>
+              <li>
+                <Question questions={questions}></Question>
+              </li>
             );
           })}
       </ul>
@@ -83,3 +80,58 @@ class DisplayQuestions extends React.Component {
 }
 
 export default DisplayQuestions;
+
+class Question extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log(props);
+    this.state = { ...props, show: false };
+  }
+
+  render() {
+    // if (!this.state.ShowInput) {
+    return (
+      <div className="jumbotron">
+        <button className="btn btn-danger" style={{ float: "right" }}>
+          X
+        </button>
+        <button className="btn btn-primary" style={{ float: "right" }}>
+          Edit
+        </button>
+        <br />
+        <li> Question ID: {this.state.questions.QuestionId}</li>
+        <li> Question:{this.state.questions.Question}</li>
+      </div>
+    );
+    // } else {
+    //   return (
+    //     <div>
+    //       <li>Question Id: {this.state.questions.QuestionId}</li>
+    //       <li>
+    //         <textarea
+    //           placeholder={this.state.questions.Question}
+    //           style={{ width: "100%" }}
+    //           onChange={this.QuestionOnChange}
+    //         />
+    //       </li>
+    //       <button
+    //         style={{ float: "right", padding: "2px" }}
+    //         className="btn btn-primary"
+    //         onClick={this.OnCommit}
+    //       >
+    //         Commit
+    //       </button>
+
+    //       <button
+    //         onClick={this.EditQuestion}
+    //         style={{ float: "right", padding: "2px" }}
+    //         className="btn btn-secondary"
+    //       >
+    //         Revert
+    //       </button>
+    //       <br />
+    //     </div>
+    //   );
+    // }
+  }
+}
