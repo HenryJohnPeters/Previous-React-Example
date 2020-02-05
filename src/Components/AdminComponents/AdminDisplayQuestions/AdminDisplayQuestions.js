@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 
 class DisplayQuestions extends React.Component {
   constructor() {
@@ -70,9 +71,8 @@ class DisplayQuestions extends React.Component {
             Edit Questions
           </button>
 
-          <button style={{ float: "right" }} className="btn btn-primary ">
-            +
-          </button>
+          <AddQuestion />
+
           <button
             onClick={this.refresh}
             style={{ float: "right" }}
@@ -223,5 +223,59 @@ class WorkStations extends React.Component {
         </div>
       );
     }
+  }
+}
+
+class AddQuestion extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleClose = this.handleClose.bind(this);
+    this.handleShow = this.handleShow.bind(this);
+
+    this.handleRefresh = this.handleRefresh.bind(this);
+
+    this.state = {
+      show: false,
+      show1: false
+    };
+  }
+
+  handleClose() {
+    this.setState({
+      show: false,
+      show1: false
+    });
+  }
+
+  handleShow() {
+    this.setState({
+      show: true
+    });
+  }
+
+  handleRefresh() {
+    window.location.reload();
+  }
+
+  render() {
+    // console.log(this.state);
+
+    return (
+      <div className="header-container">
+        <button
+          className="btn btn-primary"
+          style={{ float: "right" }}
+          onClick={this.handleShow}
+        >
+          +
+        </button>
+
+        <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body></Modal.Body>
+        </Modal>
+      </div>
+    );
   }
 }

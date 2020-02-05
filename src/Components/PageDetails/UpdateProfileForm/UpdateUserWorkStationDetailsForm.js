@@ -4,9 +4,8 @@ import { Link } from "react-router-dom";
 
 import Popup from "reactjs-popup";
 
-import { Formik } from "formik";
-import * as Yup from "yup";
 import autosize from "autosize";
+import { Modal } from "react-bootstrap";
 
 class ConfirmResetPasswordForm extends React.Component {
   constructor() {

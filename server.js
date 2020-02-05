@@ -136,6 +136,8 @@ app.post("/login", async (req, response) => {
     var AccountValidationMessage = "";
     var LastLogin = req.body.date;
 
+    let token = "";
+    let adminToken = "";
     console.log({ Email, Password });
 
     request.input("Email", sql.VarChar, Email);
@@ -152,19 +154,31 @@ app.post("/login", async (req, response) => {
         console.log(req.body);
 
         request.input("LastLogin", sql.DateTime, LastLogin);
-        let result = await request.execute("dbo.AddLastLoginToRegisteredUsers");
 
-        const token = jwt.sign({ user: Email }, "SECRET_KEY", {
-          expiresIn: 3600000
-        });
+        await request.execute("dbo.AddLastLoginToRegisteredUsers");
 
-        var decoded = jwt.verify(token, "SECRET_KEY");
+        let result = await request.execute("dbo.FindAdmin");
+        if (result.recordsets[0].length > 0) {
+          console.info("This is a admin account");
+          adminToken = jwt.sign({ user: Email }, "SECRET_KEY", {
+            //////
+            expiresIn: 3600000 ////////
+          });
+        } else {
+          console.info("this aint a admin account but you get a login token"); //////
+          token = jwt.sign({ user: Email }, "SECRET_KEY", {
+            //////
+            expiresIn: 3600000 ////////
+          });
+        }
+        var decoded = jwt.verify(adminToken, "SECRET_KEY");
         console.log(decoded);
 
         response.status(200).json({
           ok: true,
           user: Email,
-          jwt: token
+          jwt: token,
+          adminJwt: adminToken
         });
       } else {
         console.info("Incorrect Password");
@@ -174,7 +188,7 @@ app.post("/login", async (req, response) => {
         });
       }
     } else {
-      console.log("pending");
+      console.log("Email does not exists");
       AccountValidationMessage = "Email does not exists";
       response.status(409).json({
         AccountValidationMessage: AccountValidationMessage

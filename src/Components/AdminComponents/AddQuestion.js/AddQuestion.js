@@ -1,91 +1,62 @@
-import Popup from "reactjs-popup";
-
-import { Formik } from "formik";
-import * as Yup from "yup";
 import React from "react";
 
 import { Link } from "react-router-dom";
 
-class LoginForm extends React.Component {
+import Popup from "reactjs-popup";
+
+import { Formik } from "formik";
+import * as Yup from "yup";
+
+class ConfirmResetPasswordForm extends React.Component {
   constructor() {
     super();
 
-    this.state = {
-      email: "",
-      password: ""
-    };
+    this.state = { users: [], email: "", password: "", passwordConfirm: "" };
     this.onSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    if (this.state.email.length < 8 || this.state.password.length < 8) {
+    const email = window.localStorage.getItem("User");
+    if (
+      this.state.password.length < 8 ||
+      !(this.state.password === this.state.passwordConfirm)
+    ) {
       alert(`please enter the form correctly `);
     } else {
       var today = new Date(),
         date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
           1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-
-      const data = {
-        email: this.state.email,
-        password: this.state.password,
-        date
-      };
+      console.log(today);
       console.log(date);
+      const data = { email, password: this.state.password, date };
 
-      fetch("/login", {
+      fetch("/password-profile-update", {
         method: "POST", // or 'PUT'
         headers: {
-          Accept: "application/json,",
+          Accept: "application/json, text/plain, */*",
           "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
-      })
-        .then(response => {
-          console.log("response before it is broken down " + response);
-
-          return response.json();
-        })
-        .then(({ adminJwt, jwt, user, AccountValidationMessage }) => {
-          console.log(
-            "after it is broken down",
-            jwt,
-            adminJwt,
-            user,
-            AccountValidationMessage
-          );
-          window.localStorage.removeItem("registerToken");
-          window.localStorage.removeItem("resetToken");
-          if (jwt && user) {
-            window.localStorage.setItem("myToken", jwt);
-            window.localStorage.setItem("User", user);
-          } else if (adminJwt && user) {
-            window.localStorage.removeItem("myToken");
-
-            window.localStorage.setItem("adminToken", adminJwt);
-            window.localStorage.setItem("User", user);
-          }
-          if (AccountValidationMessage) {
-            alert(AccountValidationMessage);
-          }
-        })
-
-        .catch(error => {
-          console.error("Error:", error);
-        });
+      });
+      alert(`Password updated `);
     }
   }
 
+  catch(e) {
+    console.log(e);
+    alert(e);
+  }
+
   render() {
-    console.log(this.state.email);
-    console.log(this.state.password);
+    console.log(this.state.users);
     return (
       <div>
         <Formik
           class="form-signin"
           action="auth"
           method="POST"
-          initialValues={{ email: "", password: "" }}
+          initialValues={{ email: "", password: "", passwordConfirm: "" }}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
               console.log("Logging in", values);
@@ -93,15 +64,15 @@ class LoginForm extends React.Component {
             }, 500);
           }}
           validationSchema={Yup.object().shape({
-            email: Yup.string()
-              .email()
-              .required("Required")
-              .matches(/(?=.*@)/, "This is not an email address."),
-
             password: Yup.string()
               .required("No password provided.")
               .min(8, "Password is too short - should be 8 chars minimum.")
-              .matches(/(?=.*[0-9])/, "Password must contain a number.")
+              .matches(/(?=.*[0-9])/, "Password must contain a number."),
+
+            passwordConfirm: Yup.string()
+              .oneOf([Yup.ref("password"), "passwords must match"])
+              .required("Password confirm is required")
+              .min(8, "Password is too short - should be 8 chars minimum.")
           })}
         >
           {props => {
@@ -118,12 +89,12 @@ class LoginForm extends React.Component {
             return (
               <form
                 onSubmit={handleSubmit}
-                className="form-signin"
+                class="form-signin"
                 action="auth"
                 method="POST"
               >
                 <div className="jumbotron">
-                  <h2>Login </h2>
+                  <h2>Update Password </h2>
                   <div className="help">
                     <Popup trigger={<Link> Help?</Link>} className="center">
                       <div>
@@ -133,22 +104,6 @@ class LoginForm extends React.Component {
                     </Popup>
                   </div>
 
-                  <label htmlFor="email">Email</label>
-
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value1={values.email}
-                    value={this.state.email}
-                    onInput={handleChange}
-                    onChange={e => this.setState({ email: e.target.value })}
-                    onBlur={handleBlur}
-                    className={errors.email && touched.email && "error"}
-                  />
-                  {errors.email && touched.email && (
-                    <div className="input-feedback">{errors.email}</div>
-                  )}
                   <label htmlFor="email">Password</label>
                   <input
                     name="password"
@@ -164,22 +119,38 @@ class LoginForm extends React.Component {
                   {errors.password && touched.password && (
                     <div className="input-feedback">{errors.password} </div>
                   )}
+                  <label htmlFor="email">Password Confirm </label>
+                  <input
+                    name="passwordConfirm"
+                    type="password"
+                    placeholder="Enter your password"
+                    value2={values.passwordConfirm}
+                    value={this.state.passwordConfirm}
+                    onInput={handleChange}
+                    onChange={e =>
+                      this.setState({ passwordConfirm: e.target.value })
+                    }
+                    onBlur={handleBlur}
+                    className={
+                      errors.passwordConfirm &&
+                      touched.passwordConfirm &&
+                      "error"
+                    }
+                  />
+                  {errors.passwordConfirm && touched.passwordConfirm && (
+                    <div className="input-feedback">
+                      {errors.passwordConfirm}{" "}
+                    </div>
+                  )}
 
                   <button
-                    className="btn btn-primary"
                     style={{ width: "100%" }}
+                    className="btn btn-primary"
                     type="submit"
                     onClick={this.onSubmit}
                   >
-                    Login
+                    Update Password
                   </button>
-
-                  <p>
-                    <Link to="/Register"> Sign Up </Link>
-                  </p>
-                  <p>
-                    <Link to="/reset"> Reset Password </Link>
-                  </p>
                 </div>
               </form>
             );
@@ -190,4 +161,4 @@ class LoginForm extends React.Component {
   }
 }
 
-export default LoginForm;
+export default ConfirmResetPasswordForm;

@@ -40,6 +40,19 @@ function App() {
   );
 }
 
+const adminToken = window.localStorage.getItem("adminToken");
+const AdminAuthRoute = ({ component: Component }) => (
+  <Route
+    render={props =>
+      adminToken && adminToken !== undefined ? (
+        <Component />
+      ) : (
+        <Redirect to="/home" />
+      )
+    }
+  />
+);
+
 const registerToken = window.localStorage.getItem("registerToken");
 const RegisterAuthRoute = ({ component: Component }) => (
   <Route
@@ -94,15 +107,17 @@ function Routing() {
           path="/profile-display-work-stations"
           component={DisplayWorkStationMangmentPage}
         />
-        <AuthRoute exact path="/admin-center" component={AdminCenter} />
+        <AdminAuthRoute exact path="/admin-center" component={AdminCenter} />
         <AuthRoute exact path="/profile" component={ProfilePage} />
         <AuthRoute exact path="/home" component={Home} />
         <AuthRoute exact path="/user-questions" component={UserQuestions} />
         <AuthRoute exact path="/user-history" component={History} />
-
-        <AuthRoute exact path="/admin-center" component={AdminCenter} />
-
-        <AuthRoute exact path="/admin-view-users" component={AdminViewUsers} />
+        />
+        <AdminAuthRoute
+          exact
+          path="/admin-view-users"
+          component={AdminViewUsers}
+        />
         <AuthRoute
           exact
           path="/admin-view-users-severity-high"
