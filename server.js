@@ -13,9 +13,11 @@ app.use(cors());
 var config = {
   user: "sa",
   password: "Mypassword123",
-  server: "WIN10-LAP-HJP", // You can use 'localhost\\instance' to connect to named instance
+  server: "localhost", // You can use 'localhost\\instance' to connect to named instance
   database: "CDA",
-  enableArithAbort: false
+  
+
+  //enableArithAbort: false
 };
 
 app.use(bodyParser.json());
@@ -128,7 +130,11 @@ app.get("/user-questions", function(req, res) {
 
 app.post("/login", async (req, response) => {
   try {
-    await sql.connect(config);
+
+    var connectionok = true;
+    await sql.connect(config).catch(err => {console.log("connection error " ,err )
+    connectionok = false});
+    if(connectionok){
 
     var request = new sql.Request();
     var Email = req.body.email;
@@ -194,6 +200,10 @@ app.post("/login", async (req, response) => {
         AccountValidationMessage: AccountValidationMessage
       });
     }
+  }
+  else{
+    throw new "connection error: went bang!"
+  }
   } catch (err) {
     console.log("Err: ", err);
     response.status(500).send("Check api console.log for the error");
@@ -618,6 +628,43 @@ app.post("/admin-add-question", async (req, response) => {
     //request.input("Date", sql.DateTime, date);
 
     const update = await request.execute("dbo.AddQuestion");
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+app.post("/question-response", async (req, response) => {
+  try {
+    await sql.connect(config);
+     let QuestionId = req.body.QuestionId
+    let QuestionAnswer = req.body.QuestionAnswer;
+    let date = req.body.date;
+    let User = req.body.User;
+
+    console.info("QuestionId")
+    console.info(QuestionId)
+    console.info("QuestionAnswer")
+    console.info(QuestionAnswer)
+    console.info("date")
+    console.info(date)
+    console.info("User")
+    console.info(User)
+
+     var request = new sql.Request();
+
+     request.input("QuestionId", sql.NVarChar, QuestionId);
+     request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
+     request.input("Date", sql.DateTime, date);
+     request.input("Email", sql.NVarChar, User);
+      
+//QuestionResponse
+    const updateQuestion = await request.execute("dbo.QuestionResponse");
 
     console.log("done done");
   } catch (err) {
