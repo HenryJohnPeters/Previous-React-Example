@@ -13,7 +13,7 @@ app.use(cors());
 var config = {
   user: "sa",
   password: "Mypassword123",
-  server: "localhost", // You can use 'localhost\\instance' to connect to named instance
+  server: "localhost", // You can use 'localhost\\instance' to connect to named instanc
   database: "CDA",
   
 
