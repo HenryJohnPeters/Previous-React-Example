@@ -206,10 +206,8 @@ class WorkStations extends React.Component {
   const data = {
     QuestionId: this.state.questions.QuestionId,
     QuestionAnswer: this.state.QuestionAnswer,
-    Email 
-    
+    Email  
   };
-
   fetch("revert-declined-question-answer", {
     method: "POST", // or 'PUT'
     headers: {

@@ -678,6 +678,8 @@ app.post("/question-response", async (req, response) => {
 
 app.post("/revert-declined-question-answer", async (req, response) => {
   try {
+    
+    console.info("revert-declined-question-answer from express")
     await sql.connect(config);
      let QuestionId = req.body.QuestionId
     let QuestionAnswer = req.body.QuestionAnswer;
