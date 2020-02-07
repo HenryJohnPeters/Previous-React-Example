@@ -101,7 +101,7 @@ class DisplayQuestions extends React.Component {
               View History
             </button>
           </Link>
-
+{/* 
 <DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation">
 {this.state.workstations &&
               this.state.workstations.map(function(workstations, index) { 
@@ -113,9 +113,9 @@ class DisplayQuestions extends React.Component {
               })}
         </DropdownButton> 
 <br/>
-<br/>          
+<br/>           */}
 
-{/* 
+
 <DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation">
 {this.state.workstations &&
               this.state.workstations.map(function(workstations, index) { 
@@ -125,7 +125,7 @@ class DisplayQuestions extends React.Component {
                   </div>
                 );
               })}
-        </DropdownButton>  */}
+        </DropdownButton>  
 <br/>
 <br/>          
 
@@ -151,6 +151,77 @@ class DisplayQuestions extends React.Component {
 }
 
 export default DisplayQuestions;
+
+
+
+
+
+
+
+class WorkStationSelecter extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log(props);
+    this.state = { ...props,     };
+  }
+  render() {
+      return (
+        <Dropdown.Item onClick={this.selectWorkStation}>{this.state.workstations.DeskLocation} </Dropdown.Item>
+      );
+   
+    }
+  }
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
