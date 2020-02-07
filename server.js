@@ -674,6 +674,107 @@ app.post("/question-response", async (req, response) => {
 });
 
 //////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+app.post("/revert-declined-question-answer", async (req, response) => {
+  try {
+    await sql.connect(config);
+     let QuestionId = req.body.QuestionId
+    let QuestionAnswer = req.body.QuestionAnswer;
+    let Email = req.body.Email
+   
+
+    console.info("QuestionId")
+    console.info(QuestionId)
+    console.info("QuestionAnswer")
+    console.info(QuestionAnswer)
+    console.info("Email")
+    console.info(Email)
+     
+
+     var request = new sql.Request();
+
+     request.input("QuestionId", sql.NVarChar, QuestionId);
+     request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
+     request.input("Email", sql.NVarChar, Email);
+    
+      
+//QuestionResponse
+    const updateQuestion = await request.execute("dbo.RevertDeclinedQuestionAnswer");
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////
+app.post("/revert-accepted-question-answer", async (req, response) => {
+  try {
+    
+    await sql.connect(config);
+     let QuestionId = req.body.QuestionId
+    let QuestionAnswer = req.body.QuestionAnswer;
+    let Email = req.body.Email
+   
+
+    console.info("QuestionId")
+    console.info(QuestionId)
+    console.info("QuestionAnswer")
+    console.info(QuestionAnswer)
+    console.info("Email")
+    console.info(Email)
+     
+
+     var request = new sql.Request();
+
+     request.input("QuestionId", sql.NVarChar, QuestionId);
+     request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
+     request.input("Email", sql.NVarChar, Email);
+    
+      
+//QuestionResponse
+    const updateQuestion = await request.execute("dbo.RevertAcceptedQuestionAnswer");
+
+    console.log("Accepted question deleton");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+app.post("/Accept-question-answer", async (req, response) => {
+  try {
+    await sql.connect(config);
+     let QuestionId = req.body.QuestionId
+    let date = req.body.date;
+    let User = req.body.User;
+
+    console.info(`${QuestionId},${date},${User}`)
+
+
+     var request = new sql.Request();
+
+     request.input("QuestionId", sql.NVarChar, QuestionId);
+     request.input("Date", sql.DateTime, date);
+     request.input("Email", sql.NVarChar, User);
+      
+//QuestionResponse
+    const updateQuestion = await request.execute("dbo.UserAcceptQuestion");
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////
+
 
 app.post("/password-profile-update", async (req, response) => {
   try {
