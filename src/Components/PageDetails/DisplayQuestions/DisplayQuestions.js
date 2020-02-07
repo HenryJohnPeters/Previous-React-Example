@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap";
+import { Modal,DropdownButton,Dropdown } from "react-bootstrap";
  
 class DisplayQuestions extends React.Component {
   constructor() {
     super();
 
-    this.state = { questions: [], QuestionsAnswer: [], QuestionsSeverity: [] };
+    this.state = { questions: [], QuestionsAnswer: [], workstations: [] , selectedWorkStation: ""};
     this.onSubmit = this.handleSubmit.bind(this);
+    this.selectWorkStation = this.selectWorkStation.bind(this)
   }
   // sets the questions form sql into state for questions
   getItems() {
@@ -15,16 +16,41 @@ class DisplayQuestions extends React.Component {
       .then(recordset => recordset.json())
       .then(results => {
         this.setState({ questions: results.recordset });
-      });
+      }); 
+      
   }
-  //when the component mounts make the sql questions the s
+  
+ 
+   getWorkStations() {
+    var user = window.localStorage.getItem("User");
+    if (user) {
+      fetch(`/profile-work-station-detailss/${user}`)
+        .then(recordset => recordset.json())
+        .then(results => {
+          this.setState({ workstations: results.recordset });
+          console.log(this.state.workstations) 
+        });
+    }  
+  }
+
+  selectWorkStation(e){
+    let self = this
+    
+    this.setState({selectedWorkStation : e.target.value})
+    alert(this.state.selectedWorkStation)
+    console.log(e)
+
+  }
+  
   componentDidMount() {
     this.setState({
-      questions: this.getItems()
+      questions: this.getItems(),
+       WorkStations :this.getWorkStations()
     });
   }
   handleSubmit(e) {
     e.preventDefault();
+    
     const data = {
       QuestionID: this.QuestionID,
       QuestionsAnswer: this.state.QuestionsAnswer,
@@ -75,17 +101,45 @@ class DisplayQuestions extends React.Component {
               View History
             </button>
           </Link>
-          <br />
-          <br />
-          
+
+<DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation">
+{this.state.workstations &&
+              this.state.workstations.map(function(workstations, index) { 
+                return (
+                  <div >
+               <Dropdown.Item onClick={self.selectWorkStation}>{workstations.DeskLocation} </Dropdown.Item>     
+                  </div>
+                );
+              })}
+        </DropdownButton> 
+<br/>
+<br/>          
+
+{/* 
+<DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation">
+{this.state.workstations &&
+              this.state.workstations.map(function(workstations, index) { 
+                return (
+                  <div >
+                     <WorkStationSelecter workstations = {workstations}> </WorkStationSelecter>
+                  </div>
+                );
+              })}
+        </DropdownButton>  */}
+<br/>
+<br/>          
+
+
+ 
+
             {this.state.questions &&
               this.state.questions.map(function(questions, index) {
                 return (
                   <div >
                     
-                  <ul>
-                    <WorkStations questions={questions}></WorkStations>
-                  </ul>
+                   
+                    <Questions questions={questions}></Questions>
+                   
                   </div>
                 );
               })}
@@ -107,7 +161,7 @@ export default DisplayQuestions;
 
 
 
-class WorkStations extends React.Component {
+class Questions extends React.Component {
   constructor(props) {
     super(props);
     console.log(props);
