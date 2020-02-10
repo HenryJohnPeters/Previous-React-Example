@@ -636,14 +636,17 @@ app.post("/admin-add-question", async (req, response) => {
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-app.post("/question-response", async (req, response) => {
+app.post("/declined-question-response", async (req, response) => {
   try {
     await sql.connect(config);
      let QuestionId = req.body.QuestionId
     let QuestionAnswer = req.body.QuestionAnswer;
     let date = req.body.date;
     let User = req.body.User;
+    let WorkStation = req.body.WorkStation
 
+    console.info("WorkStation")
+    console.info(WorkStation)
     console.info("QuestionId")
     console.info(QuestionId)
     console.info("QuestionAnswer")
@@ -659,6 +662,7 @@ app.post("/question-response", async (req, response) => {
      request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
      request.input("Date", sql.DateTime, date);
      request.input("Email", sql.NVarChar, User);
+     request.input("WorkStation", sql.NVarChar, WorkStation);
       
 //QuestionResponse
     const updateQuestion = await request.execute("dbo.QuestionResponse");
@@ -676,11 +680,12 @@ app.post("/question-response", async (req, response) => {
 app.post("/revert-declined-question-answer", async (req, response) => {
   try {
     
-    console.info("revert-declined-question-answer from express")
+     
     await sql.connect(config);
      let QuestionId = req.body.QuestionId
     let QuestionAnswer = req.body.QuestionAnswer;
     let Email = req.body.Email
+    let WorkStation = req.body.WorkStation
    
 
     console.info("QuestionId")
@@ -689,11 +694,13 @@ app.post("/revert-declined-question-answer", async (req, response) => {
     console.info(QuestionAnswer)
     console.info("Email")
     console.info(Email)
-     
+    console.info("WorkStation")
+    console.info(WorkStation)
 
      var request = new sql.Request();
 
      request.input("QuestionId", sql.NVarChar, QuestionId);
+     request.input("WorkStation", sql.NVarChar, WorkStation);
      request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
      request.input("Email", sql.NVarChar, Email);
     
@@ -716,8 +723,11 @@ app.post("/revert-accepted-question-answer", async (req, response) => {
      let QuestionId = req.body.QuestionId
     let QuestionAnswer = req.body.QuestionAnswer;
     let Email = req.body.Email
-   
+    let WorkStation = req.body.WorkStation;
 
+   
+    console.info("WorkStation")
+    console.info(WorkStation)
     console.info("QuestionId")
     console.info(QuestionId)
     console.info("QuestionAnswer")
@@ -727,7 +737,7 @@ app.post("/revert-accepted-question-answer", async (req, response) => {
      
 
      var request = new sql.Request();
-
+     request.input("WorkStation", sql.NVarChar, WorkStation);
      request.input("QuestionId", sql.NVarChar, QuestionId);
      request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
      request.input("Email", sql.NVarChar, Email);
@@ -749,15 +759,18 @@ app.post("/revert-accepted-question-answer", async (req, response) => {
 app.post("/Accept-question-answer", async (req, response) => {
   try {
     await sql.connect(config);
-     let QuestionId = req.body.QuestionId
+    let WorkStation = req.body.WorkStation
+    let QuestionId = req.body.QuestionId
     let date = req.body.date;
     let User = req.body.User;
 
-    console.info(`${QuestionId},${date},${User}`)
+    console.info(`${QuestionId},${date},${User}, ${WorkStation}`)
 
 
      var request = new sql.Request();
 
+
+     request.input("WorkStation", sql.NVarChar, WorkStation);
      request.input("QuestionId", sql.NVarChar, QuestionId);
      request.input("Date", sql.DateTime, date);
      request.input("Email", sql.NVarChar, User);

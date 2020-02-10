@@ -11,11 +11,7 @@ function NavBarUsers() {
           Questions
         </button>
       </Link>
-      <Link to="/user-history">
-        <button type="button" className="btn btn-secondary">
-          History
-        </button>
-      </Link>
+       
     </div>
   );
 }

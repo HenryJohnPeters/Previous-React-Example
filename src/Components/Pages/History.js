@@ -1,17 +1,20 @@
 import React from "react";
 import logo from "../codestone logo.png";
-import { Link } from "react-router-dom";
+
 import "../bootstrap.min.css";
+
+import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
-import DisplayQuestions from "../PageDetails/DisplayQuestions/DisplayQuestions";
+import { Link } from "react-router-dom";
+import DisplayHistory from "../PageDetails/DisplayQuestions/DisplayHistory";
 
 function Home() {
   return (
     <div>
       <Header />
-      <DisplayQuestions />
+      <DisplayHistory/>
     </div>
   );
 }
@@ -38,4 +41,5 @@ function Header() {
     </div>
   );
 }
+
 export default Home;

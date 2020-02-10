@@ -39,38 +39,7 @@ class DisplayQuestions extends React.Component {
        WorkStations :this.getWorkStations()
     });
   }
-  // handleSubmit(e) {
-  //   e.preventDefault();
-  //   let WorkStation = window.localStorage.getItem("Workstation")
-  //   const data = {
-  //     QuestionID: this.QuestionID,
-  //     QuestionsAnswer: this.state.QuestionsAnswer,
-  //     QuestionSeverity: this.state.QuestionsSeverity, 
-  //     WorkStation
-  //   };
-
-  //   try {
-     
-  //     fetch("/Question-Response", {
-  //       method: "POST", // or 'PUT'
-  //       headers: {
-  //         Accept: "application/json, text/plain, */*",
-  //         "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify(data)
-  //     })
-  //       .then(response => response.json())
-  //       .then(data => {
-  //         console.log("Success:", data);
-  //       })
-  //       .catch(error => {
-  //         console.error("Error:", error);
-  //       });
-  //   } catch (error) {}
-  // }
-  // refresh() {
-  //   window.location.reload();
-  // }
+   
 
   render() {
    let selectedWorkStation= window.localStorage.getItem("Workstation")
@@ -79,22 +48,22 @@ class DisplayQuestions extends React.Component {
     return (
       <div>
         <h3 style={{ textAlign: "center" }}>
-          <u>Desk Assessment</u>
+          <u>History</u>
         </h3>
 
         <ul>
-          <button
-            disabled
+          <Link to="./user-questions"> <button
+            
             className="btn btn-secondary"
             style={{ float: "left " }}
           >
             Desk Assessment
-          </button>  
-          <Link to="./user-history">
-            <button className="btn btn-secondary" style={{ float: "left " }}>
+          </button>   </Link>
+         
+            <button disabled className="btn btn-secondary" style={{ float: "left " }}>
               View History
             </button>
-          </Link>
+         
        
           
  

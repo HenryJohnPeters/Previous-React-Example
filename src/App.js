@@ -19,7 +19,7 @@ import ProfilePage from "./Components/Pages/ProfilePage";
 
 import DisplayWorkStationMangmentPage from "./Components/Pages/DisplayWorkStationMangmentPage";
 
-import History from "./Components/History";
+import History from "./Components/Pages/History";
 
 import AdminCenter from "./Components/Pages/AdminCenter";
 import AdminCenterViewUsers from "./Components/Pages/AdminCenterViewUsers";
