@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Modal,DropdownButton,Dropdown } from "react-bootstrap";
+
  
 class DisplayQuestions extends React.Component {
   constructor() {
@@ -12,15 +13,17 @@ class DisplayQuestions extends React.Component {
   }
   // sets the questions form sql into state for questions
   getItems() {
-    fetch("/user-questions")
+      let WorkStation = window.localStorage.getItem("Workstation")
+      let User = window.localStorage.getItem("User")
+      console.log(`LOOK AT THIS ${WorkStation}`)
+
+    fetch(`/user-completed-questions/${WorkStation}/${User}`)
       .then(recordset => recordset.json())
       .then(results => {
         this.setState({ questions: results.recordset });
-      }); 
-      
+      });   
   }
   
- 
    getWorkStations() {
     var user = window.localStorage.getItem("User");
     if (user) {
@@ -39,8 +42,7 @@ class DisplayQuestions extends React.Component {
        WorkStations :this.getWorkStations()
     });
   }
-   
-
+ 
   render() {
    let selectedWorkStation= window.localStorage.getItem("Workstation")
     var self = this;
@@ -48,22 +50,22 @@ class DisplayQuestions extends React.Component {
     return (
       <div>
         <h3 style={{ textAlign: "center" }}>
-          <u>History</u>
+          <u>Desk Assessment</u>
         </h3>
 
-        <ul>
-          <Link to="./user-questions"> <button
+        <ul><Link to="./user-questions">
+          <button
             
             className="btn btn-secondary"
             style={{ float: "left " }}
           >
             Desk Assessment
-          </button>   </Link>
-         
-            <button disabled className="btn btn-secondary" style={{ float: "left " }}>
+          </button>    </Link>
+          
+            <button className="btn btn-secondary" disabled style={{ float: "left " }}>
               View History
             </button>
-         
+        
        
           
  
@@ -84,19 +86,20 @@ class DisplayQuestions extends React.Component {
             <h6> <tr>Desk Location Selected :  <u style = {{ color : "grey" }}>{selectedWorkStation}</u></tr></h6>
 </div>
  
-
+ <div className = "jumbotron"> 
             {this.state.questions &&
               this.state.questions.map(function(questions, index) {
+                 
                 return (
-                  <div >
-                    
+                  
+                 
                    
                     <Questions questions={questions}></Questions>
                    
-                  </div>
+                   
                 );
               })}
-         
+         </div>
         </ul>
       </div>
     );
@@ -145,258 +148,36 @@ class Questions extends React.Component {
   constructor(props) {
     super(props);
     console.log(props);
-    this.state = { ...props,   QuestionAnswer: "", QuestionAccepted: false  };
- 
-    this.QuestionDecline = this.QuestionDecline.bind(this);
-    this.QuestionOnChange = this.QuestionOnChange.bind(this);
-    this.OnCommit = this.OnCommit.bind(this);
-    this.RevertDeclinedAnswer = this.RevertDeclinedAnswer.bind(this)
-    this.RevertAcceptedAnswer = this.RevertAcceptedAnswer.bind(this)
-     
-    this.AcceptAnswer = this.AcceptAnswer.bind(this)
-  }
-  
-  QuestionDecline(e) {
-    e.preventDefault();
-     
-    if (this.state.ShowInput) {
-      this.setState({ ShowInput: false });
-      alert(this.state.ShowInput);
-    } else if (!this.state.ShowInput) {
-      this.setState({ ShowInput: true });
-      alert(this.state.ShowInput);
-    } 
-  }
-
-  AcceptAnswer(e){
-    e.preventDefault()
-    alert("clicked")
-
-    var today = new Date(),
-    date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-      1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-
-  let User =  window.localStorage.getItem("User")
-  let WorkStation =  window.localStorage.getItem("Workstation")
- 
-
-    const data = {
-      QuestionId: this.state.questions.QuestionId,  
-      date,
-      User, 
-      WorkStation
-    };
-
-    fetch("Accept-question-answer", {
-      method: "POST", // or 'PUT'
-      headers: {
-        Accept: "application/json,",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    }).then(response => {
-      console.log("response before it is broken down " + response);
-  
-      // return response.json();
-    });
-
-    
-    this.setState({ QuestionComplete: true, QuestionAccepted:false})
-     
-  }
-
-
-  RevertAcceptedAnswer(e){
-    e.preventDefault()
-    alert ("revert clciked answer declined")
-    let Email = window.localStorage.getItem("User")
-    let WorkStation = window.localStorage.getItem("Workstation")
-    const data = {
-      QuestionId: this.state.questions.QuestionId,
-      QuestionAnswer: this.state.QuestionAnswer,
-      Email , 
-      WorkStation
-      
-    };
-  
-    fetch("revert-accepted-question-answer", {
-      method: "POST", // or 'PUT'
-      headers: {
-        Accept: "application/json,",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    }).then(response => {
-      console.log("response before it is broken down " + response);
-  
-      // return response.json();
-    });
-    this.setState( {ShowInput : false, QuestionComplete: false})
-      alert("you answer has been deleted from the database")
-  
-  }
-  
-
-  RevertDeclinedAnswer(e){
-  e.preventDefault()
-  alert ("revert clciked answer declined")
-  let Email = window.localStorage.getItem("User")
-  let WorkStation = window.localStorage.getItem("Workstation")
-  const data = {
-    QuestionId: this.state.questions.QuestionId,
-    QuestionAnswer: this.state.QuestionAnswer,
-    Email , 
-    WorkStation
-  };
-  fetch("revert-declined-question-answer", {
-    method: "POST", // or 'PUT'
-    headers: {
-      Accept: "application/json,",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  }).then(response => {
-    console.log("response before it is broken down " + response);
-
-    // return response.json();
-  });
-  this.setState( {ShowInput : false, QuestionComplete: false})
-    alert("you answer has been deleted from the database")
-
+    this.state = { ...props,  };
 }
-
-
-
-
-  QuestionOnChange(e) {
-    this.setState({ QuestionAnswer: e.target.value });
-  }
-
-  ///////////////////////////////////////////
-  OnCommit(e) {
-     
-    alert(this.state.QuestionAnswer);
-
-    var today = new Date(),
-      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-
-    let User =  window.localStorage.getItem("User")
-    let WorkStation =  window.localStorage.getItem("Workstation")
-
-
-    const data = {
-      QuestionId: this.state.questions.QuestionId,
-      QuestionAnswer: this.state.QuestionAnswer,
-      date : date,
-        User, 
-        WorkStation
-    };
-
-    fetch("/declined-question-response", {
-      method: "POST", // or 'PUT'
-      headers: {
-        Accept: "application/json,",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    }).then(response => {
-      console.log("response before it is broken down " + response);
-
-      // return response.json();
-    });
-     
-     
-    this.setState({ QuestionComplete: true , QuestionAccepted:true})
-  }
-////////////////////////////////////////////////
+  
   render() {
-    if (!this.state.QuestionComplete ){
-    if (!this.state.ShowInput && !this.state.QuestionComplete) {
-      return (
-        <div className="jumbotron">
-          <button
-            onClick={this.QuestionDecline}
-            className="btn btn-danger"
-            style={{ float: "right" }}
-          >
-            Decline
-          </button>
-           <button
-            onClick={this.AcceptAnswer}
-            className="btn btn-primary"
-            style={{ float: "right" }}
-          >
-            Accept
-          </button>
-         
-          <br />
-          <li> Question ID: {this.state.questions.QuestionId}</li>
-          <li> Question:{this.state.questions.Question}</li>
-        </div>
-      );
-    } else if(this.state.ShowInput && !this.state.QuestionComplete) {
-      return (
-        <div className = "jumbotron">
-          <li>Question Id: {this.state.questions.QuestionId}</li>
-          <li>
-            <textarea
-              placeholder= "How can this be improved ?" 
-              style={{ width: "100%" }}
-              onChange={this.QuestionOnChange}
-            />
-          </li>
-          <button
-            style={{ float: "right", padding: "2px" }}
-            className="btn btn-primary"
-            onClick={() => this.OnCommit()}
-          >
-            Submit
-          </button>
-
-          <button
-            onClick={this.EditQuestion}
-            style={{ float: "right", padding: "2px" }}
-            className="btn btn-secondary"
-          >
-            Revert
-          </button>
-          <br />
-        </div>
-      );
-    }
-
-    }else if (this.state.QuestionComplete) {
-
-      if(this.state.QuestionAccepted){
-        return(<h3 className = "jumbotron">
-          <button onClick = {this.RevertDeclinedAnswer}style = {{float : "right" }}className = "btn btn-danger"> Revert Answer</button><br/>
-           
-           <li>Question Id: {this.state.questions.QuestionId}</li>
-           <li> Question : {this.state.questions.Question}</li>
-           <li>Complete : ✔️ </li>
-           <li>Status: ❌</li>
-           <li>Response to declined question: <u style = {{color : "grey"}}>{this.state.QuestionAnswer}</u> </li>
-            
-           </h3>)
-    }
-    else if (!this.state.QuestionAccepted){
-      return(
-        <h3 className = "jumbotron">
-        <button onClick = {this.RevertAcceptedAnswer}style = {{float : "right" }}className = "btn btn-danger"> Revert Answer</button><br/>
-         
-         <li>Question Id: {this.state.questions.QuestionId}</li>
-         <li> Question : {this.state.questions.Question}</li>
-         <li>Complete : ✔️ </li>
-         <li>Status: ✔️</li>
-          
-         </h3>
-      )
-    }
   
+    if (this.state.questions.Accepted >0 ) {
+      return (
+          <div  >
+          
+          <h4 style = {{float:"right"}}>✔️</h4> 
+          <br />
+          
+          <li> Question When Answered: {this.state.questions.QuestionWhenAnswered}</li>
+          <li> Question Status: <b>{this.state.questions.QuestionResponse}</b></li>
+          <li> Date: {this.state.questions.Date}</li>
+        </div>
+      );
+    } else   {
+      return (
+        <div  >
+          <h4 style = {{float:"right"}}>❌</h4> 
+        <br />
+         
+        <li> Question When Answered: {this.state.questions.QuestionWhenAnswered}</li>
+        <li> Question Status: <b>Declined</b></li>
+        <li> Question Response: {this.state.questions.QuestionResponse}</li>
+        <li> Date: {this.state.questions.Date}</li>
+      </div>
+      );
+    }
   }
-
-
   }
-}
  

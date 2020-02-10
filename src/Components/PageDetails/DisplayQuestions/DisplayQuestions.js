@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Modal,DropdownButton,Dropdown } from "react-bootstrap";
+
  
 class DisplayQuestions extends React.Component {
   constructor() {
@@ -39,39 +40,7 @@ class DisplayQuestions extends React.Component {
        WorkStations :this.getWorkStations()
     });
   }
-  // handleSubmit(e) {
-  //   e.preventDefault();
-  //   let WorkStation = window.localStorage.getItem("Workstation")
-  //   const data = {
-  //     QuestionID: this.QuestionID,
-  //     QuestionsAnswer: this.state.QuestionsAnswer,
-  //     QuestionSeverity: this.state.QuestionsSeverity, 
-  //     WorkStation
-  //   };
-
-  //   try {
-     
-  //     fetch("/Question-Response", {
-  //       method: "POST", // or 'PUT'
-  //       headers: {
-  //         Accept: "application/json, text/plain, */*",
-  //         "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify(data)
-  //     })
-  //       .then(response => response.json())
-  //       .then(data => {
-  //         console.log("Success:", data);
-  //       })
-  //       .catch(error => {
-  //         console.error("Error:", error);
-  //       });
-  //   } catch (error) {}
-  // }
-  // refresh() {
-  //   window.location.reload();
-  // }
-
+  
   render() {
    let selectedWorkStation= window.localStorage.getItem("Workstation")
     var self = this;
@@ -115,19 +84,19 @@ class DisplayQuestions extends React.Component {
             <h6> <tr>Desk Location Selected :  <u style = {{ color : "grey" }}>{selectedWorkStation}</u></tr></h6>
 </div>
  
-
+<div className = "jumbotron">
             {this.state.questions &&
               this.state.questions.map(function(questions, index) {
                 return (
-                  <div >
+                  
                     
                    
                     <Questions questions={questions}></Questions>
                    
-                  </div>
+                  
                 );
               })}
-         
+         </div>
         </ul>
       </div>
     );
@@ -302,6 +271,7 @@ class Questions extends React.Component {
   QuestionOnChange(e) {
     this.setState({ QuestionAnswer: e.target.value });
   }
+  
 
   ///////////////////////////////////////////
   OnCommit(e) {
@@ -343,9 +313,11 @@ class Questions extends React.Component {
 ////////////////////////////////////////////////
   render() {
     if (!this.state.QuestionComplete ){
-    if (!this.state.ShowInput && !this.state.QuestionComplete) {
+    if (!this.state.ShowInput  ) {
       return (
-        <div className="jumbotron">
+        <div  >
+          <li> Question ID: {this.state.questions.QuestionId}</li>
+          <li> Question:{this.state.questions.Question}</li>
           <button
             onClick={this.QuestionDecline}
             className="btn btn-danger"
@@ -362,13 +334,12 @@ class Questions extends React.Component {
           </button>
          
           <br />
-          <li> Question ID: {this.state.questions.QuestionId}</li>
-          <li> Question:{this.state.questions.Question}</li>
+          
         </div>
       );
     } else if(this.state.ShowInput && !this.state.QuestionComplete) {
       return (
-        <div className = "jumbotron">
+        <div  >
           <li>Question Id: {this.state.questions.QuestionId}</li>
           <li>
             <textarea
@@ -386,7 +357,7 @@ class Questions extends React.Component {
           </button>
 
           <button
-            onClick={this.EditQuestion}
+            onClick={this.QuestionDecline}
             style={{ float: "right", padding: "2px" }}
             className="btn btn-secondary"
           >
@@ -400,7 +371,7 @@ class Questions extends React.Component {
     }else if (this.state.QuestionComplete) {
 
       if(this.state.QuestionAccepted){
-        return(<h3 className = "jumbotron">
+        return(<h3 >
           <button onClick = {this.RevertDeclinedAnswer}style = {{float : "right" }}className = "btn btn-danger"> Revert Answer</button><br/>
            
            <li>Question Id: {this.state.questions.QuestionId}</li>
@@ -413,7 +384,7 @@ class Questions extends React.Component {
     }
     else if (!this.state.QuestionAccepted){
       return(
-        <h3 className = "jumbotron">
+        <h3 >
         <button onClick = {this.RevertAcceptedAnswer}style = {{float : "right" }}className = "btn btn-danger"> Revert Answer</button><br/>
          
          <li>Question Id: {this.state.questions.QuestionId}</li>

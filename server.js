@@ -75,11 +75,37 @@ app.get("/profile-account-details/:email", async (req, res) => {
   // connect to your database
 });
 
+//////////////////////////////////////////////////////////////////////////
+app.get("/user-completed-questions/:Workstation/:Email" ,async  (req, res) => {
+  // connect to your database
+let Email = req.params.Email
+let WorkStation = req.params.Workstation
+console.log(`WorkStation express end ${Email}`)
+  await sql.connect(config);
+  
+
+
+    // create Request object
+    var request = new sql.Request();
+
+    // query to the database and get the records
+    request.input("WorkStation", sql.NVarChar , WorkStation)
+    request.input("Email", sql.NVarChar, Email)
+    request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  
+});
+///////////////////////////////////////////////////////////////////////////////////
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get("/profile-work-station-detailss/:email", async (req, res) => {
   console.log("!called");
   // var Email = req.body.email;
-  await sql.connect(config);
+ 
 
   var Email = req.params.email;
   console.log(Email);
@@ -123,7 +149,7 @@ app.get("/user-questions" ,async  (req, res) => {
   
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
  ////////////////////////////////////////////////////////////////////////
 app.post("/login", async (req, response) => {
   try {
@@ -207,69 +233,7 @@ app.post("/login", async (req, response) => {
   }
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// app.post("/edit-question/:QuestionId", async (req, response) => {
-//   try {
-//     await sql.connect(config);
-
-//       // var Email = req.body.email;
-
-//     var QuestionId = req.params.QuestionId;
-//     var request = new sql.Request();
-
-//     console.log({ Email, Password });
-
-//     request.input("Email", sql.VarChar, Email);
-
-//     let result = await request.execute("dbo.CheckEmailExists");
-
-//     if (result.recordsets[0].length > 0) {
-//       console.info("This email exists");
-//       request.input("Password", sql.VarChar, Password);
-//       let result = await request.execute("dbo.LoginUser");
-
-//       if (result.recordsets[0].length > 0) {
-//         console.info("/login: login successful..");
-//         console.log(req.body);
-
-//         request.input("LastLogin", sql.DateTime, LastLogin);
-//         let result = await request.execute("dbo.AddLastLoginToRegisteredUsers");
-
-//         const token = jwt.sign({ user: Email }, "SECRET_KEY", {
-//           expiresIn: 3600000
-//         });
-
-//         var decoded = jwt.verify(token, "SECRET_KEY");
-//         console.log(decoded);
-
-//         response.status(200).json({
-//           ok: true,
-//           user: Email,
-//           jwt: token
-//         });
-//       } else {
-//         console.info("Incorrect Password");
-//         AccountValidationMessage = "Incorrecrt password to account";
-//         response.status(409).json({
-//           AccountValidationMessage: AccountValidationMessage
-//         });
-//       }
-//     } else {
-//       console.log("pending");
-//       AccountValidationMessage = "Email does not exists";
-//       response.status(409).json({
-//         AccountValidationMessage: AccountValidationMessage
-//       });
-//     }
-//   } catch (err) {
-//     console.log("Err: ", err);
-//     response.status(500).send("Check api console.log for the error");
-//   }
-// });
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+ 
 app.post("/reset-password-email", async (req, response) => {
   var Email = req.body.email;
 
