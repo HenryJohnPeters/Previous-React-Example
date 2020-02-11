@@ -45,6 +45,7 @@ class DisplayQuestions extends React.Component {
    let selectedWorkStation= window.localStorage.getItem("Workstation")
     var self = this;
     console.log(this.state.questions);
+    if(this.state.workstations.length){
     return (
       <div>
         <h3 style={{ textAlign: "center" }}>
@@ -52,23 +53,6 @@ class DisplayQuestions extends React.Component {
         </h3>
 
         <ul>
-          <button
-            disabled
-            className="btn btn-secondary"
-            style={{ float: "left " }}
-          >
-            Workstation Self-Assessment
-          </button>  
-          <Link to="./user-history">
-            <button className="btn btn-secondary" style={{ float: "left " }}>
-              View History
-            </button>
-          </Link>
-       
-          
- 
-
-
 <DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation Location">
 {this.state.workstations &&
               this.state.workstations.map(function(workstations, index) { 
@@ -100,6 +84,34 @@ class DisplayQuestions extends React.Component {
         </ul>
       </div>
     );
+            }
+            else{return(<div>
+        <h3 style={{ textAlign: "center" }}>
+          <u>Workstation Self-Assessment</u>
+        </h3>
+
+        <ul>
+<DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation Location">
+{this.state.workstations &&
+              this.state.workstations.map(function(workstations, index) { 
+                return (
+                  <div >
+                     <WorkStationSelecter workstations = {workstations}> </WorkStationSelecter>
+                  </div>
+                );
+              })}</DropdownButton> 
+         
+<br/>
+<br/>          <div >
+            <h6> <tr>Desk Location Selected :  <u style = {{ color : "grey" }}>NULL</u></tr></h6>
+            <div className="jumbotron">
+              
+               <li style = {{textAlign: "center"}}><b>This account has no workstations assigned to it.
+                  Please Navigate to the workstations segment of the profile page to create one</b> </li>
+            </div>
+</div>
+</ul>
+</div>)}
   }
 }
 

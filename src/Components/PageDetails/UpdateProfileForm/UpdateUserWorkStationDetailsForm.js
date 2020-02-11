@@ -1,11 +1,5 @@
 import React from "react";
-
-import { Link } from "react-router-dom";
-
-import Popup from "reactjs-popup";
-
-import autosize from "autosize";
-import { Modal } from "react-bootstrap";
+ 
 
 class ConfirmResetPasswordForm extends React.Component {
   constructor() {

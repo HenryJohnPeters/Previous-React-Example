@@ -9,7 +9,7 @@ class ManageWorkstations extends React.Component {
   constructor() {
     super();
 
-    this.state = { AccountDetails: [] };
+    this.state = { AccountDetails: [], exist: "" };
     this.getItems = this.getItems.bind(this);
   }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,8 +21,11 @@ class ManageWorkstations extends React.Component {
       fetch(`/profile-work-station-detailss/${user}`)
         .then(recordset => recordset.json())
         .then(results => {
-          this.setState({ AccountDetails: results.recordset });
           console.log(this.state.AccountDetails);
+          this.setState({ AccountDetails: results.recordset });
+          
+          console.log(this.state.AccountDetails);
+           
         });
       
          
@@ -43,8 +46,8 @@ console.log(e)
       
     console.log(this.state.AccountDetails)
   }
-
-  render() {
+  render() { 
+    if(this.state.AccountDetails.length){
 
     return (
           <ul>
@@ -76,7 +79,38 @@ console.log(e)
           
       
      
-    )  
+    )
+            } else{
+              return( <ul> 
+                
+                <Link to="/profile">
+              <button style={{ float: "left" }} className="btn btn-secondary">
+                Account Details
+              </button>
+            </Link>
+            <button
+              style={{ float: "left" }}
+              className="btn btn-secondary"
+              disabled
+            >
+              Manage Workstations
+            </button>
+                
+                 <DisplayAddWorkstation />
+              <br/>
+              <br/><div className="jumbotron">
+              
+               <li style = {{textAlign: "center"}}><b>Please add a workplace using the blue + button.</b> </li>
+            
+      
+            
+      
+             
+       
+                 
+         
+            </div></ul>)
+            } 
 }
 }
 
@@ -111,7 +145,7 @@ class WorkStations extends React.Component {
   }
 
   render() {
-     if(this.state.AccountDetails.DeskLocation ){
+     
     return (
       <div className="jumbotron">
         <button
@@ -136,11 +170,9 @@ class WorkStations extends React.Component {
         </li>
       </div>
     ); 
-  }else if (!this.state.AccountDetails.DeskLocation ){
-return(<>nada</>)
-    }
+  } 
   }
-}
+ 
 
 class DisplayAddWorkstation extends React.Component {
   constructor(props) {
