@@ -50,7 +50,7 @@ class DisplayQuestions extends React.Component {
     return (
       <div>
         <h3 style={{ textAlign: "center" }}>
-          <u>Desk Assessment</u>
+          <u>History</u>
         </h3>
 
         <ul><Link to="./user-questions">
@@ -59,11 +59,11 @@ class DisplayQuestions extends React.Component {
             className="btn btn-secondary"
             style={{ float: "left " }}
           >
-            Desk Assessment
+           Workstation Self-Assessment
           </button>    </Link>
           
             <button className="btn btn-secondary" disabled style={{ float: "left " }}>
-              View History
+              History
             </button>
         
        

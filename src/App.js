@@ -53,18 +53,18 @@ const AdminAuthRoute = ({ component: Component }) => (
   />
 );
 
-const registerToken = window.localStorage.getItem("registerToken");
-const RegisterAuthRoute = ({ component: Component }) => (
-  <Route
-    render={props =>
-      registerToken && registerToken !== undefined ? (
-        <Component />
-      ) : (
-        <Redirect to="/" />
-      )
-    }
-  />
-);
+// const registerToken = window.localStorage.getItem("registerToken");
+// const RegisterAuthRoute = ({ component: Component }) => (
+//   <Route
+//     render={props =>
+//       registerToken && registerToken !== undefined ? (
+//         <Component />
+//       ) : (
+//         <Redirect to="/" />
+//       )
+//     }
+//   />
+// );
 
 const resetToken = window.localStorage.getItem("resetToken");
 const ResetAuthRoute = ({ component: Component }) => (
@@ -85,11 +85,13 @@ function Routing() {
       <Switch>
         <Route exact path="/reset" component={ResetPassword} />
         <Route exact path="/" component={LoginPage} />
-        <Route exact path="/Register" component={RegisterPage} />
+        {/* <Route exact path="/Register" component={RegisterPage} /> */}
         <Route exact path="/confirm-email" component={ConfirmEmail} />
-        <RegisterAuthRoute
+       
+       
+        <Route
           exact
-          path="/confirm-register"
+          path="/register"
           component={ConfirmRegisterPage}
         />
         <ResetAuthRoute

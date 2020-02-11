@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useHistory } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
 import Popup from "reactjs-popup";
@@ -16,7 +16,8 @@ class ConfirmRegisterForm extends React.Component {
       name: "",
       contactNumber: "",
       password: "",
-      passwordConfirm: ""
+      passwordConfirm: "",
+      email: ""
     };
     this.onSubmit = this.handleSubmit.bind(this);
   }
@@ -31,11 +32,11 @@ class ConfirmRegisterForm extends React.Component {
     ) {
       alert(`please enter the form correctly `);
     } else {
-      const email = window.localStorage.getItem("User");
-      console.log({ email });
+      
+       
 
       const data = {
-        email,
+        email: this.state.email,
         password: this.state.password,
         contactNumber: this.state.contactNumber,
         name: this.state.name
@@ -51,6 +52,8 @@ class ConfirmRegisterForm extends React.Component {
       });
 
       alert(`Account Created `);
+
+      window.location.href="http://localhost:3000/"
     }
   }
   catch(e) {
@@ -69,7 +72,8 @@ class ConfirmRegisterForm extends React.Component {
             password: "",
             passwordConfirm: "",
             name: "",
-            contactNumber: ""
+            contactNumber: "",
+            email: ""
           }}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
@@ -79,6 +83,11 @@ class ConfirmRegisterForm extends React.Component {
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required("Name is required"),
+
+            email: Yup.string()
+              .email()
+              .required("Email is required")
+              .matches(/(?=.*@)/, "This is not an email address."),
 
             contactNumber: Yup.string()
               .required("Contact number is required")
@@ -90,7 +99,7 @@ class ConfirmRegisterForm extends React.Component {
               .matches(/(?=.*[0-9])/, "Password must contain a number."),
 
             passwordConfirm: Yup.string()
-              .oneOf([Yup.ref("password"), "passwords must match"])
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
               .required("Password confirm is required")
               .min(8, "Password is too short - should be 8 chars minimum.")
           })}
@@ -114,15 +123,26 @@ class ConfirmRegisterForm extends React.Component {
                 method="POST"
               >
                 <div className="jumbotron">
-                  <h2>Register </h2>
+                  <h2>Sign Up </h2>
                   <div className="help">
-                    <Popup trigger={<Link> Help?</Link>} className="center">
-                      <div>
-                        Enter Codestone Email address and Password connected to
-                        the account.
-                      </div>
-                    </Popup>
+                    
                   </div>
+
+                  <label htmlFor="email">Email</label>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value2={values.email}
+                    value={this.state.email}
+                    onInput={handleChange}
+                    onChange={e => this.setState({ email: e.target.value })}
+                    onBlur={handleBlur}
+                    className={errors.email && touched.email && "error"}
+                  />
+                  {errors.email && touched.email && (
+                    <div className="input-feedback">{errors.email} </div>
+                  )}
 
                   <label htmlFor="email">Name</label>
                   <input

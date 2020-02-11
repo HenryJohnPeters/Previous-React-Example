@@ -4,42 +4,49 @@ import Popup from "reactjs-popup";
 import { Modal, Button } from "react-bootstrap";
 
 import AddWorkstation from "./UpdateUserWorkStationDetailsForm";
+ 
 class ManageWorkstations extends React.Component {
   constructor() {
     super();
 
     this.state = { AccountDetails: [] };
+    this.getItems = this.getItems.bind(this);
   }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
   // sets the questions form sql into state for questions
   getItems() {
+    try{
     var user = window.localStorage.getItem("User");
     if (user) {
       fetch(`/profile-work-station-detailss/${user}`)
         .then(recordset => recordset.json())
         .then(results => {
           this.setState({ AccountDetails: results.recordset });
+          console.log(this.state.AccountDetails);
         });
-    } else {
+      
+         
+ 
+
+      } else {
       alert("user not set");
+    }}catch(e){
+console.log(e)
     }
   }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
   //when the component mounts make the sql questions the
   componentDidMount() {
-    this.setState({
-      AccountDetails: this.getItems()
-    });
+    
+   
+    this.getItems()
+      
+    console.log(this.state.AccountDetails)
   }
 
   render() {
-    var self = this;
+
     return (
-      <>
-        <h3 style={{ textAlign: "center" }}>
-          {" "}
-          <u>Manage Work Stations</u>
-        </h3>
-        {this.state.AccountDetails ? (
           <ul>
             <Link to="/profile">
               <button style={{ float: "left" }} className="btn btn-secondary">
@@ -51,7 +58,7 @@ class ManageWorkstations extends React.Component {
               className="btn btn-secondary"
               disabled
             >
-              Manage Work Stations
+              Manage Workstations
             </button>
 
             <DisplayAddWorkstation />
@@ -66,35 +73,11 @@ class ManageWorkstations extends React.Component {
                 );
               })}
           </ul>
-        ) : (
-          <ul>
-            <DisplayAddWorkstation />
-            <br />
-            <br />
-            <div className="jumbotron">
-              <button className="btn btn-secondary" style={{ float: "right" }}>
-                X
-              </button>
-              <h3>Work Station</h3>
-
-              <li>
-                <div>Desk Location:</div> Null
-              </li>
-
-              <li>
-                <div>Additional Information:</div>
-                Null
-              </li>
-
-              <li>
-                <div> Date Added:</div> Null
-              </li>
-            </div>
-          </ul>
-        )}
-      </>
-    );
-  }
+          
+      
+     
+    )  
+}
 }
 
 export default ManageWorkstations;
@@ -128,6 +111,7 @@ class WorkStations extends React.Component {
   }
 
   render() {
+     if(this.state.AccountDetails.DeskLocation ){
     return (
       <div className="jumbotron">
         <button
@@ -144,17 +128,17 @@ class WorkStations extends React.Component {
           {this.state.AccountDetails.DeskLocation}
         </li>
 
-        <li key="Additional-Information">
-          Additional Information:
-          {this.state.AccountDetails.ExtraInformation}
-        </li>
+       
 
         <li key="Date-Added">
           Date Added:
           {this.state.AccountDetails.DateAdded}
         </li>
       </div>
-    );
+    ); 
+  }else if (!this.state.AccountDetails.DeskLocation ){
+return(<>nada</>)
+    }
   }
 }
 
@@ -169,30 +153,26 @@ class DisplayAddWorkstation extends React.Component {
 
     this.state = {
       show: false,
-      show1: false
+      
     };
   }
-
-  handleClose() {
+handleClose() {
     this.setState({
       show: false,
-      show1: false
+      
     });
   }
-
   handleShow() {
     this.setState({
       show: true
     });
   }
-
   handleRefresh() {
     window.location.reload();
   }
-
   render() {
-    // console.log(this.state);
-
+     
+ 
     return (
       <div className="header-container">
         <button
@@ -218,6 +198,6 @@ class DisplayAddWorkstation extends React.Component {
           </Modal.Body>
         </Modal>
       </div>
-    );
+    );  
   }
 }

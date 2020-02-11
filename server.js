@@ -200,8 +200,7 @@ app.post("/login", async (req, response) => {
             expiresIn: 3600000 ////////
           });
         }
-        var decoded = jwt.verify(adminToken, "SECRET_KEY");
-        console.log(decoded);
+       
 
         response.status(200).json({
           ok: true,
@@ -526,21 +525,15 @@ app.post("/add-workstation", async (req, response) => {
     await sql.connect(config);
     const Email = req.body.email;
     const Location = req.body.Location;
-    const ExtraInformation = req.body.ExtraInformation;
-
     const date = req.body.date;
+
+    console.info(`${Email}${Location}${date}`)
     var request = new sql.Request();
-    console.log(`Email ${Email} =====   Location  
-    ${Location} =========
-    Extra Information ${ExtraInformation} ==========
-     
-     date ${date}`);
+    
 
     //find ruid for user
     request.input("Email", sql.NVarChar, Email);
     request.input("DeskLocation", sql.NVarChar, Location);
-    request.input("ExtraInformation", sql.NVarChar, ExtraInformation);
-
     request.input("Date", sql.DateTime, date);
 
     const result = await request.execute("dbo.FindRuidAddWorkstationDetails");

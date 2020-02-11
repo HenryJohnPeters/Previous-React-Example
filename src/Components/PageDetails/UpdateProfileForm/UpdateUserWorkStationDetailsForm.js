@@ -17,32 +17,20 @@ class ConfirmResetPasswordForm extends React.Component {
       PrimaryWorkStation: true
     };
     this.onSubmit = this.handleSubmit.bind(this);
-    this.handlePrimaryButton = this.handlePrimaryButton.bind(this);
-    this.handleSecondaryButton = this.handleSecondaryButton.bind(this);
+    
   }
-  componentDidMount() {
-    this.textarea.focus();
-    autosize(this.textarea);
-  }
-
-  handlePrimaryButton(e) {
-    e.preventDefault();
-
-    this.setState({ PrimaryWorkStation: true });
-  }
-
-  handleSecondaryButton(e) {
-    e.preventDefault();
-    this.setState({ PrimaryWorkStation: false });
-  }
-
+   
+ 
   handleSubmit(e) {
-    e.preventDefault();
+    
     try {
-      if (this.state.Location.length < 8) {
-        alert("Location has to be 8 characters minimum");
+      if (this.state.Location.length < 3) {
+        alert("Location has to be 3 characters minimum");
       } else {
-        alert("Workstation Added. Refresh the page to view updates");
+
+
+        
+        
         console.log(this.state.ExtraInformation);
         console.log(this.state.Location);
 
@@ -55,7 +43,7 @@ class ConfirmResetPasswordForm extends React.Component {
         console.log(date);
         const data = {
           email,
-          ExtraInformation: this.state.ExtraInformation,
+          
           Location: this.state.Location,
 
           date
@@ -69,7 +57,9 @@ class ConfirmResetPasswordForm extends React.Component {
           },
           body: JSON.stringify(data)
         });
+        alert("Workstation Added. Refresh the page to view updates");
       }
+      window.location.reload()
     } catch (e) {
       console.log(e);
     }
@@ -86,39 +76,21 @@ class ConfirmResetPasswordForm extends React.Component {
         <form>
           <div className="jumbotron">
             <h2 style={{ textAlign: "center" }}>Add Workstation </h2>
-            <div className="help">
-              <Popup trigger={<Link> Help?</Link>} className="center">
-                <div>
-                  Enter Codestone Email and Password connected to the account.
-                </div>
-              </Popup>
-            </div>
+         
 
             <label htmlFor="email">Location</label>
             <div>
-              <textarea
+              <input
                 style={{ width: "100%" }}
                 ref={c => (this.textarea = c)}
-                placeholder="type some text"
+                placeholder="Enter Location (e.g. Office)"
                 rows={1}
                 defaultValue=""
                 onChange={e => this.setState({ Location: e.target.value })}
               />
             </div>
 
-            <label htmlFor="email">Extra Information</label>
-            <div>
-              <textarea
-                style={{ width: "100%" }}
-                ref={c => (this.textarea = c)}
-                placeholder="type some text"
-                rows={1}
-                defaultValue=""
-                onChange={e =>
-                  this.setState({ ExtraInformation: e.target.value })
-                }
-              />
-            </div>
+             
 
             <button
               className="btn btn-primary"

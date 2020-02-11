@@ -7,6 +7,7 @@ import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -33,8 +34,11 @@ function Header() {
         width="340"
         height="60"
       />
-
-      <NavBar />
+<br/>
+<br/>
+<Link to = "/user-questions">
+      <button className="btn btn-secondary">Perform Workstation Self-Assessment</button>
+    </Link>
     </div>
   );
 }

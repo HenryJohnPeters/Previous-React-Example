@@ -1,9 +1,14 @@
 import React from "react";
-
+import logo from "../codestone logo.png";
 import DisplayUserAccountDetails from "../PageDetails/UpdateProfileForm/DislplayUserAccountDetails";
 import DisplayUserWorkStationDetails from "../PageDetails/UpdateProfileForm/DisplayUserWorkStationDetails";
 import DisplayUserPasswordDetails from "../PageDetails/UpdateProfileForm/DisplayUserPasswordDetails";
-import Header from "../PageDetails/Headers/Header";
+ 
+import NavBar from "../PageDetails/Headers/NavBarUsers";
+import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
+import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
+import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+
 import Popup from "reactjs-popup";
 import { Link } from "react-router-dom";
 
@@ -14,6 +19,35 @@ function ProfilePage() {
 
       <DisplayUserWorkStationDetails />
     </>
+  );
+}
+
+
+
+function Header() {
+  return (
+    <div className="jumbotron">
+      <div style={{ textAlign: "right" }}>
+        <ProfileButton />
+        <LogOutButton />
+        <AdminButton />
+      </div>
+
+      <div className="User-Menu"></div>
+      <img
+        className="profile-image"
+        alt="icon"
+        src={logo}
+        width="340"
+        height="60"
+      />
+<br/>
+
+
+ <Link to= "./home">
+      <button className =" btn btn-secondary" >Home</button>
+   </Link>  
+    </div> 
   );
 }
 

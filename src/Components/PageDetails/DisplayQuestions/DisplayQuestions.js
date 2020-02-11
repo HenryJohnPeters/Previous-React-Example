@@ -48,7 +48,7 @@ class DisplayQuestions extends React.Component {
     return (
       <div>
         <h3 style={{ textAlign: "center" }}>
-          <u>Desk Assessment</u>
+          <u>Workstation Self-Assessment</u>
         </h3>
 
         <ul>
@@ -57,7 +57,7 @@ class DisplayQuestions extends React.Component {
             className="btn btn-secondary"
             style={{ float: "left " }}
           >
-            Desk Assessment
+            Workstation Self-Assessment
           </button>  
           <Link to="./user-history">
             <button className="btn btn-secondary" style={{ float: "left " }}>
@@ -316,8 +316,8 @@ class Questions extends React.Component {
     if (!this.state.ShowInput  ) {
       return (
         <div  >
-          <li> Question ID: {this.state.questions.QuestionId}</li>
-          <li> Question:{this.state.questions.Question}</li>
+         
+          <li>{this.state.questions.Question}</li>
           <button
             onClick={this.QuestionDecline}
             className="btn btn-danger"

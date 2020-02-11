@@ -125,12 +125,7 @@ class LoginForm extends React.Component {
                 <div className="jumbotron">
                   <h2>Login </h2>
                   <div className="help">
-                    <Popup trigger={<Link> Help?</Link>} className="center">
-                      <div>
-                        Enter Codestone Email address and Password connected to
-                        the account.
-                      </div>
-                    </Popup>
+                     
                   </div>
 
                   <label htmlFor="email">Email</label>
@@ -175,7 +170,7 @@ class LoginForm extends React.Component {
                   </button>
 
                   <p>
-                    <Link to="/Register"> Sign Up </Link>
+                    <Link to="/register"> Sign Up </Link>
                   </p>
                   <p>
                     <Link to="/reset"> Reset Password </Link>

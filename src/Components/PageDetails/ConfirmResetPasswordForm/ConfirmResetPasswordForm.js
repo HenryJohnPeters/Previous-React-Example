@@ -66,7 +66,7 @@ class ConfirmResetPasswordForm extends React.Component {
               .matches(/(?=.*[0-9])/, "Password must contain a number."),
 
             passwordConfirm: Yup.string()
-              .oneOf([Yup.ref("password"), "passwords must match"])
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
               .required("Password confirm is required")
               .min(8, "Password is too short - should be 8 chars minimum.")
           })}
