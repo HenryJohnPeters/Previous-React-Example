@@ -186,7 +186,8 @@ class Questions extends React.Component {
 
     var today = new Date(),
     date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-      1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+      1}-${today.getUTCDate()}  `;
+      alert(date)
 
   let User =  window.localStorage.getItem("User")
   let WorkStation =  window.localStorage.getItem("Workstation")

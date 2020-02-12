@@ -99,7 +99,55 @@ console.log(`WorkStation express end ${Email}`)
   
 });
 ///////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+app.get("/show-questions-answered/:date/:workStation/:email" ,async  (req, res) => {
+  // connect to your database
+let date = req.params.date
+let workStation = req.params.workStation
+let email = req.params.email
 
+console.log(`WorkStation express end ${email} .... ${workStation}.....${date}`)
+  await sql.connect(config);
+  
+
+
+    // create Request object
+    var request = new sql.Request();
+
+    // query to the database and get the records
+    request.input("WorkStation", sql.NVarChar , workStation)
+    request.input("Date", sql.Date, date)
+    request.input("Email", sql.NVarChar, email)
+    request.execute("dbo.ShowQuestionsAnswered", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  
+});
+///////////////////////////////////////////////////////////////////////////////////
+app.get("/user-completed-Assessment/:Workstation/:Email" ,async  (req, res) => {
+  // connect to your database
+let Email = req.params.Email
+let WorkStation = req.params.Workstation
+console.log(`WorkStation express end ${Email}`)
+  await sql.connect(config);
+  
+
+
+    // create Request object
+    var request = new sql.Request();
+
+    // query to the database and get the records
+    request.input("WorkStation", sql.NVarChar , WorkStation)
+    request.input("Email", sql.NVarChar, Email)
+    request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get("/profile-work-station-detailss/:email", async (req, res) => {
@@ -132,7 +180,7 @@ app.get("/profile-work-station-detailss/:email", async (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+ //////////////////////////////////////////////////////////////////////////////////////////
 app.get("/user-questions" ,async  (req, res) => {
   // connect to your database
   await sql.connect(config);
