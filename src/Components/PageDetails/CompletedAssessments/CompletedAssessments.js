@@ -8,7 +8,7 @@ class DisplayQuestions extends React.Component {
   constructor() {
     super();
 
-    this.state = { questions: [], QuestionsAnswer: [], workstations: [],  viewDetails:false     };
+    this.state = { questions: [], QuestionsAnswer: [], workstations: [],  viewDetails:false };
  this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this)
     
   }
@@ -55,23 +55,21 @@ class DisplayQuestions extends React.Component {
     }
     return results
   }
+
   render() {
    let selectedWorkStation= window.localStorage.getItem("Workstation")
     var self = this;
     console.log(this.state.questions);
+    if (this.state.workstations.length){
+      if(this.state.questions.length){
     return (
       <div>
         <h3 style={{ textAlign: "center" }}>
      
         </h3>
 
-        <ul> 
-        
-       
-          
+        <ul>         
  
-
-
 <DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation Location">
 {this.state.workstations &&
               this.state.workstations.map(function(workstations, index) { 
@@ -104,6 +102,79 @@ class DisplayQuestions extends React.Component {
         </ul>
       </div>
     );
+  
+  }
+  else if(!this.state.questions.length){
+   return(
+
+    <> <div>
+    <h3 style={{ textAlign: "center" }}>
+  
+    </h3>
+  
+    <ul> 
+  
+  <DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation Location">
+  {this.state.workstations &&
+          this.state.workstations.map(function(workstations, index) { 
+            return (
+              <div >
+                 <WorkStationSelecter workstations = {workstations}> </WorkStationSelecter>
+              </div>
+            );
+          })}</DropdownButton> 
+     
+  <br/>
+  <br/>          <div >
+        <h6> <tr>Desk Location Selected :  <u style = {{ color : "grey" }}>{selectedWorkStation}</u></tr></h6>
+  </div>
+  
+  <div className="jumbotron">
+                
+                <li style = {{textAlign: "center"}}><b>This account has not completed any Workstation self-assessments</b> </li>
+             </div>
+    </ul>
+  </div></>
+  )
+   
+
+  }
+  
+  
+  
+  }else{
+return(     <div>
+  <h3 style={{ textAlign: "center" }}>
+
+  </h3>
+
+  <ul> 
+
+<DropdownButton style ={{float : "right"}}  id="dropdown-basic-button" title="Select Workstation Location">
+{this.state.workstations &&
+        this.state.workstations.map(function(workstations, index) { 
+          return (
+            <div >
+               <WorkStationSelecter workstations = {workstations}> </WorkStationSelecter>
+            </div>
+          );
+        })}</DropdownButton> 
+   
+<br/>
+<br/>          <div >
+      <h6> <tr>Desk Location Selected :  <u style = {{ color : "grey" }}>{selectedWorkStation}</u></tr></h6>
+</div>
+
+<div className="jumbotron">
+              
+              <li style = {{textAlign: "center"}}><b>This account has no workstations assigned to it.
+                 Please Navigate to the workstations segment of the profile page to create one</b> </li>
+           </div>
+  </ul>
+</div>)
+
+
+    }
   }
 }
 
@@ -138,11 +209,7 @@ window.location.reload()
    
     }
   }
-
-
-
-
-
+ 
 class Questions extends React.Component {
   constructor(props) {
     super(props);
@@ -203,8 +270,7 @@ checker( ){
         </div>
     );
     })}
-           
-    
+ 
         </div>
 
         )
