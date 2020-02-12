@@ -40,8 +40,10 @@ class DisplayQuestions extends React.Component {
   
   componentDidMount() {
     this.setState({
-      questions: this.getItems(),
-       WorkStations :this.getWorkStations()
+     questions: this.getItems(),
+     WorkStations :this.getWorkStations() 
+   
+       
     });
   }
 
