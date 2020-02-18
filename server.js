@@ -14,8 +14,7 @@ var config = {
   user: "sa",
   password: "Mypassword123",
   server: "localhost", // You can use 'localhost\\instance' to connect to named instance
-  database: "CDA",
-  
+  database: "CDA"
 
   //enableArithAbort: false
 };
@@ -76,84 +75,79 @@ app.get("/profile-account-details/:email", async (req, res) => {
 });
 
 //////////////////////////////////////////////////////////////////////////
-app.get("/user-completed-questions/:Workstation/:Email" ,async  (req, res) => {
+app.get("/user-completed-questions/:Workstation/:Email", async (req, res) => {
   // connect to your database
-let Email = req.params.Email
-let WorkStation = req.params.Workstation
-console.log(`WorkStation express end ${Email}`)
+  let Email = req.params.Email;
+  let WorkStation = req.params.Workstation;
+  console.log(`WorkStation express end ${Email}`);
   await sql.connect(config);
-  
 
+  // create Request object
+  var request = new sql.Request();
 
-    // create Request object
-    var request = new sql.Request();
-
-    // query to the database and get the records
-    request.input("WorkStation", sql.NVarChar , WorkStation)
-    request.input("Email", sql.NVarChar, Email)
-    request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
-      if (err) console.log(err);
-      // send records as a response
-      res.json(recordset);
-    });
-  
+  // query to the database and get the records
+  request.input("WorkStation", sql.NVarChar, WorkStation);
+  request.input("Email", sql.NVarChar, Email);
+  request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
+    if (err) console.log(err);
+    // send records as a response
+    res.json(recordset);
+  });
 });
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-app.get("/show-questions-answered/:date/:workStation/:email" ,async  (req, res) => {
-  // connect to your database
-let date = req.params.date
-let workStation = req.params.workStation
-let email = req.params.email
+app.get(
+  "/show-questions-answered/:date/:workStation/:email",
+  async (req, res) => {
+    // connect to your database
+    let date = req.params.date;
+    let workStation = req.params.workStation;
+    let email = req.params.email;
 
-console.log(`WorkStation express end ${email} .... ${workStation}.....${date}`)
-  await sql.connect(config);
-  
-
+    console.log(
+      `WorkStation express end ${email} .... ${workStation}.....${date}`
+    );
+    await sql.connect(config);
 
     // create Request object
     var request = new sql.Request();
 
     // query to the database and get the records
-    request.input("WorkStation", sql.NVarChar , workStation)
-    request.input("Date", sql.Date, date)
-    request.input("Email", sql.NVarChar, email)
+    request.input("WorkStation", sql.NVarChar, workStation);
+    request.input("Date", sql.Date, date);
+    request.input("Email", sql.NVarChar, email);
     request.execute("dbo.ShowQuestionsAnswered", function(err, recordset) {
       if (err) console.log(err);
       // send records as a response
       res.json(recordset);
     });
-  
-});
+  }
+);
 ///////////////////////////////////////////////////////////////////////////////////
-app.get("/user-completed-Assessment/:Workstation/:Email" ,async  (req, res) => {
+app.get("/user-completed-Assessment/:Workstation/:Email", async (req, res) => {
   // connect to your database
-let Email = req.params.Email
-let WorkStation = req.params.Workstation
-console.log(`WorkStation express end ${Email}`)
+  let Email = req.params.Email;
+  let WorkStation = req.params.Workstation;
+  console.log(`WorkStation express end ${Email}`);
   await sql.connect(config);
-  
 
+  // create Request object
+  var request = new sql.Request();
 
-    // create Request object
-    var request = new sql.Request();
-
-    // query to the database and get the records
-    request.input("WorkStation", sql.NVarChar , WorkStation)
-    request.input("Email", sql.NVarChar, Email)
-    request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
-      if (err) console.log(err);
-      // send records as a response
-      res.json(recordset);
-    });
-  
+  // query to the database and get the records
+  request.input("WorkStation", sql.NVarChar, WorkStation);
+  request.input("Email", sql.NVarChar, Email);
+  request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
+    if (err) console.log(err);
+    // send records as a response
+    res.json(recordset);
+  });
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get("/profile-work-station-detailss/:email", async (req, res) => {
   console.log("!called");
   // var Email = req.body.email;
- 
 
   var Email = req.params.email;
   console.log(Email);
@@ -179,108 +173,175 @@ app.get("/profile-work-station-detailss/:email", async (req, res) => {
   // connect to your database
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- //////////////////////////////////////////////////////////////////////////////////////////
-app.get("/user-questions" ,async  (req, res) => {
+app.post("/post-question-answers", async (req, res) => {
+  console.log("!called");
+  try {
+    await sql.connect(config);
+
+    // create Request object
+
+    let results = req.body.results;
+
+    let questions = [];
+    let answers = [];
+    let emails = [];
+    let questionIds = [];
+    let workStations = [];
+    let accepts = [];
+    let dates = [];
+
+    results.forEach(element => answers.push(element.answer));
+    results.forEach(element => questions.push(element.question));
+    results.forEach(element => emails.push(element.email));
+    results.forEach(element => questionIds.push(element.questionId));
+    results.forEach(element => workStations.push(element.workStation));
+    results.forEach(element => accepts.push(element.accepted));
+    results.forEach(element => dates.push(element.date));
+
+    console.info(`QUESTIONS ${questions}`);
+    console.info(`ANSWERS ${answers}`);
+    console.info(`emails ${emails}`);
+    console.info(`question ${questionIds}`);
+    console.info(`workStations ${workStations}`);
+    console.info(`accepts ${accepts}`);
+    console.info(`dates ${dates}`);
+
+    for (var i = 0; i < results.length; i++) {
+      var request = new sql.Request();
+      let answer = answers[i];
+      let question = questions[i];
+      let email = emails[i];
+      let questionId = questionIds[i];
+      let workStation = workStations[i];
+      let accepted = accepts[i];
+      let date = dates[i];
+      // console.info(
+      //   `question ${question[i]}....... answer
+      //   ${answer[i]}........email
+      //   ${email[i]}.........questionid
+      //   ${questionId[i]} work station is :
+      //   ${workStation[i]} this is :
+      //   //   `
+      // );
+
+      request.input(`Question`, sql.NVarChar, question);
+      request.input(`Answer`, sql.NVarChar, answer);
+      request.input(`Email`, sql.NVarChar, email);
+      request.input(`QuestionId`, sql.NVarChar, questionId);
+      request.input(`WorkStation`, sql.NVarChar, workStation);
+      request.input(`Accepted`, sql.Bit, accepted);
+      request.input(`Date`, sql.DateTime, date);
+
+      request.execute("dbo.AddQuestionResponses", function(err, recordset) {
+        if (err) console.log(err);
+      });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+app.get("/user-questions", async (req, res) => {
   // connect to your database
   await sql.connect(config);
 
-    // create Request object
-    var request = new sql.Request();
+  // create Request object
+  var request = new sql.Request();
 
-    // query to the database and get the records
-    request.execute("dbo.ViewQuestions", function(err, recordset) {
-      if (err) console.log(err);
-      // send records as a response
-      res.json(recordset);
-    });
-  
+  // query to the database and get the records
+  request.execute("dbo.ViewQuestions", function(err, recordset) {
+    if (err) console.log(err);
+    // send records as a response
+    res.json(recordset);
+  });
 });
 
-
- ////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 app.post("/login", async (req, response) => {
   try {
-
     var connectionok = true;
-    await sql.connect(config).catch(err => {console.log("connection error " ,err )
-    connectionok = false});
-    if(connectionok){
+    await sql.connect(config).catch(err => {
+      console.log("connection error ", err);
+      connectionok = false;
+    });
+    if (connectionok) {
+      var request = new sql.Request();
+      var Email = req.body.email;
+      var Password = req.body.password;
+      var AccountValidationMessage = "";
+      var LastLogin = req.body.date;
 
-    var request = new sql.Request();
-    var Email = req.body.email;
-    var Password = req.body.password;
-    var AccountValidationMessage = "";
-    var LastLogin = req.body.date;
+      let token = "";
+      let adminToken = "";
+      console.log({ Email, Password });
 
-    let token = "";
-    let adminToken = "";
-    console.log({ Email, Password });
+      request.input("Email", sql.VarChar, Email);
 
-    request.input("Email", sql.VarChar, Email);
-
-    let result = await request.execute("dbo.CheckEmailExists");
-
-    if (result.recordsets[0].length > 0) {
-      console.info("This email exists");
-      request.input("Password", sql.VarChar, Password);
-      let result = await request.execute("dbo.LoginUser");
+      let result = await request.execute("dbo.CheckEmailExists");
 
       if (result.recordsets[0].length > 0) {
-        console.info("/login: login successful..");
-        console.log(req.body);
+        console.info("This email exists");
+        request.input("Password", sql.VarChar, Password);
+        let result = await request.execute("dbo.LoginUser");
 
-        request.input("LastLogin", sql.DateTime, LastLogin);
-
-        await request.execute("dbo.AddLastLoginToRegisteredUsers");
-
-        let result = await request.execute("dbo.FindAdmin");
         if (result.recordsets[0].length > 0) {
-          console.info("This is a admin account");
-          adminToken = jwt.sign({ user: Email }, "SECRET_KEY", {
-            //////
-            expiresIn: 3600000 ////////
+          console.info("/login: login successful..");
+          console.log(req.body);
+
+          request.input("LastLogin", sql.DateTime, LastLogin);
+
+          await request.execute("dbo.AddLastLoginToRegisteredUsers");
+
+          let result = await request.execute("dbo.FindAdmin");
+          if (result.recordsets[0].length > 0) {
+            console.info("This is a admin account");
+            adminToken = jwt.sign({ user: Email }, "SECRET_KEY", {
+              //////
+              expiresIn: 3600000 ////////
+            });
+          } else {
+            console.info("this aint a admin account but you get a login token"); //////
+            token = jwt.sign({ user: Email }, "SECRET_KEY", {
+              //////
+              expiresIn: 3600000 ////////
+            });
+          }
+
+          response.status(200).json({
+            ok: true,
+            user: Email,
+            jwt: token,
+            adminJwt: adminToken
           });
         } else {
-          console.info("this aint a admin account but you get a login token"); //////
-          token = jwt.sign({ user: Email }, "SECRET_KEY", {
-            //////
-            expiresIn: 3600000 ////////
+          console.info("Incorrect Password");
+          AccountValidationMessage = "Incorrecrt password to account";
+          response.status(409).json({
+            AccountValidationMessage: AccountValidationMessage
           });
         }
-       
-
-        response.status(200).json({
-          ok: true,
-          user: Email,
-          jwt: token,
-          adminJwt: adminToken
-        });
       } else {
-        console.info("Incorrect Password");
-        AccountValidationMessage = "Incorrecrt password to account";
+        console.log("Email does not exists");
+        AccountValidationMessage = "Email does not exists";
         response.status(409).json({
           AccountValidationMessage: AccountValidationMessage
         });
       }
     } else {
-      console.log("Email does not exists");
-      AccountValidationMessage = "Email does not exists";
-      response.status(409).json({
-        AccountValidationMessage: AccountValidationMessage
-      });
+      throw new "connection error: went bang!"();
     }
-  }
-  else{
-    throw new "connection error: went bang!"
-  }
   } catch (err) {
     console.log("Err: ", err);
     response.status(500).send("Check api console.log for the error");
   }
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
+
 app.post("/reset-password-email", async (req, response) => {
   var Email = req.body.email;
 
@@ -575,9 +636,8 @@ app.post("/add-workstation", async (req, response) => {
     const Location = req.body.Location;
     const date = req.body.date;
 
-    console.info(`${Email}${Location}${date}`)
+    console.info(`${Email}${Location}${date}`);
     var request = new sql.Request();
-    
 
     //find ruid for user
     request.input("Email", sql.NVarChar, Email);
@@ -644,32 +704,32 @@ app.post("/admin-add-question", async (req, response) => {
 app.post("/declined-question-response", async (req, response) => {
   try {
     await sql.connect(config);
-     let QuestionId = req.body.QuestionId
+    let QuestionId = req.body.QuestionId;
     let QuestionAnswer = req.body.QuestionAnswer;
     let date = req.body.date;
     let User = req.body.User;
-    let WorkStation = req.body.WorkStation
+    let WorkStation = req.body.WorkStation;
 
-    console.info("WorkStation")
-    console.info(WorkStation)
-    console.info("QuestionId")
-    console.info(QuestionId)
-    console.info("QuestionAnswer")
-    console.info(QuestionAnswer)
-    console.info("date")
-    console.info(date)
-    console.info("User")
-    console.info(User)
+    console.info("WorkStation");
+    console.info(WorkStation);
+    console.info("QuestionId");
+    console.info(QuestionId);
+    console.info("QuestionAnswer");
+    console.info(QuestionAnswer);
+    console.info("date");
+    console.info(date);
+    console.info("User");
+    console.info(User);
 
-     var request = new sql.Request();
+    var request = new sql.Request();
 
-     request.input("QuestionId", sql.NVarChar, QuestionId);
-     request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
-     request.input("Date", sql.DateTime, date);
-     request.input("Email", sql.NVarChar, User);
-     request.input("WorkStation", sql.NVarChar, WorkStation);
-      
-//QuestionResponse
+    request.input("QuestionId", sql.NVarChar, QuestionId);
+    request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
+    request.input("Date", sql.DateTime, date);
+    request.input("Email", sql.NVarChar, User);
+    request.input("WorkStation", sql.NVarChar, WorkStation);
+
+    //QuestionResponse
     const updateQuestion = await request.execute("dbo.QuestionResponse");
 
     console.log("done done");
@@ -684,34 +744,32 @@ app.post("/declined-question-response", async (req, response) => {
 
 app.post("/revert-declined-question-answer", async (req, response) => {
   try {
-    
-     
     await sql.connect(config);
-     let QuestionId = req.body.QuestionId
+    let QuestionId = req.body.QuestionId;
     let QuestionAnswer = req.body.QuestionAnswer;
-    let Email = req.body.Email
-    let WorkStation = req.body.WorkStation
-   
+    let Email = req.body.Email;
+    let WorkStation = req.body.WorkStation;
 
-    console.info("QuestionId")
-    console.info(QuestionId)
-    console.info("QuestionAnswer")
-    console.info(QuestionAnswer)
-    console.info("Email")
-    console.info(Email)
-    console.info("WorkStation")
-    console.info(WorkStation)
+    console.info("QuestionId");
+    console.info(QuestionId);
+    console.info("QuestionAnswer");
+    console.info(QuestionAnswer);
+    console.info("Email");
+    console.info(Email);
+    console.info("WorkStation");
+    console.info(WorkStation);
 
-     var request = new sql.Request();
+    var request = new sql.Request();
 
-     request.input("QuestionId", sql.NVarChar, QuestionId);
-     request.input("WorkStation", sql.NVarChar, WorkStation);
-     request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
-     request.input("Email", sql.NVarChar, Email);
-    
-      
-//QuestionResponse
-    const updateQuestion = await request.execute("dbo.RevertDeclinedQuestionAnswer");
+    request.input("QuestionId", sql.NVarChar, QuestionId);
+    request.input("WorkStation", sql.NVarChar, WorkStation);
+    request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
+    request.input("Email", sql.NVarChar, Email);
+
+    //QuestionResponse
+    const updateQuestion = await request.execute(
+      "dbo.RevertDeclinedQuestionAnswer"
+    );
 
     console.log("done done");
   } catch (err) {
@@ -723,33 +781,31 @@ app.post("/revert-declined-question-answer", async (req, response) => {
 //////////////////////////////////////////////////////////////////////////
 app.post("/revert-accepted-question-answer", async (req, response) => {
   try {
-    
     await sql.connect(config);
-     let QuestionId = req.body.QuestionId
+    let QuestionId = req.body.QuestionId;
     let QuestionAnswer = req.body.QuestionAnswer;
-    let Email = req.body.Email
+    let Email = req.body.Email;
     let WorkStation = req.body.WorkStation;
 
-   
-    console.info("WorkStation")
-    console.info(WorkStation)
-    console.info("QuestionId")
-    console.info(QuestionId)
-    console.info("QuestionAnswer")
-    console.info(QuestionAnswer)
-    console.info("Email")
-    console.info(Email)
-     
+    console.info("WorkStation");
+    console.info(WorkStation);
+    console.info("QuestionId");
+    console.info(QuestionId);
+    console.info("QuestionAnswer");
+    console.info(QuestionAnswer);
+    console.info("Email");
+    console.info(Email);
 
-     var request = new sql.Request();
-     request.input("WorkStation", sql.NVarChar, WorkStation);
-     request.input("QuestionId", sql.NVarChar, QuestionId);
-     request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
-     request.input("Email", sql.NVarChar, Email);
-    
-      
-//QuestionResponse
-    const updateQuestion = await request.execute("dbo.RevertAcceptedQuestionAnswer");
+    var request = new sql.Request();
+    request.input("WorkStation", sql.NVarChar, WorkStation);
+    request.input("QuestionId", sql.NVarChar, QuestionId);
+    request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
+    request.input("Email", sql.NVarChar, Email);
+
+    //QuestionResponse
+    const updateQuestion = await request.execute(
+      "dbo.RevertAcceptedQuestionAnswer"
+    );
 
     console.log("Accepted question deleton");
   } catch (err) {
@@ -764,23 +820,21 @@ app.post("/revert-accepted-question-answer", async (req, response) => {
 app.post("/Accept-question-answer", async (req, response) => {
   try {
     await sql.connect(config);
-    let WorkStation = req.body.WorkStation
-    let QuestionId = req.body.QuestionId
+    let WorkStation = req.body.WorkStation;
+    let QuestionId = req.body.QuestionId;
     let date = req.body.date;
     let User = req.body.User;
 
-    console.info(`${QuestionId},${date},${User}, ${WorkStation}`)
+    console.info(`${QuestionId},${date},${User}, ${WorkStation}`);
 
+    var request = new sql.Request();
 
-     var request = new sql.Request();
+    request.input("WorkStation", sql.NVarChar, WorkStation);
+    request.input("QuestionId", sql.NVarChar, QuestionId);
+    request.input("Date", sql.DateTime, date);
+    request.input("Email", sql.NVarChar, User);
 
-
-     request.input("WorkStation", sql.NVarChar, WorkStation);
-     request.input("QuestionId", sql.NVarChar, QuestionId);
-     request.input("Date", sql.DateTime, date);
-     request.input("Email", sql.NVarChar, User);
-      
-//QuestionResponse
+    //QuestionResponse
     const updateQuestion = await request.execute("dbo.UserAcceptQuestion");
 
     console.log("done done");
@@ -791,7 +845,6 @@ app.post("/Accept-question-answer", async (req, response) => {
 });
 
 //////////////////////////////////////////////////////////////////////////
-
 
 app.post("/password-profile-update", async (req, response) => {
   try {
