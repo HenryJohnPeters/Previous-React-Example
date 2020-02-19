@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
-import { Container, Checkbox } from "semantic-ui-react";
+import Popup from "reactjs-popup";
 
 var results = [];
+var questionCounter = 0;
 
 class DisplayQuestions extends React.Component {
   constructor() {
@@ -45,27 +46,33 @@ class DisplayQuestions extends React.Component {
   }
 
   submitAnswers() {
-    var today = new Date(),
-      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+    if (questionCounter == this.state.questions.length) {
+      var today = new Date(),
+        date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+          1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
-    const data = {
-      results,
-      date
-    };
+      const data = {
+        results,
+        date
+      };
 
-    fetch("/post-question-answers/", {
-      method: "POST", // or 'PUT'
-      headers: {
-        Accept: "application/json,",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    }).then(response => {
-      console.log("response before it is broken down " + response);
+      fetch("/post-question-answers/", {
+        method: "POST", // or 'PUT'
+        headers: {
+          Accept: "application/json,",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }).then(response => {
+        console.log("response before it is broken down " + response);
 
-      return response.json();
-    });
+        return response.json();
+      });
+
+      window.location.href = "http://localhost:3000/completed-assessment";
+    } else {
+      alert("Please enter all of The questions");
+    }
   }
 
   render() {
@@ -106,21 +113,25 @@ class DisplayQuestions extends React.Component {
                 </tr>
               </h6>
             </div>
-            <div className="jumbotron">
-              {this.state.questions &&
-                this.state.questions.map(function(questions, index) {
-                  return <Questions questions={questions}></Questions>;
-                })}
-
-              <br />
-              <button
-                onClick={this.submitAnswers}
-                style={{ width: "100%" }}
-                className="btn btn-primary"
-              >
-                Submit
-              </button>
-            </div>
+            {this.state.questions &&
+              this.state.questions.map(function(questions, index) {
+                return (
+                  <div
+                    className="jumbotron"
+                    style={{ border: "solid", borderColor: "LightGray" }}
+                  >
+                    <Questions questions={questions}></Questions>
+                  </div>
+                );
+              })}
+            <br />
+            <button
+              onClick={this.submitAnswers}
+              style={{ width: "100%" }}
+              className="btn btn-primary"
+            >
+              Submit
+            </button>
           </ul>
         </div>
       );
@@ -242,7 +253,7 @@ class Questions extends React.Component {
     this.QuestionDecline = this.QuestionDecline.bind(this);
     this.QuestionOnChange = this.QuestionOnChange.bind(this);
     this.OnCommit = this.OnCommit.bind(this);
-    this.RevertDeclinedAnswer = this.RevertDeclinedAnswer.bind(this);
+
     this.RevertAcceptedAnswer = this.RevertAcceptedAnswer.bind(this);
     this.AdmitProblem = this.AdmitProblem.bind(this);
     this.AdmitNotProblem = this.AdmitNotProblem.bind(this);
@@ -280,6 +291,7 @@ class Questions extends React.Component {
       date: date
     };
 
+    questionCounter++;
     results.push(newItem);
     console.log(results);
 
@@ -315,18 +327,31 @@ class Questions extends React.Component {
   }
   AdmitNotProblem(e) {
     e.preventDefault();
-
+    var today = new Date(),
+      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
     let answer = "Question declined But not a problem";
     let question = this.state.questions.Question;
     let state = "Accepted";
+    let email = window.localStorage.getItem("User");
+    let questionId = this.state.questions.QuestionId;
+    let workStation = window.localStorage.getItem("Workstation");
+    let accepted = `0`;
 
     let newItem = {
       answer: answer,
       question: question,
-      state: state
+      state: state,
+      email: email,
+      questionId: questionId,
+      workStation: workStation,
+      accepted: accepted,
+      date: date,
+      accepted: 1
     };
-
+    questionCounter++;
     results.push(newItem);
+
     console.log(results);
 
     this.setState({
@@ -350,26 +375,33 @@ class Questions extends React.Component {
 
   AcceptAnswer(e) {
     e.preventDefault();
+
+    var today = new Date(),
+      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+
     let answer = "yes";
     let question = this.state.questions.Question;
     let state = "Accepted";
+    let email = window.localStorage.getItem("User");
+    let questionId = this.state.questions.QuestionId;
+    let workStation = window.localStorage.getItem("Workstation");
+    let accepted = `0`;
 
     let newItem = {
       answer: answer,
       question: question,
-      state: state
+      state: state,
+      email: email,
+      questionId: questionId,
+      workStation: workStation,
+      accepted: accepted,
+      date: date
     };
 
+    questionCounter++;
     results.push(newItem);
     console.log(results);
-
-    // this.setState(state => ({
-    //   completedQuestions: state.completedQuestions.concat(newItem)
-    // }));
-
-    // this.setState({
-    //   completedQuestions: [...this.state.completedQuestions, newItem]
-    // });
 
     this.setState({
       QuestionAccepted: false,
@@ -380,21 +412,6 @@ class Questions extends React.Component {
 
     console.log(this.state.QuestionAndAnswer);
 
-    // var today = new Date(),
-    //   date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-    //     1}-${today.getUTCDate()}  `;
-    // alert(date);
-
-    // let User = window.localStorage.getItem("User");
-    // let WorkStation = window.localStorage.getItem("Workstation");
-
-    // const data = {
-    //   QuestionId: this.state.questions.QuestionId,
-    //   date,
-    //   User,
-    //   WorkStation
-    // };
-
     // fetch("Accept-question-answer", {
     //   method: "POST", // or 'PUT'
     //   headers: {
@@ -404,35 +421,19 @@ class Questions extends React.Component {
     //   body: JSON.stringify(data)
     // }).then(response => {
     //   console.log("response before it is broken down " + response);
-
-    // return response.json();
-    // });
   }
 
   RevertAcceptedAnswer(e) {
     e.preventDefault();
-    // alert("revert clciked answer declined");
-    // let Email = window.localStorage.getItem("User");
-    // let WorkStation = window.localStorage.getItem("Workstation");
-    // const data = {
-    //   QuestionId: this.state.questions.QuestionId,
-    //   QuestionAnswer: this.state.QuestionAnswer,
-    //   Email,
-    //   WorkStation
-    // };
 
-    // fetch("revert-accepted-question-answer", {
-    //   method: "POST", // or 'PUT'
-    //   headers: {
-    //     Accept: "application/json,",
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify(data)
-    // }).then(response => {
-    //   console.log("response before it is broken down " + response);
+    questionCounter--;
+    results.splice(
+      results.findIndex(r => r.questionId === this.state.questionId),
+      1
+    );
 
-    // return response.json();
-    // });
+    console.log(results);
+
     this.setState({
       completedQuestions: false,
       ShowInput: false,
@@ -443,43 +444,6 @@ class Questions extends React.Component {
       problemSubmitted: false,
       declineSubmitted: false
     });
-    alert("you answer has been deleted from the database");
-  }
-
-  RevertDeclinedAnswer(e) {
-    e.preventDefault();
-    alert("revert clciked answer declined");
-    // let Email = window.localStorage.getItem("User");
-    // let WorkStation = window.localStorage.getItem("Workstation");
-    // const data = {
-    //   QuestionId: this.state.questions.QuestionId,
-    //   QuestionAnswer: this.state.QuestionAnswer,
-    //   Email,
-    //   WorkStation
-    // };
-    // fetch("revert-declined-question-answer", {
-    //   method: "POST", // or 'PUT'
-    //   headers: {
-    //     Accept: "application/json,",
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify(data)
-    // }).then(response => {
-    //   console.log("response before it is broken down " + response);
-
-    //   // return response.json();
-    // });
-    this.setState({
-      completedQuestions: false,
-      ShowInput: false,
-      QuestionComplete: false,
-      problem: false,
-      QuestionAccepted: false,
-      questionProblem: false,
-      problemSubmitted: false,
-      declineSubmitted: false
-    });
-    alert("you answer has been deleted from the database");
   }
 
   QuestionOnChange(e) {
@@ -523,16 +487,31 @@ class Questions extends React.Component {
 
   SubmitProblemSoloution(e) {
     e.preventDefault();
+
+    var today = new Date(),
+      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
     let answer = this.state.problemDefinition;
     let question = this.state.questions.Question;
     let state = "problem specified";
 
+    let email = window.localStorage.getItem("User");
+    let questionId = this.state.questions.QuestionId;
+    let workStation = window.localStorage.getItem("Workstation");
+    let accepted = `0`;
+
     let newItem = {
       answer: answer,
       question: question,
-      state: state
+      state: state,
+      email: email,
+      questionId: questionId,
+      workStation: workStation,
+      accepted: accepted,
+      date: date,
+      accepted: 0
     };
-
+    questionCounter++;
     results.push(newItem);
     console.log(results);
 
@@ -544,49 +523,49 @@ class Questions extends React.Component {
     });
   }
 
-  ////////////////////////////////////////////////
   render() {
-    console.log(this.state.completedQuestions);
-    ////////////////////////////////////////
     if (!this.state.QuestionComplete) {
       if (!this.state.ShowInput) {
         return (
           <div>
-            <div style={{ float: "right" }}>
-              <label>{"   "}Problem</label>
-              <input
-                type="checkbox"
-                onClick={this.QuestionProblem}
-                className="btn btn-danger"
-                style={{ float: "right" }}
-              />
-            </div>
-            <div style={{ float: "right" }}>
-              <label>{"   "}No</label>
-              <input
-                type="checkbox"
-                onClick={this.QuestionDecline}
-                className="btn btn-danger"
-                style={{ float: "right" }}
-              />
-            </div>
+            <Popup
+              trigger={<div style={{ float: "right" }}> ℹ️</div>}
+              position="left center"
+            >
+              <div>{this.state.questions.GuidanceNotes}</div>
+            </Popup>
 
-            <div style={{ float: "right" }}>
-              <label> {"   "}Yes</label>
-              <input
-                type="checkbox"
-                onClick={this.AcceptAnswer}
-                className="btn btn-danger"
-                style={{ float: "right" }}
-              />
-            </div>
-
-            <br />
-            <li>{this.state.questions.Question}</li>
-
+            <li style={{ textAlign: "center", color: "grey" }}>
+              <b style={{ textAlign: "center", color: "grey" }}>
+                {this.state.questions.Question}
+              </b>
+            </li>
+            <button
+              onClick={this.QuestionDecline}
+              className="btn btn-secondary"
+              style={{
+                width: "49%",
+                marginLeft: "2px",
+                marginRight: "2px",
+                float: "right"
+              }}
+            >
+              No
+            </button>
+            <button
+              style={{
+                width: "49%",
+                float: "right",
+                marginLeft: "2px",
+                marginRight: "2px"
+              }}
+              onClick={this.AcceptAnswer}
+              className="btn btn-secondary"
+            >
+              Yes
+            </button>
             <br />
           </div>
-          // </div>
         );
       } else if (
         this.state.ShowInput &&
@@ -595,45 +574,51 @@ class Questions extends React.Component {
       ) {
         return (
           <div>
-            <button
-              onClick={this.RevertDeclinedAnswer}
-              style={{ float: "right" }}
-              className="btn btn-danger"
+            <Popup
+              trigger={<div style={{ float: "right" }}> ℹ️</div>}
+              position="left center"
             >
-              {" "}
-              Revert Answer
-            </button>
-            <br />
-            <li> Question : {this.state.questions.Question}</li>
-            <li>Answer: No</li>
+              <div>{this.state.questions.GuidanceNotes}</div>
+            </Popup>
+
+            <li style={{ textAlign: "center", color: "grey" }}>
+              <b>{this.state.questions.Question}</b>
+            </li>
 
             <li>
-              Is this causing you a Problem?
-              <div style={{ float: "right" }}>
-                <label>
-                  <b>No</b>
-                </label>
-                <input
-                  type="checkbox"
-                  onClick={this.AdmitNotProblem}
-                  className="btn btn-danger"
-                  // style={{ float: "left" }}
-                />
-              </div>
-              <div style={{ float: "right" }}>
-                <label>
-                  <b>Yes</b>
-                </label>
-                <input
-                  type="checkbox"
-                  onClick={this.AdmitProblem}
-                  className="btn btn-danger"
-                  // style={{ float: "left" }}
-                />
-              </div>
+              <b>Your Answer</b>: No{" "}
+              <Link
+                style={{ float: "right" }}
+                onClick={this.RevertAcceptedAnswer}
+              >
+                Change
+              </Link>
             </li>
-            <br />
-            <br />
+
+            <li style={{ textAlign: "center" }}>
+              <b style={{ color: "grey" }}>Is it a problem?</b>
+            </li>
+            <li>
+              {" "}
+              <button
+                style={{ width: "49%", marginRight: "7px", marginLeft: "7px" }}
+                onClick={this.AdmitProblem}
+                className="btn btn-secondary"
+                // style={{ float: "left" }}
+              >
+                Yes
+              </button>
+              <button
+                type="checkbox"
+                style={{ width: "49%", marginRight: "7px", marginLeft: "7px" }}
+                onClick={this.AdmitNotProblem}
+                className="btn btn-secondary"
+                // style={{ float: "left" }}
+              >
+                {" "}
+                No
+              </button>
+            </li>
           </div>
         );
       }
@@ -646,36 +631,47 @@ class Questions extends React.Component {
         !this.state.declineSubmitted
       ) {
         return (
-          <h3>
-            <button
-              onClick={this.RevertDeclinedAnswer}
-              style={{ float: "right" }}
-              className="btn btn-danger"
+          <>
+            <Popup
+              trigger={<div style={{ float: "right" }}> ℹ️</div>}
+              position="left center"
             >
-              {" "}
-              Revert Answer
-            </button>
-            <br />
+              <div>{this.state.questions.GuidanceNotes}</div>
+            </Popup>
+            <h3>
+              <li style={{ textAlign: "center", color: "grey" }}>
+                <b>{this.state.questions.Question}</b>
+              </li>
 
-            <li style={{ textAlign: "center", color: "grey" }}>
-              <b>{this.state.questions.Question}</b>
-            </li>
+              <li>
+                <b>Your Answer</b>: No, and it is a problem{" "}
+                <Link
+                  style={{ float: "right" }}
+                  onClick={this.RevertAcceptedAnswer}
+                >
+                  Change
+                </Link>
+              </li>
 
+              <br />
+            </h3>
             <textarea
               placeholder="What would you suggest we do to solve this? "
               style={{ width: "100%" }}
               onChange={e =>
-                this.setState({ soloutionForDeclinedQuestion: e.target.value })
+                this.setState({
+                  soloutionForDeclinedQuestion: e.target.value
+                })
               }
             />
             <button
               onClick={this.submitDeclinedQuestionSoloution}
-              className="btn btn-primary"
+              className="btn btn-secondary"
               style={{ width: "100%" }}
             >
               Submit suggestion
             </button>
-          </h3>
+          </>
         );
       } else if (
         !this.state.QuestionAccepted &&
@@ -685,25 +681,28 @@ class Questions extends React.Component {
         !this.state.declineSubmitted
       ) {
         return (
-          <h3>
-            <button
-              onClick={this.RevertAcceptedAnswer}
-              style={{ float: "right" }}
-              className="btn btn-danger"
+          <>
+            <Popup
+              trigger={<div style={{ float: "right" }}> ℹ️</div>}
+              position="left center"
             >
-              {" "}
-              Revert Answer
-            </button>
-            <br />
-
-            <li style={{ textAlign: "center", color: "grey" }}>
-              <b>{this.state.questions.Question}</b>
-            </li>
-            <li>
-              <b>Status</b>: Yes
-            </li>
-            <li>Complete : ✔️ </li>
-          </h3>
+              <div>{this.state.questions.GuidanceNotes}</div>
+            </Popup>
+            <h3>
+              <li style={{ textAlign: "center", color: "grey" }}>
+                <b>{this.state.questions.Question}</b>
+              </li>
+              <li>
+                <b>Your answer</b>: Yes
+                <Link
+                  style={{ float: "right" }}
+                  onClick={this.RevertAcceptedAnswer}
+                >
+                  Change
+                </Link>
+              </li>
+            </h3>
+          </>
         );
       } else if (
         !this.state.QuestionAccepted &&
@@ -713,24 +712,28 @@ class Questions extends React.Component {
         !this.state.declineSubmitted
       ) {
         return (
-          <h3>
-            <button
-              onClick={this.RevertAcceptedAnswer}
-              style={{ float: "right" }}
-              className="btn btn-danger"
+          <>
+            <Popup
+              trigger={<div style={{ float: "right" }}> ℹ️</div>}
+              position="left center"
             >
-              {" "}
-              Revert Answer
-            </button>
-            <br />
-            <li style={{ textAlign: "center", color: "grey" }}>
-              <b>{this.state.questions.Question}</b>
-            </li>
-            <li>
-              <b>Status</b>: No but not a problem
-            </li>
-            <li>Complete : ✔️ </li>
-          </h3>
+              <div>{this.state.questions.GuidanceNotes}</div>
+            </Popup>
+            <h3>
+              <li style={{ textAlign: "center", color: "grey" }}>
+                <b>{this.state.questions.Question}</b>
+              </li>
+              <li>
+                <b>Your Answer</b>: No but not a problem
+                <Link
+                  style={{ float: "right" }}
+                  onClick={this.RevertAcceptedAnswer}
+                >
+                  Change
+                </Link>
+              </li>
+            </h3>
+          </>
         );
       } else if (
         !this.state.QuestionAccepted &&
@@ -773,67 +776,45 @@ class Questions extends React.Component {
         !this.state.QuestionAccepted &&
         this.state.problem &&
         this.state.questionProblem &&
-        this.state.problemSubmitted &&
-        !this.state.declineSubmitted
-      ) {
-        return (
-          <>
-            <h3>
-              <button
-                onClick={this.RevertAcceptedAnswer}
-                style={{ float: "right" }}
-                className="btn btn-danger"
-              >
-                {" "}
-                Revert Answer
-              </button>
-              <br />
-              <li style={{ textAlign: "center", color: "grey" }}>
-                {" "}
-                <b>{this.state.questions.Question}</b>{" "}
-              </li>{" "}
-              <li>
-                <b>Status</b>: Problem with soloution submitted
-              </li>
-              <li>
-                <b>Soloution: </b>
-                {this.state.problemDefinition}
-              </li>
-              <li>Complete : ✔️ </li>
-            </h3>
-          </>
-        );
-      } else if (
-        !this.state.QuestionAccepted &&
-        this.state.problem &&
-        this.state.questionProblem &&
         !this.state.problemSubmitted &&
         this.state.declineSubmitted
       ) {
         return (
           <>
+            <Popup
+              trigger={<div style={{ float: "right" }}> ℹ️</div>}
+              position="left center"
+            >
+              <div>{this.state.questions.GuidanceNotes}</div>
+            </Popup>
             <h3>
-              <button
+              {/* <button
                 onClick={this.RevertAcceptedAnswer}
                 style={{ float: "right" }}
                 className="btn btn-danger"
               >
                 {" "}
                 Revert Answer
-              </button>
+              </button> */}
               <br />
               <li style={{ textAlign: "center", color: "grey" }}>
                 {" "}
                 <b>{this.state.questions.Question}</b>{" "}
               </li>{" "}
               <li>
-                <b>Status</b>: Declined with soloution defined
+                <b>Your Answer :</b> No, and its a problem
+                <Link
+                  style={{ float: "right" }}
+                  onClick={this.RevertAcceptedAnswer}
+                >
+                  Change
+                </Link>
               </li>
               <li>
-                <b>Soloution: </b>
+                <b>Your suggested soloution: </b>
                 {this.state.soloutionForDeclinedQuestion}
               </li>
-              <li>Complete : ✔️ </li>
+              {/* <li>Complete : ✔️ </li> */}
             </h3>
           </>
         );

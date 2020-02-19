@@ -87,16 +87,15 @@ class DisplayQuestions extends React.Component {
           </Link>
           <br />
           <br />
-          <div className="jumbotron">
-            {this.state.questions &&
-              this.state.questions.map(function(questions, index) {
-                return (
-                  <ul>
-                    <WorkStations questions={questions}></WorkStations>
-                  </ul>
-                );
-              })}
-          </div>
+
+          {this.state.questions &&
+            this.state.questions.map(function(questions, index) {
+              return (
+                <div className="jumbotron">
+                  <WorkStations questions={questions}></WorkStations>
+                </div>
+              );
+            })}
         </ul>
       </>
     );
@@ -114,6 +113,7 @@ class WorkStations extends React.Component {
     this.EditQuestion = this.EditQuestion.bind(this);
     this.QuestionOnChange = this.QuestionOnChange.bind(this);
     this.OnCommit = this.OnCommit.bind(this);
+    this.EditGuidanceNotes = this.EditGuidanceNotes.bind(this);
   }
   deleteQuestion(e) {
     let QuestionId = this.state.questions.QuestionId;
@@ -134,18 +134,15 @@ class WorkStations extends React.Component {
   }
   EditQuestion(e) {
     e.preventDefault();
-    let QuestionId = this.state.questions.QuestionId;
-    if (this.state.ShowInput) {
-      this.setState({ ShowInput: false });
-      alert(this.state.ShowInput);
-    } else if (!this.state.ShowInput) {
+    if (this.state.ShowInput) this.setState({ ShowInput: false });
+    else if (!this.state.ShowInput) {
       this.setState({ ShowInput: true });
-      alert(this.state.ShowInput);
     }
+  }
 
-    this.state.ShowInput = true;
-
-    alert(`${QuestionId}`);
+  EditGuidanceNotes(e) {
+    e.preventDefault();
+    this.setState({ ShowInput: false, showQuestion: true });
   }
 
   QuestionOnChange(e) {
@@ -182,9 +179,9 @@ class WorkStations extends React.Component {
   }
 
   render() {
-    if (!this.state.ShowInput) {
+    if (!this.state.ShowInput && !this.state.showQuestion) {
       return (
-        <div className="jumbotron">
+        <div>
           <button
             onClick={this.deleteQuestion}
             className="btn btn-danger"
@@ -197,20 +194,108 @@ class WorkStations extends React.Component {
             className="btn btn-primary"
             style={{ float: "right" }}
           >
-            Edit
+            Edit Question
+          </button>
+          <button
+            onClick={this.EditGuidanceNotes}
+            className="btn btn-primary"
+            style={{ float: "right" }}
+          >
+            Edit Guidance Notes
           </button>
           <br />
-          <li> Question ID: {this.state.questions.QuestionId}</li>
+
           <li> Question:{this.state.questions.Question}</li>
         </div>
       );
-    } else {
+    } else if (this.state.ShowInput && !this.state.showQuestion) {
       return (
         <div>
-          <li>Question Id: {this.state.questions.QuestionId}</li>
+          <button
+            onClick={this.deleteQuestion}
+            className="btn btn-danger"
+            style={{ float: "right" }}
+          >
+            X
+          </button>
+          <button
+            onClick={this.EditQuestion}
+            className="btn btn-primary"
+            style={{ float: "right" }}
+          >
+            Edit Question
+          </button>
+          <button
+            disabled
+            className="btn btn-primary"
+            style={{ float: "right" }}
+          >
+            Edit Guidance Notes
+          </button>
+          <br />
+          <li>
+            {" "}
+            <b>EDITING : </b> {this.state.questions.Question}
+          </li>
+
           <li>
             <textarea
               placeholder={this.state.questions.Question}
+              style={{ width: "100%" }}
+              onChange={this.QuestionOnChange}
+            />
+          </li>
+          <button
+            style={{ float: "right", padding: "2px" }}
+            className="btn btn-primary"
+            onClick={this.OnCommit}
+          >
+            Commit
+          </button>
+
+          <button
+            onClick={this.EditQuestion}
+            style={{ float: "right", padding: "2px" }}
+            className="btn btn-secondary"
+          >
+            Revert
+          </button>
+          <br />
+        </div>
+      );
+    } else if (!this.state.ShowInput && this.state.showQuestion) {
+      return (
+        <div>
+          <button
+            onClick={this.deleteQuestion}
+            className="btn btn-danger"
+            style={{ float: "right" }}
+          >
+            X
+          </button>
+          <button
+            onClick={this.EditQuestion}
+            className="btn btn-primary"
+            style={{ float: "right" }}
+          >
+            Edit Question
+          </button>
+          <button
+            disabled
+            className="btn btn-primary"
+            style={{ float: "right" }}
+          >
+            Edit Guidance Notes
+          </button>
+          <br />
+          <li>
+            {" "}
+            <b>EDITING : </b> {this.state.questions.GuidanceNotes}
+          </li>
+
+          <li>
+            <textarea
+              placeholder={this.state.questions.GuidanceNotes}
               style={{ width: "100%" }}
               onChange={this.QuestionOnChange}
             />
