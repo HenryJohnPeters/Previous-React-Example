@@ -75,24 +75,78 @@ app.get("/profile-account-details/:email", async (req, res) => {
 });
 
 //////////////////////////////////////////////////////////////////////////
-app.get("/user-completed-questions/:Workstation/:Email", async (req, res) => {
+app.get("/user-completed-questions/:Email", async (req, res) => {
   // connect to your database
-  let Email = req.params.Email;
-  let WorkStation = req.params.Workstation;
-  console.log(`WorkStation express end ${Email}`);
-  await sql.connect(config);
+  try {
+    let Email = req.params.Email;
+    // let WorkStation = req.params.Workstation;
+    console.log(`WorkStation express end ${Email}`);
+    await sql.connect(config);
 
-  // create Request object
-  var request = new sql.Request();
+    // create Request object
+    var request = new sql.Request();
 
-  // query to the database and get the records
-  request.input("WorkStation", sql.NVarChar, WorkStation);
-  request.input("Email", sql.NVarChar, Email);
-  request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
-    if (err) console.log(err);
-    // send records as a response
-    res.json(recordset);
-  });
+    // query to the database and get the records
+    // request.input("WorkStation", sql.NVarChar, WorkStation);
+    request.input("Email", sql.NVarChar, Email);
+    request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});
+///////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//this should be assessments
+app.get("/admin-completed-workstations", async (req, res) => {
+  // connect to your database
+  try {
+    // let WorkStation = req.params.Workstation;
+
+    await sql.connect(config);
+
+    // create Request object
+    var request = new sql.Request();
+
+    // query to the database and get the records
+    // request.input("WorkStation", sql.NVarChar, WorkStation);
+
+    request.execute("dbo.AdminCompletedQuestions", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});
+///////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//this
+app.get("/admin-Pending-workstations", async (req, res) => {
+  // connect to your database
+  try {
+    // let WorkStation = req.params.Workstation;
+
+    await sql.connect(config);
+
+    // create Request object
+    var request = new sql.Request();
+
+    // query to the database and get the records
+    // request.input("WorkStation", sql.NVarChar, WorkStation);
+
+    request.execute("dbo.AdminPendingQuestions", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.log(e);
+  }
 });
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -184,6 +238,7 @@ app.post("/post-question-answers", async (req, res) => {
     // create Request object
 
     let results = req.body.results;
+    let completeToken = req.body.completeToken;
 
     let questions = [];
     let answers = [];
@@ -200,14 +255,6 @@ app.post("/post-question-answers", async (req, res) => {
     results.forEach(element => workStations.push(element.workStation));
     results.forEach(element => accepts.push(element.accepted));
     results.forEach(element => dates.push(element.date));
-
-    console.info(`QUESTIONS ${questions}`);
-    console.info(`ANSWERS ${answers}`);
-    console.info(`emails ${emails}`);
-    console.info(`question ${questionIds}`);
-    console.info(`workStations ${workStations}`);
-    console.info(`accepts ${accepts}`);
-    console.info(`dates ${dates}`);
 
     for (var i = 0; i < results.length; i++) {
       var request = new sql.Request();
@@ -226,6 +273,7 @@ app.post("/post-question-answers", async (req, res) => {
       request.input(`WorkStation`, sql.NVarChar, workStation);
       request.input(`Accepted`, sql.Bit, accepted);
       request.input(`Date`, sql.DateTime, date);
+      request.input(`CompleteToken`, sql.NVarChar, completeToken);
 
       request.execute("dbo.AddQuestionResponses", function(err, recordset) {
         if (err) console.log(err);
@@ -658,6 +706,34 @@ app.post("/admin-update-question", async (req, response) => {
     //request.input("Date", sql.DateTime, date);
 
     const update = await request.execute("dbo.UpdateQuestions");
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+app.post("/admin-update-question-guidance-notes", async (req, response) => {
+  try {
+    await sql.connect(config);
+    let QuestionId = req.body.QuestionId;
+    let QuestionGuidanceNoteUpdate = req.body.QuestionGuidanceNoteUpdate;
+
+    var request = new sql.Request();
+
+    request.input("QuestionId", sql.Int, QuestionId);
+    request.input(
+      "QuestionGuidanceNoteUpdate",
+      sql.NVarChar,
+      QuestionGuidanceNoteUpdate
+    );
+    //request.input("Date", sql.DateTime, date);
+
+    const update = await request.execute("dbo.UpdateGuidanceNotes");
 
     console.log("done done");
   } catch (err) {

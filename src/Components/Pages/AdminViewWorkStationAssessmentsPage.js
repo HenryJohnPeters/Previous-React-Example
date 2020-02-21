@@ -1,24 +1,22 @@
 import React from "react";
 import logo from "../codestone logo.png";
-
+import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
 
-import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
-import CompletedAssessments from "../PageDetails/CompletedAssessments/CompletedAssessments";
+import AdminWorkstations from "../AdminComponents/AdminDisplayQuestions/AdminViewWorkStations";
 
-import { Link } from "react-router-dom";
-
-function Home() {
+function AdminViewWorkstations() {
   return (
     <div>
       <Header />
-      <CompletedAssessments />
+      <AdminWorkstations />
     </div>
   );
 }
+export default AdminViewWorkstations;
 
 function Header() {
   return (
@@ -39,13 +37,9 @@ function Header() {
       />
       <br />
       <br />
-      <Link to="/user-questions">
-        <button className="btn btn-secondary">
-          Perform Workstation Self-Assessment
-        </button>
+      <Link to="./home">
+        <button className="btn btn-secondary">Home </button>
       </Link>
     </div>
   );
 }
-
-export default Home;

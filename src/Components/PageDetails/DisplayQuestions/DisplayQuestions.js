@@ -46,12 +46,30 @@ class DisplayQuestions extends React.Component {
   }
 
   submitAnswers() {
+    let completeToken = "";
+    let acceptedCounter = 0;
+
     if (questionCounter == this.state.questions.length) {
       var today = new Date(),
         date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
           1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
+      for (var i = 0; i < results.length; i++) {
+        if (results[i].accepted === "1") {
+          acceptedCounter++;
+        } else {
+        }
+      }
+
+      if (acceptedCounter === results.length) {
+        completeToken = "Complete";
+      } else {
+        completeToken = "In Progress";
+      }
+
+      console.log(completeToken);
       const data = {
+        completeToken,
         results,
         date
       };
@@ -310,15 +328,12 @@ class Questions extends React.Component {
 
     if (this.state.ShowInput) {
       this.setState({ ShowInput: false });
-      alert(this.state.ShowInput);
     } else if (!this.state.ShowInput) {
       this.setState({ ShowInput: true });
-      alert(this.state.ShowInput);
     }
   }
   AdmitProblem(e) {
     e.preventDefault();
-    alert("clicked");
 
     this.setState({
       QuestionComplete: true,
@@ -363,7 +378,6 @@ class Questions extends React.Component {
 
   QuestionProblem(e) {
     e.preventDefault();
-    alert("problem clicked");
 
     this.setState({
       QuestionAccepted: false,
@@ -386,7 +400,7 @@ class Questions extends React.Component {
     let email = window.localStorage.getItem("User");
     let questionId = this.state.questions.QuestionId;
     let workStation = window.localStorage.getItem("Workstation");
-    let accepted = `0`;
+    let accepted = `1`;
 
     let newItem = {
       answer: answer,
@@ -452,8 +466,6 @@ class Questions extends React.Component {
 
   ///////////////////////////////////////////
   OnCommit(e) {
-    alert(this.state.QuestionAnswer);
-
     var today = new Date(),
       date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
         1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
@@ -529,40 +541,55 @@ class Questions extends React.Component {
         return (
           <div>
             <Popup
-              trigger={<div style={{ float: "right" }}> ℹ️</div>}
+              trigger={
+                <div style={{ float: "right" }}>
+                  {" "}
+                  <Link> ℹ️</Link>
+                </div>
+              }
               position="left center"
             >
               <div>{this.state.questions.GuidanceNotes}</div>
             </Popup>
 
-            <li style={{ textAlign: "center", color: "grey" }}>
-              <b style={{ textAlign: "center", color: "grey" }}>
+            <li style={{ textAlign: "center" }}>
+              <b
+                style={{
+                  textAlign: "center",
+
+                  textDecoration: "underline"
+                }}
+              >
                 {this.state.questions.Question}
               </b>
             </li>
+
             <button
-              onClick={this.QuestionDecline}
+              onClick={this.AcceptAnswer}
               className="btn btn-secondary"
               style={{
-                width: "49%",
-                marginLeft: "2px",
+                width: "35%",
+                marginLeft: "230px",
                 marginRight: "2px",
-                float: "right"
+                verticalAlign: "top"
+
+                // float: "right"
               }}
             >
-              No
+              Yes
             </button>
             <button
               style={{
-                width: "49%",
-                float: "right",
+                width: "35%",
+                // float: "right",
                 marginLeft: "2px",
-                marginRight: "2px"
+                marginRight: "2px",
+                verticalAlign: "top"
               }}
-              onClick={this.AcceptAnswer}
+              onClick={this.QuestionDecline}
               className="btn btn-secondary"
             >
-              Yes
+              No
             </button>
             <br />
           </div>
@@ -596,12 +623,20 @@ class Questions extends React.Component {
             </li>
 
             <li style={{ textAlign: "center" }}>
-              <b style={{ color: "grey" }}>Is it a problem?</b>
+              <b>Is it a problem?</b>
             </li>
             <li>
               {" "}
               <button
-                style={{ width: "49%", marginRight: "7px", marginLeft: "7px" }}
+                className="btn btn-secondary"
+                style={{
+                  width: "35%",
+                  marginLeft: "230px",
+                  marginRight: "2px",
+                  verticalAlign: "top"
+
+                  // float: "right"
+                }}
                 onClick={this.AdmitProblem}
                 className="btn btn-secondary"
                 // style={{ float: "left" }}
@@ -609,8 +644,13 @@ class Questions extends React.Component {
                 Yes
               </button>
               <button
-                type="checkbox"
-                style={{ width: "49%", marginRight: "7px", marginLeft: "7px" }}
+                style={{
+                  width: "35%",
+                  // float: "right",
+                  marginLeft: "2px",
+                  marginRight: "2px",
+                  verticalAlign: "top"
+                }}
                 onClick={this.AdmitNotProblem}
                 className="btn btn-secondary"
                 // style={{ float: "left" }}

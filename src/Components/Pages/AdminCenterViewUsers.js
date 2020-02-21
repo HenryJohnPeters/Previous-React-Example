@@ -76,6 +76,9 @@ class DisplayUsers extends React.Component {
     return (
       <ul>
         <h2 style={{ textAlign: "center" }}>Registered Users</h2>
+        <Link to="./admin-view-workstation-assessments">
+          <button className="btn btn-secondary">Workstation Assessments</button>
+        </Link>
         <Link to="./admin-center">
           <button className="btn btn-secondary">Edit Questions</button>
         </Link>

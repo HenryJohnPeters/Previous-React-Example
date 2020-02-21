@@ -1,6 +1,10 @@
 import React from "react";
 
-class DisplayQuestions extends React.Component {
+import { Link } from "react-router-dom";
+
+import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
+
+class AdminWorkstations extends React.Component {
   constructor() {
     super();
 
@@ -8,15 +12,23 @@ class DisplayQuestions extends React.Component {
       questions: [],
       QuestionsAnswer: [],
       workstations: [],
-      viewDetails: false
+      viewDetails: false,
+      currentPage: 1,
+      workstationPerPage: 3
     };
     this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
+    this.setState({
+      currentPage: Number(event.target.id)
+    });
   }
   // sets the questions form sql into state for questions
 
   componentDidMount() {
-    let User = window.localStorage.getItem("User");
-    fetch(`/user-completed-questions/${User}`)
+    fetch(`/admin-Pending-workstations`)
       .then(recordset => recordset.json())
       .then(results => {
         this.setState({ questions: results.recordset });
@@ -51,7 +63,32 @@ class DisplayQuestions extends React.Component {
       return (
         <div>
           <h3 style={{ textAlign: "center" }}></h3>
+          <ul>
+            <h2 style={{ textAlign: "center" }}>
+              Pending Workstation Assessments
+            </h2>
 
+            <button disabled className="btn btn-secondary">
+              Workstation Assessments
+            </button>
+            <Link to="./admin-center">
+              <button className="btn btn-secondary">Edit Questions</button>
+            </Link>
+            <Link to="./admin-center-view-users">
+              <button className="btn btn-secondary">View Users</button>
+            </Link>
+
+            <DropdownButton
+              style={{ float: "right" }}
+              id="dropdown-basic-button"
+              title="Pending"
+            >
+              <Dropdown.Item>
+                {" "}
+                <Link to="./admin-view-workstation-assessments">Completed</Link>
+              </Dropdown.Item>
+            </DropdownButton>
+          </ul>
           <ul>
             <div>
               <h6></h6>
@@ -82,20 +119,11 @@ class DisplayQuestions extends React.Component {
               <br />
               <br />{" "}
               <div>
-                <h6>
-                  {" "}
-                  <tr>
-                    Desk Location Selected :{" "}
-                    <u style={{ color: "grey" }}>{selectedWorkStation}</u>
-                  </tr>
-                </h6>
+                <h6> </h6>
               </div>
               <div className="jumbotron">
                 <li style={{ textAlign: "center" }}>
-                  <b>
-                    This account has not completed any Workstation
-                    self-assessments
-                  </b>{" "}
+                  <b>no completed Workstation Self-Assessments</b>{" "}
                 </li>
               </div>
             </ul>
@@ -105,8 +133,6 @@ class DisplayQuestions extends React.Component {
     }
   }
 }
-
-export default DisplayQuestions;
 
 class Questions extends React.Component {
   constructor(props) {
@@ -206,3 +232,4 @@ class Questions extends React.Component {
     }
   }
 }
+export default AdminWorkstations;

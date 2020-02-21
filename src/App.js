@@ -15,6 +15,8 @@ import DisplayWorkStationMangmentPage from "./Components/Pages/DisplayWorkStatio
 import History from "./Components/Pages/History";
 import AdminCenter from "./Components/Pages/AdminCenter";
 import AdminCenterViewUsers from "./Components/Pages/AdminCenterViewUsers";
+import AdminViewWorkStationAssessmentsPage from "./Components/Pages/AdminViewWorkStationAssessmentsPage";
+import AdminViewWorkStationAssessmentsDeclinedPage from "./Components/Pages/AdminViewWorkStationAssessmentsDeclinedPage";
 import CompletedAssessmentLandingPage from "./Components/Pages/CompletedAssessmentLandingPage";
 ////
 import AdminViewUsersSeverityHigh from "./AdminComponents/AdminViewUsersSeverityHigh";
@@ -98,6 +100,16 @@ function Routing() {
           exact
           path="/admin-view-users"
           component={AdminViewUsers}
+        />
+        <AdminAuthRoute
+          exact
+          path="/admin-view-workstation-assessments"
+          component={AdminViewWorkStationAssessmentsPage}
+        />
+        <AdminAuthRoute
+          exact
+          path="/admin-view-workstation-assessments-declined"
+          component={AdminViewWorkStationAssessmentsDeclinedPage}
         />
         <AuthRoute
           exact

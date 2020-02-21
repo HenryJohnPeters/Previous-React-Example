@@ -63,6 +63,12 @@ class DisplayQuestions extends React.Component {
         </h3>
 
         <ul>
+          <Link to="/admin-view-workstation-assessments">
+            <button className="btn btn-secondary" style={{ float: "left " }}>
+              Workstation Assessments
+            </button>
+          </Link>
+
           <button
             disabled
             className="btn btn-secondary"
@@ -108,12 +114,20 @@ class WorkStations extends React.Component {
   constructor(props) {
     super(props);
     console.log(props);
-    this.state = { ...props, show: false, QuestionUpdate: "" };
+    this.state = {
+      ...props,
+      show: false,
+      QuestionUpdate: "",
+      GuidanceNotesUpdate: ""
+    };
     this.deleteQuestion = this.deleteQuestion.bind(this);
     this.EditQuestion = this.EditQuestion.bind(this);
     this.QuestionOnChange = this.QuestionOnChange.bind(this);
     this.OnCommit = this.OnCommit.bind(this);
     this.EditGuidanceNotes = this.EditGuidanceNotes.bind(this);
+    this.OnCommitGuidanceNotes = this.OnCommitGuidanceNotes.bind(this);
+    this.GuidanceNotesOnChange = this.GuidanceNotesOnChange.bind(this);
+    this.RevertGuidanceNotes = this.RevertGuidanceNotes.bind(this);
   }
   deleteQuestion(e) {
     let QuestionId = this.state.questions.QuestionId;
@@ -134,10 +148,20 @@ class WorkStations extends React.Component {
   }
   EditQuestion(e) {
     e.preventDefault();
-    if (this.state.ShowInput) this.setState({ ShowInput: false });
+    if (
+      (this.state.ShowInput && !this.state.showQuestion) ||
+      (!this.state.ShowInput && this.state.showQuestion)
+    )
+      this.setState({ ShowInput: false, showQuestion: false });
     else if (!this.state.ShowInput) {
       this.setState({ ShowInput: true });
     }
+  }
+
+  RevertGuidanceNotes(e) {
+    alert("t");
+    e.preventDefault();
+    this.setState({ ShowInput: false, showQuestion: true });
   }
 
   EditGuidanceNotes(e) {
@@ -148,6 +172,11 @@ class WorkStations extends React.Component {
   QuestionOnChange(e) {
     this.setState({ QuestionUpdate: e.target.value });
   }
+
+  GuidanceNotesOnChange(e) {
+    this.setState({ GuidanceNotesUpdate: e.target.value });
+  }
+
   OnCommit(e) {
     e.preventDefault();
     alert(this.state.QuestionUpdate);
@@ -163,6 +192,36 @@ class WorkStations extends React.Component {
     };
 
     fetch("/admin-update-question", {
+      method: "POST", // or 'PUT'
+      headers: {
+        Accept: "application/json,",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(response => {
+      console.log("response before it is broken down " + response);
+
+      // return response.json();
+    });
+
+    window.location.reload();
+  }
+
+  OnCommitGuidanceNotes(e) {
+    e.preventDefault();
+    alert(this.state.QuestionUpdate);
+
+    var today = new Date(),
+      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+
+    const data = {
+      QuestionId: this.state.questions.QuestionId,
+      QuestionGuidanceNoteUpdate: this.state.GuidanceNotesUpdate
+      //date
+    };
+
+    fetch("/admin-update-question-guidance-notes", {
       method: "POST", // or 'PUT'
       headers: {
         Accept: "application/json,",
@@ -205,7 +264,14 @@ class WorkStations extends React.Component {
           </button>
           <br />
 
-          <li> Question:{this.state.questions.Question}</li>
+          <li>
+            {" "}
+            <b>Question: </b> {this.state.questions.Question}
+          </li>
+          <li>
+            <b>Guidance Notes: </b>
+            {this.state.questions.GuidanceNotes}{" "}
+          </li>
         </div>
       );
     } else if (this.state.ShowInput && !this.state.showQuestion) {
@@ -219,7 +285,8 @@ class WorkStations extends React.Component {
             X
           </button>
           <button
-            onClick={this.EditQuestion}
+            disabled
+            // onClick={this.EditQuestion}
             className="btn btn-primary"
             style={{ float: "right" }}
           >
@@ -230,12 +297,19 @@ class WorkStations extends React.Component {
             className="btn btn-primary"
             style={{ float: "right" }}
           >
-            Edit Guidance Notes
+            Edit Guidance Notess
           </button>
           <br />
           <li>
             {" "}
-            <b>EDITING : </b> {this.state.questions.Question}
+            <li>
+              {" "}
+              <b>Question: </b> {this.state.questions.Question} <b>(EDITING)</b>
+            </li>
+            <li>
+              <b>Guidance Notes: </b>
+              {this.state.questions.GuidanceNotes}{" "}
+            </li>
           </li>
 
           <li>
@@ -274,7 +348,8 @@ class WorkStations extends React.Component {
             X
           </button>
           <button
-            onClick={this.EditQuestion}
+            disabled
+            // onClick={this.EditQuestion}
             className="btn btn-primary"
             style={{ float: "right" }}
           >
@@ -282,28 +357,33 @@ class WorkStations extends React.Component {
           </button>
           <button
             disabled
+            // onClick={this.EditQuestions}
             className="btn btn-primary"
             style={{ float: "right" }}
           >
             Edit Guidance Notes
           </button>
           <br />
+
           <li>
-            {" "}
-            <b>EDITING : </b> {this.state.questions.GuidanceNotes}
+            <b>Question: </b> {this.state.questions.Question}
+          </li>
+          <li>
+            <b>Guidance Notes: </b>
+            {this.state.questions.GuidanceNotes} <b>(EDITING)</b>
           </li>
 
           <li>
             <textarea
               placeholder={this.state.questions.GuidanceNotes}
               style={{ width: "100%" }}
-              onChange={this.QuestionOnChange}
+              onChange={this.GuidanceNotesOnChange}
             />
           </li>
           <button
             style={{ float: "right", padding: "2px" }}
             className="btn btn-primary"
-            onClick={this.OnCommit}
+            onClick={this.OnCommitGuidanceNotes}
           >
             Commit
           </button>

@@ -19,6 +19,8 @@ class LoginForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    let User = window.localStorage.getItem("User");
+
     if (this.state.email.length < 8 || this.state.password.length < 8) {
       alert(`please enter the form correctly `);
     } else {
@@ -59,17 +61,18 @@ class LoginForm extends React.Component {
           if (jwt && user) {
             window.localStorage.setItem("myToken", jwt);
             window.localStorage.setItem("User", user);
+            window.location.href = "http://localhost:3000/home";
           } else if (adminJwt && user) {
             window.localStorage.removeItem("myToken");
-
             window.localStorage.setItem("adminToken", adminJwt);
             window.localStorage.setItem("User", user);
+            window.location.href =
+              "http://localhost:3000/admin-view-workstation-assessments-declined";
           }
           if (AccountValidationMessage) {
             alert(AccountValidationMessage);
           }
         })
-
         .catch(error => {
           console.error("Error:", error);
         });
@@ -124,9 +127,7 @@ class LoginForm extends React.Component {
               >
                 <div className="jumbotron">
                   <h2>Login </h2>
-                  <div className="help">
-                     
-                  </div>
+                  <div className="help"></div>
 
                   <label htmlFor="email">Email</label>
 
