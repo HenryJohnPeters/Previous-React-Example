@@ -111,7 +111,7 @@ function Routing() {
           path="/admin-view-workstation-assessments-declined"
           component={AdminViewWorkStationAssessmentsDeclinedPage}
         />
-        <AuthRoute
+        {/* <AuthRoute
           exact
           path="/admin-view-users-severity-high"
           component={AdminViewUsersSeverityHigh}
@@ -125,7 +125,7 @@ function Routing() {
           exact
           path="/admin-view-users-severity-completed"
           component={AdminViewUsersSeverityCompleted}
-        />
+        /> */}
         <AuthRoute exact path="/admin-view-users" component={AdminViewUsers} />
       </Switch>
     </BrowserRouter>

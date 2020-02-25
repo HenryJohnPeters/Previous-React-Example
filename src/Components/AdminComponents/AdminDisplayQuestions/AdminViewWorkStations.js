@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
-import Pagination from "react-js-pagination";
+var goToken = false;
 var results = [];
 class AdminWorkstations extends React.Component {
   constructor() {
@@ -12,26 +12,41 @@ class AdminWorkstations extends React.Component {
 
     this.state = {
       questions: [],
-      activePage: 15,
+      viewDetails: false,
 
-      workstations: [],
-      viewDetails: false
+      currentPage: 1,
+      todosPerPage: 5
     };
     this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
+    // this.test = this.test.bind(this);
   }
   // sets the questions form sql into state for questions
+  handleClick = event => {
+    this.setState({
+      currentPage: Number(event.target.id)
+    });
+  };
+
+  handlePageChange(pageNumber) {
+    this.setState({ activePage: pageNumber });
+  }
 
   componentDidMount() {
     fetch(`/admin-completed-workstations`)
       .then(recordset => recordset.json())
       .then(results => {
-        this.setState({ questions: results.recordset });
+        var myQs = results.recordset.map(q => ({
+          ...q,
+          doAlert: () => {
+            alert(q.AssignedWorkStation);
+          }
+        }));
+        this.setState({ questions: myQs });
         console.log(this.state.questions);
-      });
-  }
 
-  handlePageChange(pageNumber) {
-    this.setState({ activePage: pageNumber });
+        this.state.questions &&
+          this.getQuestionByUniqueDate(this.state.questions);
+      });
   }
 
   getQuestionByUniqueDate(questions) {
@@ -43,12 +58,58 @@ class AdminWorkstations extends React.Component {
         )
       ) {
         results.push(questions[i]);
+        this.setState({ amountOfWorkstations: results.length });
       }
     }
     return results;
   }
 
   render() {
+    const { currentPage, todosPerPage } = this.state;
+
+    // Logic for displaying current todos
+    const indexOfLastTodo = currentPage * todosPerPage;
+    const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+    const currentTodos = results.slice(indexOfFirstTodo, indexOfLastTodo);
+
+    const pageNumbers = [];
+    for (
+      let i = 1;
+      i <= Math.ceil(this.state.amountOfWorkstations / todosPerPage);
+      i++
+    ) {
+      pageNumbers.push(i);
+    }
+
+    const renderTodos = currentTodos.map(r => {
+      return (
+        <>
+          <div className="jumbotron">
+            <Questions
+              workStation={r.AssignedWorkStation}
+              date={r.Date}
+              completeToken={r.CompleteToken}
+            >
+              {" "}
+            </Questions>
+          </div>
+        </>
+      );
+    });
+
+    const renderPageNumbers = pageNumbers.map(number => {
+      return (
+        <button
+          className="btn btn-primary"
+          key={number}
+          id={number}
+          onClick={this.handleClick}
+        >
+          {number}
+        </button>
+      );
+    });
+
     let selectedWorkStation = window.localStorage.getItem("Workstation");
 
     console.log(this.state.questions);
@@ -56,14 +117,10 @@ class AdminWorkstations extends React.Component {
     if (this.state.questions.length) {
       return (
         <div>
-          <h3 style={{ textAlign: "center" }}></h3>
+          <h2 style={{ textAlign: "center" }}>
+            Completed Workstation Assessments
+          </h2>
           <ul>
-            <>
-              <h2 style={{ textAlign: "center" }}>
-                Completed Workstation Assessments
-              </h2>
-            </>
-
             <button disabled className="btn btn-secondary">
               Workstation Assessments
             </button>
@@ -73,7 +130,6 @@ class AdminWorkstations extends React.Component {
             <Link to="./admin-center-view-users">
               <button className="btn btn-secondary">View Users</button>
             </Link>
-
             <DropdownButton
               style={{ float: "right" }}
               id="dropdown-basic-button"
@@ -85,29 +141,18 @@ class AdminWorkstations extends React.Component {
                   In Progress
                 </Link>
               </Dropdown.Item>
-            </DropdownButton>
+            </DropdownButton>{" "}
           </ul>
-          <ul>
-            <div>
-              <h6></h6>
-            </div>
 
-            {this.state.questions &&
-              this.getQuestionByUniqueDate(this.state.questions).map(function(
-                questions,
-                index
-              ) {
-                return (
-                  <div className="jumbotron">
-                    <Questions questions={questions}></Questions>
-                  </div>
-                );
-              })}
+          <ul>
+            {renderTodos}{" "}
+            <div
+              style={{ userSelect: "none", cursor: "pointer" }}
+              id="page-numbers"
+            >
+              {renderPageNumbers}
+            </div>
           </ul>
-          <button>prev</button>
-          <button>next</button>
-          <br />
-          <br />
         </div>
       );
     } else if (!this.state.questions.length) {
@@ -145,6 +190,7 @@ class AdminWorkstations extends React.Component {
 class Questions extends React.Component {
   constructor(props) {
     super(props);
+    debugger;
     console.log(props);
     this.state = {
       ...props,
@@ -156,9 +202,13 @@ class Questions extends React.Component {
   }
 
   checker() {
-    this.setState({ viewDetails: true });
+    if (!this.state.viewDetails) {
+      this.setState({ viewDetails: true });
+    } else if (this.state.viewDetails) {
+      this.setState({ viewDetails: false });
+    }
     let workStation = window.localStorage.getItem("Workstation");
-    let date = this.state.questions.Date;
+    let date = this.props.date;
     let email = window.localStorage.getItem("User");
 
     fetch(`/show-questions-answered/${date}/${workStation}/${email}`)
@@ -167,22 +217,9 @@ class Questions extends React.Component {
         this.setState({ selectedSet: results.recordset });
         console.log(this.state.selectedSet);
       });
-    let counter = 0;
-    for (let i = 0; i < this.state.selectedSet.length; i++) {
-      if (this.state.selectedSet.find(q => q.Accepted === true)) {
-        counter++;
-      }
-      alert(counter);
-    }
-
-    alert(`${date} this is the boolena ${this.state.viewDetails}`);
   }
 
   render() {
-    console.log(
-      `${this.state.previousDate} PREVIOUS DATE ${this.state.questions.Date}  DATE`
-    );
-
     if (!this.state.viewDetails) {
       return (
         <div>
@@ -195,19 +232,22 @@ class Questions extends React.Component {
           </button>
 
           <br />
-          <li>
-            <b>Workstation: </b> {this.state.questions.AssignedWorkStation}
+          <li>{this.props.workStation}</li>
+          <li>{this.props.date}</li>
+          <li>{this.props.completeToken}</li>
+          {/* <li>
+            <b>Workstation: </b> {this.state.results.AssignedWorkStation}
           </li>
           <li>
-            <b>Date: </b> {this.state.questions.Date}
+            <b>Date: </b> {this.state.results.Date}
           </li>
           <li>
             <b>Status: </b>
-            {this.state.questions.CompleteToken}
-          </li>
+            {this.state.results.CompleteToken}
+          </li> */}
         </div>
       );
-    } else {
+    } else if (this.state.viewDetails) {
       return (
         <div>
           <button
@@ -217,10 +257,14 @@ class Questions extends React.Component {
           >
             View Details
           </button>
+          <button style={{ float: "right" }} className="btn btn-primary">
+            Email User
+          </button>
 
           <br />
+          <br />
 
-          <li> {this.state.questions.Date}</li>
+          <li> {results.Date}</li>
 
           {this.state.selectedSet &&
             this.state.selectedSet.map((item, index) => {
