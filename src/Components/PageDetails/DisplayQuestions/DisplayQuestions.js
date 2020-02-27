@@ -296,7 +296,7 @@ class Questions extends React.Component {
     let email = window.localStorage.getItem("User");
     let questionId = this.state.questions.QuestionId;
     let workStation = window.localStorage.getItem("Workstation");
-    let accepted = `0`;
+    let accepted = 0;
 
     let newItem = {
       answer: answer,

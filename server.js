@@ -150,30 +150,59 @@ app.get("/admin-Pending-workstations", async (req, res) => {
 });
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
+app.get("/show-questions-answered/:date/:email", async (req, res) => {
+  // connect to your database
+  let date = req.params.date;
+
+  let email = req.params.email;
+
+  await sql.connect(config);
+
+  // create Request object
+  var request = new sql.Request();
+
+  // query to the database and get the records
+
+  request.input("Date", sql.Date, date);
+  request.input("Email", sql.NVarChar, email);
+  request.execute("dbo.ShowQuestionsAnswered", function(err, recordset) {
+    if (err) console.log(err);
+    // send records as a response
+    res.json(recordset);
+
+    console.info(`recordset ${recordset}`);
+  });
+});
+///////////////////////////////////////////////////////////////////////////////////
 app.get(
-  "/show-questions-answered/:date/:workStation/:email",
+  "/admin-show-workstations-Details/:date/:RUId/:completeToken/:workstation",
   async (req, res) => {
     // connect to your database
+    let RUId = req.params.RUId;
+    let workstation = req.params.workStation;
+    let completeToken = req.params.completeToken;
     let date = req.params.date;
-    let workStation = req.params.workStation;
-    let email = req.params.email;
 
-    console.log(
-      `WorkStation express end ${email} .... ${workStation}.....${date}`
-    );
     await sql.connect(config);
 
     // create Request object
     var request = new sql.Request();
 
     // query to the database and get the records
-    request.input("WorkStation", sql.NVarChar, workStation);
+
+    request.input("Workstation", sql.NVarChar, workstation);
+    request.input("RUId", sql.Int, RUId);
+    request.input("CompleteToken", sql.NVarChar, completeToken);
     request.input("Date", sql.Date, date);
-    request.input("Email", sql.NVarChar, email);
-    request.execute("dbo.ShowQuestionsAnswered", function(err, recordset) {
+    request.execute("dbo.AdminShowWorkstationsDetails", function(
+      err,
+      recordset
+    ) {
       if (err) console.log(err);
       // send records as a response
       res.json(recordset);
+
+      console.info(`recordset ${recordset}`);
     });
   }
 );
@@ -445,6 +474,52 @@ app.post("/reset-password-email", async (req, response) => {
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post("/submit-note-admin", async (req, response) => {
+  (note = req.body.note),
+    (UserRUId = req.body.UserRUId),
+    (workstation = req.body.workstation),
+    (time = req.body.time),
+    (seenStatus = req.body.seenStatus),
+    await sql.connect(config);
+  var request = new sql.Request();
+
+  request.input("Note", sql.NVarChar, note);
+  request.input("UserRUId", sql.Int, UserRUId);
+  request.input("Workstation", sql.NVarChar, workstation);
+  request.input("Time", sql.DateTime, time);
+  request.input("SeenStatus", sql.Bit, seenStatus);
+  await request.execute("dbo.SubmitNoteAdmin");
+  console.info("done");
+});
+
+//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post("/admin", async (req, res) => {
+  try {
+    console.log("we made it ");
+
+    (UserRUId = req.body.UserRUId),
+      (workstation = req.body.workstation),
+      await sql.connect(config);
+    var request = new sql.Request();
+
+    request.input("UserRUId", sql.Int, UserRUId);
+    request.input("Workstation", sql.NVarChar, workstation);
+
+    request.execute("dbo.GetAdminWorkstationNotes", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.info(e);
+  }
+});
+
+////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/delete-work-station", async (req, response) => {

@@ -122,26 +122,21 @@ class Questions extends React.Component {
   }
 
   checker() {
-    this.setState({ viewDetails: true });
-    let workStation = window.localStorage.getItem("Workstation");
+    if (!this.state.viewDetails) {
+      this.setState({ viewDetails: true });
+    } else if (this.state.viewDetails) {
+      this.setState({ viewDetails: false });
+    }
+
     let date = this.state.questions.Date;
     let email = window.localStorage.getItem("User");
 
-    fetch(`/show-questions-answered/${date}/${workStation}/${email}`)
+    fetch(`/show-questions-answered/${date}/${email}`)
       .then(recordset => recordset.json())
       .then(results => {
         this.setState({ selectedSet: results.recordset });
         console.log(this.state.selectedSet);
       });
-    let counter = 0;
-    for (let i = 0; i < this.state.selectedSet.length; i++) {
-      if (this.state.selectedSet.find(q => q.Accepted === true)) {
-        counter++;
-      }
-      alert(counter);
-    }
-
-    alert(`${date} this is the boolena ${this.state.viewDetails}`);
   }
 
   render() {

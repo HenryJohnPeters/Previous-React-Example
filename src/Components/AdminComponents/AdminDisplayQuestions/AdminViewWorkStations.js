@@ -1,10 +1,11 @@
 import React from "react";
+import moment from "moment";
 
 import { Link } from "react-router-dom";
 
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
-var goToken = false;
+
 var results = [];
 class AdminWorkstations extends React.Component {
   constructor() {
@@ -15,7 +16,8 @@ class AdminWorkstations extends React.Component {
       viewDetails: false,
 
       currentPage: 1,
-      todosPerPage: 5
+      todosPerPage: 5,
+      pageNumbers: []
     };
     this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
     // this.test = this.test.bind(this);
@@ -35,14 +37,8 @@ class AdminWorkstations extends React.Component {
     fetch(`/admin-completed-workstations`)
       .then(recordset => recordset.json())
       .then(results => {
-        var myQs = results.recordset.map(q => ({
-          ...q,
-          doAlert: () => {
-            alert(q.AssignedWorkStation);
-          }
-        }));
-        this.setState({ questions: myQs });
-        console.log(this.state.questions);
+        this.setState({ questions: results.recordset });
+        console.log(`QuestionResponses array ${this.state.questions}`);
 
         this.state.questions &&
           this.getQuestionByUniqueDate(this.state.questions);
@@ -61,42 +57,22 @@ class AdminWorkstations extends React.Component {
         this.setState({ amountOfWorkstations: results.length });
       }
     }
-    return results;
   }
 
   render() {
-    const { currentPage, todosPerPage } = this.state;
-
     // Logic for displaying current todos
-    const indexOfLastTodo = currentPage * todosPerPage;
-    const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+    const indexOfLastTodo = this.state.currentPage * this.state.todosPerPage;
+    const indexOfFirstTodo = indexOfLastTodo - this.state.todosPerPage;
     const currentTodos = results.slice(indexOfFirstTodo, indexOfLastTodo);
 
     const pageNumbers = [];
     for (
       let i = 1;
-      i <= Math.ceil(this.state.amountOfWorkstations / todosPerPage);
+      i <= Math.ceil(this.state.amountOfWorkstations / this.state.todosPerPage);
       i++
     ) {
       pageNumbers.push(i);
     }
-
-    const renderTodos = currentTodos.map(r => {
-      return (
-        <>
-          <div className="jumbotron">
-            <Questions
-              workStation={r.AssignedWorkStation}
-              date={r.Date}
-              completeToken={r.CompleteToken}
-            >
-              {" "}
-            </Questions>
-          </div>
-        </>
-      );
-    });
-
     const renderPageNumbers = pageNumbers.map(number => {
       return (
         <button
@@ -107,6 +83,23 @@ class AdminWorkstations extends React.Component {
         >
           {number}
         </button>
+      );
+    });
+
+    const renderTodos = currentTodos.map(r => {
+      return (
+        <>
+          <div className="jumbotron">
+            <Questions
+              workStation={r.AssignedWorkStation}
+              date={r.Date}
+              completeToken={r.CompleteToken}
+              RUId={r.RUId}
+            >
+              {" "}
+            </Questions>
+          </div>
+        </>
       );
     });
 
@@ -190,15 +183,73 @@ class AdminWorkstations extends React.Component {
 class Questions extends React.Component {
   constructor(props) {
     super(props);
-    debugger;
+
     console.log(props);
     this.state = {
       ...props,
       questionsAccepted: [],
       questionsAcceptedCounter: "",
-      selectedSet: []
+      selectedSet: [],
+      ViewActivityToken: false,
+      noteToBeAdded: "",
+      notesFromDB: [],
+      addNoteToken: false
     };
     this.checker = this.checker.bind(this);
+    this.ViewActivity = this.ViewActivity.bind(this);
+    this.SubmitNote = this.SubmitNote.bind(this);
+    this.AddNoteBtn = this.AddNoteBtn.bind(this);
+  }
+
+  SubmitNote() {
+    var today = new Date(),
+      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+
+    let data = {
+      note: this.state.noteToBeAdded,
+      UserRUId: this.props.RUId,
+      workstation: this.props.workStation,
+      time: date,
+      seenStatus: false
+    };
+
+    fetch("/submit-note-admin", {
+      method: "POST", // or 'PUT'
+      headers: {
+        Accept: "application/json,",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+    window.location.reload();
+  }
+
+  ViewActivity() {
+    try {
+      this.setState({ ViewActivity: true });
+
+      let data = {
+        UserRUId: this.props.RUId,
+        workstation: this.props.workStation
+      };
+
+      fetch("/admin", {
+        method: "POST", // or 'PUT'
+        headers: {
+          Accept: "application/json,",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+        .then(recordset => recordset.json())
+        .then(results => {
+          this.setState({ notesFromDB: results.recordset });
+          console.log(this.state.notesFromDB);
+        });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   checker() {
@@ -207,11 +258,15 @@ class Questions extends React.Component {
     } else if (this.state.viewDetails) {
       this.setState({ viewDetails: false });
     }
-    let workStation = window.localStorage.getItem("Workstation");
-    let date = this.props.date;
-    let email = window.localStorage.getItem("User");
 
-    fetch(`/show-questions-answered/${date}/${workStation}/${email}`)
+    let workstation = this.props.AssignedWorkStation;
+    let completeToken = this.props.completeToken;
+    let date = this.props.date;
+    let RUId = this.props.RUId;
+
+    fetch(
+      `/admin-show-workstations-Details/${date}/${RUId}/${completeToken}/${workstation}`
+    )
       .then(recordset => recordset.json())
       .then(results => {
         this.setState({ selectedSet: results.recordset });
@@ -219,67 +274,203 @@ class Questions extends React.Component {
       });
   }
 
+  AddNoteBtn() {
+    this.setState({ addNoteToken: true, ViewActivity: true });
+    console.log(this.state.addNoteToken);
+  }
+
   render() {
-    if (!this.state.viewDetails) {
-      return (
-        <div>
-          <button
-            onClick={this.checker}
-            className="btn btn-primary"
-            style={{ float: "right" }}
-          >
-            View Details
-          </button>
+    if (!this.state.ViewActivity) {
+      if (!this.state.viewDetails && !this.state.ViewActivityToken) {
+        return (
+          <div>
+            <button
+              onClick={this.checker}
+              className="btn btn-primary"
+              style={{ float: "right" }}
+            >
+              View Details
+            </button>
 
-          <br />
-          <li>{this.props.workStation}</li>
-          <li>{this.props.date}</li>
-          <li>{this.props.completeToken}</li>
-          {/* <li>
-            <b>Workstation: </b> {this.state.results.AssignedWorkStation}
+            <button
+              onClick={this.ViewActivity}
+              className="btn btn-primary"
+              style={{ float: "right" }}
+            >
+              View Activity
+            </button>
+
+            <br />
+
+            <li>
+              <b>User Id: </b>
+              {this.props.RUId}
+            </li>
+            <li>
+              <b>Workstation: </b>
+              {this.props.workStation}
+            </li>
+            <li>
+              <b>Date: </b>
+              {moment(this.props.date).format("DD/MM/YYYY")}
+            </li>
+            <li>
+              <b>Complete Token: </b>
+              {this.props.completeToken}
+            </li>
+          </div>
+        );
+      } else if (this.state.viewDetails && !this.state.ViewActivityToken) {
+        return (
+          <div>
+            <button
+              onClick={this.checker}
+              className="btn btn-primary"
+              style={{ float: "right" }}
+            >
+              View Details
+            </button>
+
+            <button style={{ float: "right" }} className="btn btn-primary">
+              Add Note
+            </button>
+
+            <br />
+            <br />
+
+            <li> {results.Date}</li>
+
+            {this.state.selectedSet &&
+              this.state.selectedSet.map((item, index) => {
+                return (
+                  <div>
+                    <li>
+                      {" "}
+                      <b>{item.QuestionWhenAnswered}</b>{" "}
+                    </li>
+                    <li>{item.QuestionResponse}</li>
+                    <li>{item.Accepted}</li>
+                  </div>
+                );
+              })}
+          </div>
+        );
+      }
+    } else if (this.state.ViewActivity && !this.state.addNoteToken) {
+      const colors = ["#d5d5d5", "#a9a9a9"];
+      return (
+        <>
+          <li>
+            <b>User Id: </b>
+            {this.props.RUId}
           </li>
           <li>
-            <b>Date: </b> {this.state.results.Date}
+            <b>Workstation: </b>
+            {this.props.workStation}
           </li>
           <li>
-            <b>Status: </b>
-            {this.state.results.CompleteToken}
-          </li> */}
-        </div>
-      );
-    } else if (this.state.viewDetails) {
-      return (
-        <div>
-          <button
-            onClick={this.checker}
-            className="btn btn-primary"
-            style={{ float: "right" }}
-          >
-            View Details
-          </button>
-          <button style={{ float: "right" }} className="btn btn-primary">
-            Email User
-          </button>
+            <b>Date: </b>
+            {moment(this.props.date).format("DD/MM/YYYY")}
+          </li>
+          <li>
+            <b>Complete Token: </b>
+            {this.props.completeToken}
+          </li>
 
-          <br />
-          <br />
-
-          <li> {results.Date}</li>
-
-          {this.state.selectedSet &&
-            this.state.selectedSet.map((item, index) => {
+          {this.state.notesFromDB &&
+            this.state.notesFromDB.map((item, index) => {
               return (
-                <div>
-                  <li>
-                    {" "}
-                    <b>{item.QuestionWhenAnswered}</b>{" "}
-                  </li>
-                  <li>{item.QuestionResponse}</li>
-                  <li>{item.Accepted}</li>
+                <div
+                  style={{
+                    backgroundColor: "white",
+                    border: "inset",
+                    borderWidth: "0.2px"
+                  }}
+                >
+                  <div style={{ float: "right" }}>
+                    {moment(item.CreationTime).format("HH:MM  DD/MM/YYYY ")}
+                  </div>
+                  <div style={{ textAlign: "left" }}>{item.Notes}</div>
+                  <div></div>
                 </div>
               );
             })}
-        </div>
+          <button
+            onClick={this.AddNoteBtn}
+            className="btn btn-primary"
+            style={{ width: "100%" }}
+          >
+            Add Note
+          </button>
+          <br />
+          {/* <input
+            onChange={e => this.setState({ noteToBeAdded: e.target.value })}
+          />
+
+          <button
+            onClick={this.SubmitNote}
+            className="btn btn-primary"
+            style={{ width: "100%" }}
+          >
+            Submit Button
+          </button> */}
+        </>
+      );
+    } else if (this.state.ViewActivity && this.state.addNoteToken) {
+      return (
+        <>
+          {" "}
+          <>
+            <li>
+              <b>User Id: </b>
+              {this.props.RUId}
+            </li>
+            <li>
+              <b>Workstation: </b>
+              {this.props.workStation}
+            </li>
+            <li>
+              <b>Date: </b>
+              {moment(this.props.date).format("DD/MM/YYYY")}
+            </li>
+            <li>
+              <b>Complete Token: </b>
+              {this.props.completeToken}
+            </li>
+
+            {this.state.notesFromDB &&
+              this.state.notesFromDB.map((item, index) => {
+                return (
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                      border: "inset",
+                      borderWidth: "0.2px"
+                    }}
+                  >
+                    <div style={{ float: "right" }}>
+                      {moment(item.CreationTime).format("HH:MM  DD/MM/YYYY ")}
+                    </div>
+                    <div style={{ textAlign: "left" }}>{item.Notes}</div>
+                    <div></div>
+                  </div>
+                );
+              })}
+
+            <br />
+            <input
+              onChange={e => this.setState({ noteToBeAdded: e.target.value })}
+            />
+
+            <button
+              onClick={this.SubmitNote}
+              className="btn btn-primary"
+              style={{ width: "100%" }}
+            >
+              Submit Button
+            </button>
+          </>
+        </>
       );
     }
   }
