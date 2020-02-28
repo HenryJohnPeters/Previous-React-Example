@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Popup from "reactjs-popup";
+import moment from "moment";
 import { Modal, Button } from "react-bootstrap";
 
 import AddWorkstation from "./UpdateUserWorkStationDetailsForm";
- 
+
 class ManageWorkstations extends React.Component {
   constructor() {
     super();
@@ -12,106 +13,92 @@ class ManageWorkstations extends React.Component {
     this.state = { AccountDetails: [], exist: "" };
     this.getItems = this.getItems.bind(this);
   }
-///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
   // sets the questions form sql into state for questions
   getItems() {
-    try{
-    var user = window.localStorage.getItem("User");
-    if (user) {
-      fetch(`/profile-work-station-detailss/${user}`)
-        .then(recordset => recordset.json())
-        .then(results => {
-          console.log(this.state.AccountDetails);
-          this.setState({ AccountDetails: results.recordset });
-          
-          console.log(this.state.AccountDetails);
-           
-        });
-      
-         
- 
+    try {
+      var user = window.localStorage.getItem("User");
+      if (user) {
+        fetch(`/profile-work-station-detailss/${user}`)
+          .then(recordset => recordset.json())
+          .then(results => {
+            console.log(this.state.AccountDetails);
+            this.setState({ AccountDetails: results.recordset });
 
+            console.log(this.state.AccountDetails);
+          });
       } else {
-      alert("user not set");
-    }}catch(e){
-console.log(e)
+        alert("user not set");
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   //when the component mounts make the sql questions the
   componentDidMount() {
-    
-   
-    this.getItems()
-      
-    console.log(this.state.AccountDetails)
+    this.getItems();
+
+    console.log(this.state.AccountDetails);
   }
-  render() { 
-    if(this.state.AccountDetails.length){
-
-    return (
-          <ul>
-            <Link to="/profile">
-              <button style={{ float: "left" }} className="btn btn-secondary">
-                Account Details
-              </button>
-            </Link>
-            <button
-              style={{ float: "left" }}
-              className="btn btn-secondary"
-              disabled
-            >
-              Manage Workstations
+  render() {
+    if (this.state.AccountDetails.length) {
+      return (
+        <ul>
+          <Link to="/profile">
+            <button style={{ float: "left" }} className="btn btn-secondary">
+              Account Details
             </button>
+          </Link>
+          <button
+            style={{ float: "left" }}
+            className="btn btn-secondary"
+            disabled
+          >
+            Manage Workstations
+          </button>
 
-            <DisplayAddWorkstation />
+          <DisplayAddWorkstation />
 
-            <br />
-            <br />
+          <br />
+          <br />
 
-            {this.state.AccountDetails &&
-              this.state.AccountDetails.map(function(AccountDetails, index) {
-                return (
-                  <WorkStations AccountDetails={AccountDetails}></WorkStations>
-                );
-              })}
-          </ul>
-          
-      
-     
-    )
-            } else{
-              return( <ul> 
-                
-                <Link to="/profile">
-              <button style={{ float: "left" }} className="btn btn-secondary">
-                Account Details
-              </button>
-            </Link>
-            <button
-              style={{ float: "left" }}
-              className="btn btn-secondary"
-              disabled
-            >
-              Manage Workstations
+          {this.state.AccountDetails &&
+            this.state.AccountDetails.map(function(AccountDetails, index) {
+              return (
+                <WorkStations AccountDetails={AccountDetails}></WorkStations>
+              );
+            })}
+        </ul>
+      );
+    } else {
+      return (
+        <ul>
+          <Link to="/profile">
+            <button style={{ float: "left" }} className="btn btn-secondary">
+              Account Details
             </button>
-                
-                 <DisplayAddWorkstation />
-              <br/>
-              <br/><div className="jumbotron">
-              
-               <li style = {{textAlign: "center"}}><b>Please add a workplace using the blue + button.</b> </li>
-            
-      
-            
-      
-             
-       
-                 
-         
-            </div></ul>)
-            } 
-}
+          </Link>
+          <button
+            style={{ float: "left" }}
+            className="btn btn-secondary"
+            disabled
+          >
+            Manage Workstations
+          </button>
+
+          <DisplayAddWorkstation />
+          <br />
+          <br />
+          <div className="jumbotron">
+            <li style={{ textAlign: "center" }}>
+              <b>Please add a workplace using the blue + button.</b>{" "}
+            </li>
+          </div>
+        </ul>
+      );
+    }
+  }
 }
 
 export default ManageWorkstations;
@@ -145,7 +132,6 @@ class WorkStations extends React.Component {
   }
 
   render() {
-     
     return (
       <div className="jumbotron">
         <button
@@ -158,21 +144,17 @@ class WorkStations extends React.Component {
         <h3>Work Station</h3>
 
         <li key="Desk-Location">
-          Desk Location:
-          {this.state.AccountDetails.DeskLocation}
+          Desk Location : {this.state.AccountDetails.AssignedWorkstation}
         </li>
-
-       
 
         <li key="Date-Added">
-          Date Added:
-          {this.state.AccountDetails.DateAdded}
+          Date Added :
+          {moment(this.state.AccountDetails.DateAdded).format(" DD/MM/YYYY ")}
         </li>
       </div>
-    ); 
-  } 
+    );
   }
- 
+}
 
 class DisplayAddWorkstation extends React.Component {
   constructor(props) {
@@ -184,14 +166,12 @@ class DisplayAddWorkstation extends React.Component {
     this.handleRefresh = this.handleRefresh.bind(this);
 
     this.state = {
-      show: false,
-      
+      show: false
     };
   }
-handleClose() {
+  handleClose() {
     this.setState({
-      show: false,
-      
+      show: false
     });
   }
   handleShow() {
@@ -203,8 +183,6 @@ handleClose() {
     window.location.reload();
   }
   render() {
-     
- 
     return (
       <div className="header-container">
         <button
@@ -230,6 +208,6 @@ handleClose() {
           </Modal.Body>
         </Modal>
       </div>
-    );  
+    );
   }
 }

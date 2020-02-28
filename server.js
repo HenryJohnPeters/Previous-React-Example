@@ -482,7 +482,8 @@ app.post("/submit-note-admin", async (req, response) => {
     (workstation = req.body.workstation),
     (time = req.body.time),
     (seenStatus = req.body.seenStatus),
-    await sql.connect(config);
+    (userStatus = req.body.userStatus);
+  await sql.connect(config);
   var request = new sql.Request();
 
   request.input("Note", sql.NVarChar, note);
@@ -490,6 +491,7 @@ app.post("/submit-note-admin", async (req, response) => {
   request.input("Workstation", sql.NVarChar, workstation);
   request.input("Time", sql.DateTime, time);
   request.input("SeenStatus", sql.Bit, seenStatus);
+  request.input("UserStatus", sql.NVarChar, userStatus);
   await request.execute("dbo.SubmitNoteAdmin");
   console.info("done");
 });
@@ -497,7 +499,7 @@ app.post("/submit-note-admin", async (req, response) => {
 //////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.post("/admin", async (req, res) => {
+app.post("/admin-get-notes", async (req, res) => {
   try {
     console.log("we made it ");
 

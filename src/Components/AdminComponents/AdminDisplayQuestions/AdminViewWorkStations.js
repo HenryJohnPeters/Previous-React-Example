@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
 
+moment.locale(window.navigator.language);
+
+console.log(window.navigator.language);
+
 var results = [];
 class AdminWorkstations extends React.Component {
   constructor() {
@@ -16,7 +20,7 @@ class AdminWorkstations extends React.Component {
       viewDetails: false,
 
       currentPage: 1,
-      todosPerPage: 5,
+      todosPerPage: 10,
       pageNumbers: []
     };
     this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
@@ -202,6 +206,15 @@ class Questions extends React.Component {
   }
 
   SubmitNote() {
+    let userToken = window.localStorage.getItem("token");
+    let adminToken = window.localStorage.getItem("adminToken");
+    let userStatus = "";
+    if (userToken) {
+      userStatus = "User";
+    } else if (adminToken) {
+      userStatus = "Admin";
+    }
+
     var today = new Date(),
       date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
         1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
@@ -211,7 +224,8 @@ class Questions extends React.Component {
       UserRUId: this.props.RUId,
       workstation: this.props.workStation,
       time: date,
-      seenStatus: false
+      seenStatus: false,
+      userStatus: userStatus
     };
 
     fetch("/submit-note-admin", {
@@ -234,7 +248,7 @@ class Questions extends React.Component {
         workstation: this.props.workStation
       };
 
-      fetch("/admin", {
+      fetch("/admin-get-notes", {
         method: "POST", // or 'PUT'
         headers: {
           Accept: "application/json,",
@@ -282,6 +296,7 @@ class Questions extends React.Component {
   render() {
     if (!this.state.ViewActivity) {
       if (!this.state.viewDetails && !this.state.ViewActivityToken) {
+        console.log(moment.locale());
         return (
           <div>
             <button
@@ -312,7 +327,8 @@ class Questions extends React.Component {
             </li>
             <li>
               <b>Date: </b>
-              {moment(this.props.date).format("DD/MM/YYYY")}
+
+              {moment(this.props.date).format("L")}
             </li>
             <li>
               <b>Complete Token: </b>
@@ -324,17 +340,19 @@ class Questions extends React.Component {
         return (
           <div>
             <button
-              onClick={this.checker}
-              className="btn btn-primary"
               style={{ float: "right" }}
+              onClick={e =>
+                this.setState({
+                  ViewActivity: false,
+                  viewDetails: false,
+                  ViewActivityToken: false,
+                  addNoteToken: false
+                })
+              }
+              className="btn btn-secondary"
             >
-              View Details
+              Revert
             </button>
-
-            <button style={{ float: "right" }} className="btn btn-primary">
-              Add Note
-            </button>
-
             <br />
             <br />
 
@@ -357,9 +375,23 @@ class Questions extends React.Component {
         );
       }
     } else if (this.state.ViewActivity && !this.state.addNoteToken) {
-      const colors = ["#d5d5d5", "#a9a9a9"];
       return (
         <>
+          <button
+            style={{ float: "right" }}
+            onClick={e =>
+              this.setState({
+                ViewActivity: false,
+                viewDetails: false,
+                ViewActivityToken: false,
+                addNoteToken: false
+              })
+            }
+            className="btn btn-secondary"
+          >
+            Revert
+          </button>
+          <br />
           <li>
             <b>User Id: </b>
             {this.props.RUId}
@@ -390,11 +422,16 @@ class Questions extends React.Component {
                   <div style={{ float: "right" }}>
                     {moment(item.CreationTime).format("HH:MM  DD/MM/YYYY ")}
                   </div>
+                  <div>
+                    <b>{`${item.UserStatus} `}</b>
+                  </div>
+
                   <div style={{ textAlign: "left" }}>{item.Notes}</div>
-                  <div></div>
                 </div>
               );
             })}
+
+          <br />
           <button
             onClick={this.AddNoteBtn}
             className="btn btn-primary"
@@ -402,18 +439,6 @@ class Questions extends React.Component {
           >
             Add Note
           </button>
-          <br />
-          {/* <input
-            onChange={e => this.setState({ noteToBeAdded: e.target.value })}
-          />
-
-          <button
-            onClick={this.SubmitNote}
-            className="btn btn-primary"
-            style={{ width: "100%" }}
-          >
-            Submit Button
-          </button> */}
         </>
       );
     } else if (this.state.ViewActivity && this.state.addNoteToken) {
@@ -421,6 +446,21 @@ class Questions extends React.Component {
         <>
           {" "}
           <>
+            <button
+              style={{ float: "right" }}
+              onClick={e =>
+                this.setState({
+                  ViewActivity: false,
+                  viewDetails: false,
+                  ViewActivityToken: false,
+                  addNoteToken: false
+                })
+              }
+              className="btn btn-secondary"
+            >
+              Revert
+            </button>
+            <br />
             <li>
               <b>User Id: </b>
               {this.props.RUId}
@@ -449,10 +489,13 @@ class Questions extends React.Component {
                     }}
                   >
                     <div style={{ float: "right" }}>
-                      {moment(item.CreationTime).format("HH:MM  DD/MM/YYYY ")}
+                      {moment(item.CreationTime).format("L")}
                     </div>
+                    <div>
+                      <b>{`${item.UserStatus} `}</b>
+                    </div>
+
                     <div style={{ textAlign: "left" }}>{item.Notes}</div>
-                    <div></div>
                   </div>
                 );
               })}

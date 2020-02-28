@@ -16,7 +16,7 @@ class AdminWorkstations extends React.Component {
       viewDetails: false,
 
       currentPage: 1,
-      todosPerPage: 5,
+      todosPerPage: 10,
       pageNumbers: []
     };
     this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);

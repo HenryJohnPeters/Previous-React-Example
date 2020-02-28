@@ -1,5 +1,5 @@
 import React from "react";
-
+import moment from "moment";
 class DisplayQuestions extends React.Component {
   constructor() {
     super();
@@ -26,8 +26,6 @@ class DisplayQuestions extends React.Component {
 
   getQuestionByUniqueDate(questions) {
     var results = [];
-    var Accepted = [];
-    var declined = [];
 
     for (var i = 0; i < questions.length; i++) {
       if (
@@ -160,7 +158,8 @@ class Questions extends React.Component {
             <b>Workstation: </b> {this.state.questions.AssignedWorkStation}
           </li>
           <li>
-            <b>Date: </b> {this.state.questions.Date}
+            <b>Date: </b>
+            {moment(this.state.questions.Date).format("DD/MM/YYYY ")}
           </li>
           <li>
             <b>Status: </b>
