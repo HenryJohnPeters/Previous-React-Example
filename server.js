@@ -89,7 +89,7 @@ app.get("/user-completed-questions/:Email", async (req, res) => {
     // query to the database and get the records
     // request.input("WorkStation", sql.NVarChar, WorkStation);
     request.input("Email", sql.NVarChar, Email);
-    request.execute("dbo.ViewAnsweredQuestions", function(err, recordset) {
+    request.execute("dbo.ViewWorkStations", function(err, recordset) {
       if (err) console.log(err);
       // send records as a response
       res.json(recordset);
@@ -265,46 +265,52 @@ app.post("/post-question-answers", async (req, res) => {
     await sql.connect(config);
 
     // create Request object
-
+    let user = req.body.user;
+    console.log(`${user} this is the user email `);
+    let selectedWorkstation = req.body.selectedWorkstation;
     let results = req.body.results;
     let completeToken = req.body.completeToken;
+    let date = req.body.date;
 
     let questions = [];
     let answers = [];
-    let emails = [];
+    // let emails = [];
     let questionIds = [];
-    let workStations = [];
-    let accepts = [];
-    let dates = [];
+    let suggestedSoloutions = [];
 
     results.forEach(element => answers.push(element.answer));
     results.forEach(element => questions.push(element.question));
-    results.forEach(element => emails.push(element.email));
+    // results.forEach(element => emails.push(element.email));
     results.forEach(element => questionIds.push(element.questionId));
-    results.forEach(element => workStations.push(element.workStation));
-    results.forEach(element => accepts.push(element.accepted));
-    results.forEach(element => dates.push(element.date));
+    results.forEach(element =>
+      suggestedSoloutions.push(element.suggestedSoloution)
+    );
 
+    var request = new sql.Request();
+    request.input(`QuestionStatus`, sql.NVarChar, completeToken);
+    request.input(`Date`, sql.NVarChar, date);
+    request.input(`Email`, sql.NVarChar, user);
+    request.input(`SelectedWorkstation`, sql.NVarChar, selectedWorkstation);
+    request.execute("dbo.AddQuestionResponseHeader", function(err, recordset) {
+      if (err) console.log(err);
+    });
     for (var i = 0; i < results.length; i++) {
       var request = new sql.Request();
       let answer = answers[i];
       let question = questions[i];
-      let email = emails[i];
+      // let email = emails[i];
       let questionId = questionIds[i];
-      let workStation = workStations[i];
-      let accepted = accepts[i];
-      let date = dates[i];
+      let soloution = suggestedSoloutions[i];
 
       request.input(`Question`, sql.NVarChar, question);
       request.input(`Answer`, sql.NVarChar, answer);
-      request.input(`Email`, sql.NVarChar, email);
+      request.input(`Email`, sql.NVarChar, user);
       request.input(`QuestionId`, sql.NVarChar, questionId);
-      request.input(`WorkStation`, sql.NVarChar, workStation);
-      request.input(`Accepted`, sql.Bit, accepted);
-      request.input(`Date`, sql.DateTime, date);
       request.input(`CompleteToken`, sql.NVarChar, completeToken);
+      request.input(`SelectedWorkstation`, sql.NVarChar, selectedWorkstation);
+      request.input(`SuggestedSoloution`, sql.NVarChar, soloution);
 
-      request.execute("dbo.AddQuestionResponses", function(err, recordset) {
+      request.execute("dbo.SubmitQuestionResponses", function(err, recordset) {
         if (err) console.log(err);
       });
     }

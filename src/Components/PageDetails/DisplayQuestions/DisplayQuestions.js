@@ -46,8 +46,11 @@ class DisplayQuestions extends React.Component {
   }
 
   submitAnswers() {
+    let selectedWorkstation = window.localStorage.getItem("Workstation");
+    let user = window.localStorage.getItem("User");
+
     let completeToken = "";
-    let acceptedCounter = 0;
+    let declinedCounter = 0;
 
     if (questionCounter == this.state.questions.length) {
       var today = new Date(),
@@ -55,23 +58,25 @@ class DisplayQuestions extends React.Component {
           1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
       for (var i = 0; i < results.length; i++) {
-        if (results[i].accepted === "1") {
-          acceptedCounter++;
+        if (results[i].answer == "No, and it is a problem") {
+          declinedCounter++;
         } else {
         }
       }
 
-      if (acceptedCounter === results.length) {
-        completeToken = "Complete";
-      } else {
+      if (declinedCounter > 0) {
         completeToken = "In Progress";
+      } else if (declinedCounter <= 0) {
+        completeToken = "Complete";
       }
 
       console.log(completeToken);
       const data = {
         completeToken,
         results,
-        date
+        selectedWorkstation,
+        date,
+        user: user
       };
 
       fetch("/post-question-answers/", {
@@ -95,7 +100,7 @@ class DisplayQuestions extends React.Component {
 
   render() {
     let selectedWorkStation = window.localStorage.getItem("Workstation");
-    var self = this;
+
     console.log(this.state.questions);
     if (this.state.workstations.length) {
       return (
@@ -113,7 +118,9 @@ class DisplayQuestions extends React.Component {
                 this.state.workstations.map(function(workstations, index) {
                   return (
                     <div>
-                      <WorkStationSelecter workstations={workstations}>
+                      <WorkStationSelecter
+                        workstations={workstations.AssignedWorkstation}
+                      >
                         {" "}
                       </WorkStationSelecter>
                     </div>
@@ -216,17 +223,14 @@ class WorkStationSelecter extends React.Component {
   selectWorkStation(e) {
     e.preventDefault();
 
-    window.localStorage.setItem(
-      "Workstation",
-      this.state.workstations.DeskLocation
-    );
+    window.localStorage.setItem("Workstation", this.props.workstations);
     window.location.reload();
   }
   render() {
     return (
       <>
         <Dropdown.Item onClick={this.selectWorkStation}>
-          {this.state.workstations.DeskLocation}{" "}
+          {this.props.workstations}
         </Dropdown.Item>
       </>
     );
@@ -290,26 +294,29 @@ class Questions extends React.Component {
       date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
         1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
-    let answer = this.state.soloutionForDeclinedQuestion;
+    // let answer = this.state.soloutionForDeclinedQuestion;
     let question = this.state.questions.Question;
-    let state = "Declined with soloution defined";
+
     let email = window.localStorage.getItem("User");
     let questionId = this.state.questions.QuestionId;
     let workStation = window.localStorage.getItem("Workstation");
-    let accepted = 0;
+    let suggestedSoloution = this.state.soloutionForDeclinedQuestion;
+    // let accepted = 1;
 
     let newItem = {
-      answer: answer,
+      answer: "No, and it is a problem",
       question: question,
-      state: state,
+      // state: state,
       email: email,
       questionId: questionId,
       workStation: workStation,
-      accepted: accepted,
-      date: date
+      // accepted: accepted,
+      date: date,
+      suggestedSoloution: suggestedSoloution
     };
 
     questionCounter++;
+    console.log(newItem);
     results.push(newItem);
     console.log(results);
 
@@ -345,24 +352,24 @@ class Questions extends React.Component {
     var today = new Date(),
       date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
         1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-    let answer = "Question declined But not a problem";
+    let answer = "No, but not a problem";
     let question = this.state.questions.Question;
-    let state = "Accepted";
+    // let state = "Accepted";
     let email = window.localStorage.getItem("User");
     let questionId = this.state.questions.QuestionId;
     let workStation = window.localStorage.getItem("Workstation");
-    let accepted = `0`;
+    let accepted = `1`;
 
     let newItem = {
       answer: answer,
       question: question,
-      state: state,
+      // state: state,
       email: email,
       questionId: questionId,
       workStation: workStation,
-      accepted: accepted,
-      date: date,
-      accepted: 1
+      // accepted: accepted,
+      date: date
+      // accepted: 1
     };
     questionCounter++;
     results.push(newItem);
@@ -396,7 +403,7 @@ class Questions extends React.Component {
 
     let answer = "yes";
     let question = this.state.questions.Question;
-    let state = "Accepted";
+    // let state = "Accepted";
     let email = window.localStorage.getItem("User");
     let questionId = this.state.questions.QuestionId;
     let workStation = window.localStorage.getItem("Workstation");
@@ -405,11 +412,11 @@ class Questions extends React.Component {
     let newItem = {
       answer: answer,
       question: question,
-      state: state,
+      // state: state,
       email: email,
       questionId: questionId,
       workStation: workStation,
-      accepted: accepted,
+      // accepted: accepted,
       date: date
     };
 
@@ -510,7 +517,6 @@ class Questions extends React.Component {
     let email = window.localStorage.getItem("User");
     let questionId = this.state.questions.QuestionId;
     let workStation = window.localStorage.getItem("Workstation");
-    let accepted = `0`;
 
     let newItem = {
       answer: answer,
@@ -519,9 +525,9 @@ class Questions extends React.Component {
       email: email,
       questionId: questionId,
       workStation: workStation,
-      accepted: accepted,
-      date: date,
-      accepted: 0
+
+      date: date
+      // accepted: 1
     };
     questionCounter++;
     results.push(newItem);

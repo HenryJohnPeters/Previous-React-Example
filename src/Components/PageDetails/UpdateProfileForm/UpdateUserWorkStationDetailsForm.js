@@ -1,7 +1,6 @@
 import React from "react";
- 
 
-class ConfirmResetPasswordForm extends React.Component {
+class AddWorkstation extends React.Component {
   constructor() {
     super();
 
@@ -11,20 +10,13 @@ class ConfirmResetPasswordForm extends React.Component {
       PrimaryWorkStation: true
     };
     this.onSubmit = this.handleSubmit.bind(this);
-    
   }
-   
- 
+
   handleSubmit(e) {
-    
     try {
       if (this.state.Location.length < 3) {
         alert("Location has to be 3 characters minimum");
       } else {
-
-
-        
-        
         console.log(this.state.ExtraInformation);
         console.log(this.state.Location);
 
@@ -37,7 +29,7 @@ class ConfirmResetPasswordForm extends React.Component {
         console.log(date);
         const data = {
           email,
-          
+
           Location: this.state.Location,
 
           date
@@ -53,7 +45,7 @@ class ConfirmResetPasswordForm extends React.Component {
         });
         alert("Workstation Added. Refresh the page to view updates");
       }
-      window.location.reload()
+      window.location.reload();
     } catch (e) {
       console.log(e);
     }
@@ -70,7 +62,6 @@ class ConfirmResetPasswordForm extends React.Component {
         <form>
           <div className="jumbotron">
             <h2 style={{ textAlign: "center" }}>Add Workstation </h2>
-         
 
             <label htmlFor="email">Location</label>
             <div>
@@ -83,8 +74,6 @@ class ConfirmResetPasswordForm extends React.Component {
                 onChange={e => this.setState({ Location: e.target.value })}
               />
             </div>
-
-             
 
             <button
               className="btn btn-primary"
@@ -100,4 +89,4 @@ class ConfirmResetPasswordForm extends React.Component {
   }
 }
 
-export default ConfirmResetPasswordForm;
+export default AddWorkstation;

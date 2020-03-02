@@ -5,12 +5,12 @@ class DisplayQuestions extends React.Component {
     super();
 
     this.state = {
-      questions: [],
+      CompletedAssessments: [],
       QuestionsAnswer: [],
       workstations: [],
       viewDetails: false
     };
-    this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
+    // this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
   }
   // sets the questions form sql into state for questions
 
@@ -19,33 +19,33 @@ class DisplayQuestions extends React.Component {
     fetch(`/user-completed-questions/${User}`)
       .then(recordset => recordset.json())
       .then(results => {
-        this.setState({ questions: results.recordset });
+        this.setState({ CompletedAssessments: results.recordset });
         console.log(this.state.questions);
       });
   }
 
-  getQuestionByUniqueDate(questions) {
-    var results = [];
+  // getQuestionByUniqueDate(questions) {
+  //   var results = [];
 
-    for (var i = 0; i < questions.length; i++) {
-      if (
-        !results.find(q => q.Date == questions[i].Date) ||
-        !results.find(
-          q => q.AssignedWorkStation == questions[i].AssignedWorkStation
-        )
-      ) {
-        results.push(questions[i]);
-      }
-    }
-    return results;
-  }
+  //   for (var i = 0; i < questions.length; i++) {
+  //     if (
+  //       !results.find(q => q.Date == questions[i].Date) ||
+  //       !results.find(
+  //         q => q.AssignedWorkStation == questions[i].AssignedWorkStation
+  //       )
+  //     ) {
+  //       results.push(questions[i]);
+  //     }
+  //   }
+  //   return results;
+  // }
 
   render() {
     let selectedWorkStation = window.localStorage.getItem("Workstation");
 
     console.log(this.state.questions);
 
-    if (this.state.questions.length) {
+    if (this.state.CompletedAssessments.length) {
       return (
         <div>
           <h3 style={{ textAlign: "center" }}></h3>
@@ -55,11 +55,8 @@ class DisplayQuestions extends React.Component {
               <h6></h6>
             </div>
 
-            {this.state.questions &&
-              this.getQuestionByUniqueDate(this.state.questions).map(function(
-                questions,
-                index
-              ) {
+            {this.state.CompletedAssessments &&
+              this.state.CompletedAssessments.map(function(questions, index) {
                 return (
                   <div className="jumbotron">
                     <Questions questions={questions}></Questions>
@@ -69,7 +66,7 @@ class DisplayQuestions extends React.Component {
           </ul>
         </div>
       );
-    } else if (!this.state.questions.length) {
+    } else if (!this.state.CompletedAssessments.length) {
       return (
         <>
           {" "}
@@ -155,19 +152,19 @@ class Questions extends React.Component {
 
           <br />
           <li>
-            <b>Workstation: </b> {this.state.questions.AssignedWorkStation}
+            <b>Workstation ID : </b> {this.props.questions.AssignedWorkstation}
+          </li>
+          <li>
+            <b>Status </b> {this.props.questions.QuestionStatus}
           </li>
           <li>
             <b>Date: </b>
-            {moment(this.state.questions.Date).format("DD/MM/YYYY ")}
-          </li>
-          <li>
-            <b>Status: </b>
-            {this.state.questions.CompleteToken}
+            {moment(this.props.questions.Date).format("DD/MM/YYYY ")}
           </li>
         </div>
       );
     } else {
+      console.log(this.state.selectedSet);
       return (
         <div>
           <button
@@ -177,23 +174,35 @@ class Questions extends React.Component {
           >
             View Details
           </button>
-
+          {moment(this.props.questions.Date).format("DD/MM/YYYY ")}
           <br />
-
-          <li> {this.state.questions.Date}</li>
-
+          <li>
+            <b style={{ textAlign: "center" }}>
+              {this.props.questions.AssignedWorkstation}{" "}
+            </b>
+          </li>{" "}
+          <br />
           {this.state.selectedSet &&
             this.state.selectedSet.map((item, index) => {
-              return (
-                <div>
-                  <li>
-                    {" "}
-                    <b>{item.QuestionWhenAnswered}</b>{" "}
-                  </li>
-                  <li>{item.QuestionResponse}</li>
-                  <li>{item.Accepted}</li>
-                </div>
-              );
+              if (item.QuestionResponse == "no") {
+                return (
+                  <div style={{ color: "red" }}>
+                    <li> Question When Answered {item.QuestionWhenAnswered}</li>
+                    <li>Question Response{item.QuestionResponse}</li>
+                    <li>Status {item.QuestionSetStatus}</li>
+                    <li>{item.SuggestedSoloution}</li>
+                  </div>
+                );
+              } else {
+                return (
+                  <div style={{ color: "green" }}>
+                    <li> Question When Answered {item.QuestionWhenAnswered}</li>
+                    <li>Question Response{item.QuestionResponse}</li>
+                    <li>Status {item.QuestionSetStatus}</li>
+                    <li>{item.SuggestedSoloution}</li>
+                  </div>
+                );
+              }
             })}
         </div>
       );
