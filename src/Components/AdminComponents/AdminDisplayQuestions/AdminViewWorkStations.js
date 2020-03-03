@@ -77,35 +77,18 @@ class AdminWorkstations extends React.Component {
     ) {
       pageNumbers.push(i);
     }
-    const renderPageNumbers = pageNumbers.map(number => {
-      return (
-        <button
-          className="btn btn-primary"
-          key={number}
-          id={number}
-          onClick={this.handleClick}
-        >
-          {number}
-        </button>
-      );
-    });
-
-    const renderTodos = currentTodos.map(r => {
-      return (
-        <>
-          <div className="jumbotron">
-            <Questions
-              workStation={r.AssignedWorkStation}
-              date={r.Date}
-              completeToken={r.CompleteToken}
-              RUId={r.RUId}
-            >
-              {" "}
-            </Questions>
-          </div>
-        </>
-      );
-    });
+    // pageNumbers.map(number => {
+    //   return (
+    //     <button
+    //       className="btn btn-primary"
+    //       key={number}
+    //       id={number}
+    //       onClick={this.handleClick}
+    //     >
+    //       {number}
+    //     </button>
+    //   );
+    // });
 
     let selectedWorkStation = window.localStorage.getItem("Workstation");
 
@@ -142,12 +125,34 @@ class AdminWorkstations extends React.Component {
           </ul>
 
           <ul>
-            {renderTodos}{" "}
+            {currentTodos.map(function(r, index) {
+              return (
+                <div className="jumbotron">
+                  <Questions
+                    workStation={r.AssignedWorkstation}
+                    date={r.Date}
+                    completeToken={r.QuestionStatus}
+                    RUId={r.RUId}
+                  ></Questions>
+                </div>
+              );
+            })}
             <div
               style={{ userSelect: "none", cursor: "pointer" }}
               id="page-numbers"
             >
-              {renderPageNumbers}
+              {pageNumbers.map(number => {
+                return (
+                  <button
+                    className="btn btn-primary"
+                    key={number}
+                    id={number}
+                    onClick={this.handleClick}
+                  >
+                    {number}
+                  </button>
+                );
+              })}
             </div>
           </ul>
         </div>
@@ -157,19 +162,15 @@ class AdminWorkstations extends React.Component {
         <>
           {" "}
           <div>
-            <h3 style={{ textAlign: "center" }}></h3>
+            <h2 style={{ textAlign: "center" }}>
+              Completed Workstation Assessments
+            </h2>
 
             <ul>
               <br />
               <br />{" "}
               <div>
-                <h6>
-                  {" "}
-                  <tr>
-                    Desk Location Selected :{" "}
-                    <u style={{ color: "grey" }}>{selectedWorkStation}</u>
-                  </tr>
-                </h6>
+                <h6> </h6>
               </div>
               <div className="jumbotron">
                 <li style={{ textAlign: "center" }}>
@@ -304,7 +305,7 @@ class Questions extends React.Component {
               className="btn btn-primary"
               style={{ float: "right" }}
             >
-              View Details
+              Question Responses
             </button>
 
             <button
@@ -312,7 +313,7 @@ class Questions extends React.Component {
               className="btn btn-primary"
               style={{ float: "right" }}
             >
-              View Activity
+              View Full Details
             </button>
 
             <br />

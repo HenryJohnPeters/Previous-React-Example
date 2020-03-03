@@ -5,13 +5,15 @@ import * as Yup from "yup";
 import React from "react";
 
 import { Link } from "react-router-dom";
+import { Alert } from "react-bootstrap";
 
 class AddQuestion extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      Question: ""
+      Question: "",
+      GuidanceNote: ""
     };
     this.onSubmit = this.handleSubmit.bind(this);
   }
@@ -21,14 +23,17 @@ class AddQuestion extends React.Component {
 
     try {
       if (this.state.Question.length < 10) {
-        alert(`please enter more information`);
+        alert(`Please enter a more descriptive question`);
+      } else if (this.state.GuidanceNote.length < 10) {
+        alert("Please enter a more descriptive guidance note");
       } else {
         var today = new Date(),
           date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
             1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
         const data = {
-          Question: this.state.Question
+          Question: this.state.Question,
+          GuidanceNote: this.state.GuidanceNote
         };
         console.log(date);
 
@@ -107,6 +112,16 @@ class AddQuestion extends React.Component {
                     value={this.state.email}
                     onInput={handleChange}
                     onChange={e => this.setState({ Question: e.target.value })}
+                  />
+
+                  <textarea
+                    style={{ width: "100%" }}
+                    placeholder="Enter guidance note for question"
+                    value={this.state.email}
+                    onInput={handleChange}
+                    onChange={e =>
+                      this.setState({ GuidanceNote: e.target.value })
+                    }
                   />
 
                   <button

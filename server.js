@@ -555,14 +555,15 @@ app.post("/delete-work-station", async (req, response) => {
 app.post("/delete-question", async (req, response) => {
   try {
     await sql.connect(config);
-    let QuestionId = req.body.QuestionId;
+    let questionId = req.body.questionId;
+    let question = req.body.question;
 
-    console.info(`${QuestionId}`);
     var request = new sql.Request();
 
-    request.input("QuestionId", sql.Int, QuestionId);
+    request.input("QuestionId", sql.Int, questionId);
+    request.input("Question", sql.NVarChar, question);
 
-    const DeleteWorkStation = await request.execute("dbo.DeleteQuestion");
+    await request.execute("dbo.DeleteQuestion");
 
     console.log("done done");
   } catch (err) {
@@ -831,18 +832,16 @@ app.post("/admin-add-question", async (req, response) => {
   try {
     await sql.connect(config);
     let NewQuestion = req.body.Question;
-    //let QuestionUpdate = req.body.QuestionUpdate;
-    //let date = req.body.QuestionUpdate;
-    //console.info(Question);
+    let NewGuidanceNote = req.body.GuidanceNote;
 
     var request = new sql.Request();
 
     request.input("Question", sql.NVarChar, NewQuestion);
-    //request.input("Date", sql.DateTime, date);
+    request.input("GuidanceNote", sql.NVarChar, NewGuidanceNote);
 
-    const update = await request.execute("dbo.AddQuestion");
+    await request.execute("dbo.AddQuestion");
 
-    console.log("done done");
+    console.log(NewGuidanceNote);
   } catch (err) {
     console.log("Err: ", err);
     response.status(500).send("Check api console.log for the error");
@@ -850,6 +849,38 @@ app.post("/admin-add-question", async (req, response) => {
 });
 
 //////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+app.post("/admin-edit-question", async (req, response) => {
+  try {
+    await sql.connect(config);
+    let NewQuestion = req.body.Question;
+    let NewGuidanceNote = req.body.GuidanceNote;
+    let previousQuestion = req.body.previousQuestion;
+    let previousGuidanceNote = req.body.previousGuidanceNote;
+
+    console.log(
+      NewGuidanceNote + NewQuestion + previousQuestion + previousGuidanceNote
+    );
+
+    var request = new sql.Request();
+
+    request.input("Question", sql.NVarChar, NewQuestion);
+    request.input("GuidanceNote", sql.NVarChar, NewGuidanceNote);
+    request.input("PreviousQuestion", sql.NVarChar, previousQuestion);
+    request.input("PreviousGuidanceNote", sql.NVarChar, previousGuidanceNote);
+
+    await request.execute("dbo.EditQuestion");
+
+    console.log(NewGuidanceNote);
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+
+/////////////////////////////////////////////////////////////////////////
+
 //////////////////////////////////////////////////////////////////////////
 
 app.post("/declined-question-response", async (req, response) => {
@@ -889,113 +920,6 @@ app.post("/declined-question-response", async (req, response) => {
     response.status(500).send("Check api console.log for the error");
   }
 });
-
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-// app.post("/revert-declined-question-answer", async (req, response) => {
-//   try {
-//     await sql.connect(config);
-//     let QuestionId = req.body.QuestionId;
-//     let QuestionAnswer = req.body.QuestionAnswer;
-//     let Email = req.body.Email;
-//     let WorkStation = req.body.WorkStation;
-
-//     console.info("QuestionId");
-//     console.info(QuestionId);
-//     console.info("QuestionAnswer");
-//     console.info(QuestionAnswer);
-//     console.info("Email");
-//     console.info(Email);
-//     console.info("WorkStation");
-//     console.info(WorkStation);
-
-//     var request = new sql.Request();
-
-//     request.input("QuestionId", sql.NVarChar, QuestionId);
-//     request.input("WorkStation", sql.NVarChar, WorkStation);
-//     request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
-//     request.input("Email", sql.NVarChar, Email);
-
-//     //QuestionResponse
-//     const updateQuestion = await request.execute(
-//       "dbo.RevertDeclinedQuestionAnswer"
-//     );
-
-//     console.log("done done");
-//   } catch (err) {
-//     console.log("Err: ", err);
-//     response.status(500).send("Check api console.log for the error");
-//   }
-// });
-
-//////////////////////////////////////////////////////////////////////////
-// app.post("/revert-accepted-question-answer", async (req, response) => {
-//   try {
-//     await sql.connect(config);
-//     let QuestionId = req.body.QuestionId;
-//     let QuestionAnswer = req.body.QuestionAnswer;
-//     let Email = req.body.Email;
-//     let WorkStation = req.body.WorkStation;
-
-//     console.info("WorkStation");
-//     console.info(WorkStation);
-//     console.info("QuestionId");
-//     console.info(QuestionId);
-//     console.info("QuestionAnswer");
-//     console.info(QuestionAnswer);
-//     console.info("Email");
-//     console.info(Email);
-
-//     var request = new sql.Request();
-//     request.input("WorkStation", sql.NVarChar, WorkStation);
-//     request.input("QuestionId", sql.NVarChar, QuestionId);
-//     request.input("QuestionAnswer", sql.NVarChar, QuestionAnswer);
-//     request.input("Email", sql.NVarChar, Email);
-
-//     //QuestionResponse
-//     const updateQuestion = await request.execute(
-//       "dbo.RevertAcceptedQuestionAnswer"
-//     );
-
-//     console.log("Accepted question deleton");
-//   } catch (err) {
-//     console.log("Err: ", err);
-//     response.status(500).send("Check api console.log for the error");
-//   }
-// });
-
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-// app.post("/Accept-question-answer", async (req, response) => {
-//   try {
-//     await sql.connect(config);
-//     let WorkStation = req.body.WorkStation;
-//     let QuestionId = req.body.QuestionId;
-//     let date = req.body.date;
-//     let User = req.body.User;
-
-//     console.info(`${QuestionId},${date},${User}, ${WorkStation}`);
-
-//     var request = new sql.Request();
-
-//     request.input("WorkStation", sql.NVarChar, WorkStation);
-//     request.input("QuestionId", sql.NVarChar, QuestionId);
-//     request.input("Date", sql.DateTime, date);
-//     request.input("Email", sql.NVarChar, User);
-
-//     //QuestionResponse
-//     const updateQuestion = await request.execute("dbo.UserAcceptQuestion");
-
-//     console.log("done done");
-//   } catch (err) {
-//     console.log("Err: ", err);
-//     response.status(500).send("Check api console.log for the error");
-//   }
-// });
-
-// //////////////////////////////////////////////////////////////////////////
 
 app.post("/password-profile-update", async (req, response) => {
   try {

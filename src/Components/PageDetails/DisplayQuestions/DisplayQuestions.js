@@ -58,7 +58,7 @@ class DisplayQuestions extends React.Component {
           1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
       for (var i = 0; i < results.length; i++) {
-        if (results[i].answer == "No, and it is a problem") {
+        if (results[i].answer == "P") {
           declinedCounter++;
         } else {
         }
@@ -304,7 +304,7 @@ class Questions extends React.Component {
     // let accepted = 1;
 
     let newItem = {
-      answer: "No, and it is a problem",
+      answer: "P",
       question: question,
       // state: state,
       email: email,
@@ -352,13 +352,13 @@ class Questions extends React.Component {
     var today = new Date(),
       date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
         1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-    let answer = "No, but not a problem";
+    let answer = "N";
     let question = this.state.questions.Question;
     // let state = "Accepted";
     let email = window.localStorage.getItem("User");
     let questionId = this.state.questions.QuestionId;
     let workStation = window.localStorage.getItem("Workstation");
-    let accepted = `1`;
+    // let accepted = `1`;
 
     let newItem = {
       answer: answer,
@@ -401,7 +401,7 @@ class Questions extends React.Component {
       date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
         1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
-    let answer = "yes";
+    let answer = "Y";
     let question = this.state.questions.Question;
     // let state = "Accepted";
     let email = window.localStorage.getItem("User");
@@ -510,7 +510,7 @@ class Questions extends React.Component {
     var today = new Date(),
       date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
         1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-    let answer = this.state.problemDefinition;
+    let answer = "P";
     let question = this.state.questions.Question;
     let state = "problem specified";
 
