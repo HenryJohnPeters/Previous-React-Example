@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
+import ModalFullDetails from "../AdminDisplayWorkstations/AdminViewWorkstationDetails";
 
 moment.locale(window.navigator.language);
 
@@ -21,7 +22,8 @@ class AdminWorkstations extends React.Component {
 
       currentPage: 1,
       todosPerPage: 10,
-      pageNumbers: []
+      pageNumbers: [],
+      FullDetailsPageToken: false
     };
     this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
     // this.test = this.test.bind(this);
@@ -77,110 +79,99 @@ class AdminWorkstations extends React.Component {
     ) {
       pageNumbers.push(i);
     }
-    // pageNumbers.map(number => {
-    //   return (
-    //     <button
-    //       className="btn btn-primary"
-    //       key={number}
-    //       id={number}
-    //       onClick={this.handleClick}
-    //     >
-    //       {number}
-    //     </button>
-    //   );
-    // });
-
-    let selectedWorkStation = window.localStorage.getItem("Workstation");
 
     console.log(this.state.questions);
-
-    if (this.state.questions.length) {
-      return (
-        <div>
-          <h2 style={{ textAlign: "center" }}>
-            Completed Workstation Assessments
-          </h2>
-          <ul>
-            <button disabled className="btn btn-secondary">
-              Workstation Assessments
-            </button>
-            <Link to="./admin-center">
-              <button className="btn btn-secondary">Edit Questions</button>
-            </Link>
-            <Link to="./admin-center-view-users">
-              <button className="btn btn-secondary">View Users</button>
-            </Link>
-            <DropdownButton
-              style={{ float: "right" }}
-              id="dropdown-basic-button"
-              title="Completed"
-            >
-              <Dropdown.Item>
-                {" "}
-                <Link to="admin-view-workstation-assessments-declined">
-                  In Progress
-                </Link>
-              </Dropdown.Item>
-            </DropdownButton>{" "}
-          </ul>
-
-          <ul>
-            {currentTodos.map(function(r, index) {
-              return (
-                <div className="jumbotron">
-                  <Questions
-                    workStation={r.AssignedWorkstation}
-                    date={r.Date}
-                    completeToken={r.QuestionStatus}
-                    RUId={r.RUId}
-                  ></Questions>
-                </div>
-              );
-            })}
-            <div
-              style={{ userSelect: "none", cursor: "pointer" }}
-              id="page-numbers"
-            >
-              {pageNumbers.map(number => {
-                return (
-                  <button
-                    className="btn btn-primary"
-                    key={number}
-                    id={number}
-                    onClick={this.handleClick}
-                  >
-                    {number}
-                  </button>
-                );
-              })}
-            </div>
-          </ul>
-        </div>
-      );
-    } else if (!this.state.questions.length) {
-      return (
-        <>
-          {" "}
+    if (!this.state.FullDetailsPageToken) {
+      if (this.state.questions.length) {
+        return (
           <div>
             <h2 style={{ textAlign: "center" }}>
               Completed Workstation Assessments
             </h2>
+            <ul>
+              <button disabled className="btn btn-secondary">
+                Workstation Assessments
+              </button>
+              <Link to="./admin-center">
+                <button className="btn btn-secondary">Edit Questions</button>
+              </Link>
+              <Link to="./admin-center-view-users">
+                <button className="btn btn-secondary">View Users</button>
+              </Link>
+              <DropdownButton
+                style={{ float: "right" }}
+                id="dropdown-basic-button"
+                title="Completed"
+              >
+                <Dropdown.Item>
+                  {" "}
+                  <Link to="admin-view-workstation-assessments-declined">
+                    In Progress
+                  </Link>
+                </Dropdown.Item>
+              </DropdownButton>{" "}
+            </ul>
 
             <ul>
-              <br />
-              <br />{" "}
-              <div>
-                <h6> </h6>
-              </div>
-              <div className="jumbotron">
-                <li style={{ textAlign: "center" }}>
-                  <b>no completed Workstation Self-Assessments</b>{" "}
-                </li>
+              {currentTodos.map(function(r, index) {
+                return (
+                  <div className="jumbotron">
+                    <Questions
+                      workStation={r.AssignedWorkstation}
+                      date={r.Date}
+                      completeToken={r.QuestionStatus}
+                      RUId={r.RUId}
+                    ></Questions>
+                  </div>
+                );
+              })}
+              <div
+                style={{ userSelect: "none", cursor: "pointer" }}
+                id="page-numbers"
+              >
+                {pageNumbers.map(number => {
+                  return (
+                    <button
+                      className="btn btn-primary"
+                      key={number}
+                      id={number}
+                      onClick={this.handleClick}
+                    >
+                      {number}
+                    </button>
+                  );
+                })}
               </div>
             </ul>
           </div>
-        </>
-      );
+        );
+      } else if (!this.state.questions.length) {
+        return (
+          <>
+            {" "}
+            <div>
+              <h2 style={{ textAlign: "center" }}>
+                Completed Workstation Assessments
+              </h2>
+
+              <ul>
+                <br />
+                <br />{" "}
+                <div>
+                  <h6> </h6>
+                </div>
+                <div className="jumbotron">
+                  <li style={{ textAlign: "center" }}>
+                    <b>no completed Workstation Self-Assessments</b>{" "}
+                  </li>
+                </div>
+              </ul>
+            </div>
+          </>
+        );
+      } else if (this.state.FullDetailsPageToken) {
+        return <></>;
+      }
     }
   }
 }
@@ -300,6 +291,7 @@ class Questions extends React.Component {
         console.log(moment.locale());
         return (
           <div>
+            <ModalFullDetails />
             <button
               onClick={this.checker}
               className="btn btn-primary"
@@ -520,3 +512,62 @@ class Questions extends React.Component {
   }
 }
 export default AdminWorkstations;
+
+// class DisplayAddQuestion extends React.Component {
+//   constructor(props) {
+//     super(props);
+
+//     this.handleClose = this.handleClose.bind(this);
+//     this.handleShow = this.handleShow.bind(this);
+
+//     this.handleRefresh = this.handleRefresh.bind(this);
+
+//     this.state = {
+//       show: false,
+//       show1: false
+//     };
+//   }
+
+//   handleClose() {
+//     this.setState({
+//       show: false,
+//       show1: false
+//     });
+//   }
+
+//   handleShow() {
+//     this.setState({
+//       show: true
+//     });
+//   }
+
+//   handleRefresh() {
+//     window.location.reload();
+//   }
+
+//   render() {
+//     // console.log(this.state);
+
+//     return (
+//       <div className="header-container">
+//         <button
+//           className="btn btn-primary"
+//           style={{ float: "right" }}
+//           onClick={this.handleShow}
+//         >
+//           +
+//         </button>
+
+//         <Modal
+//           className="modal-container custom-map-modal"
+//           show={this.state.show}
+//           onHide={this.handleClose}
+//           animation={true}
+//         >
+//            <Modal.Header closeButton></Modal.Header>
+//           <Modal.Body></Modal.Body>
+//         </Modal>
+//       </div>
+//     );
+//   }
+// }
