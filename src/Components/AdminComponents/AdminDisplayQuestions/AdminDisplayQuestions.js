@@ -416,21 +416,20 @@ class EditQuestion extends React.Component {
             "Content-Type": "application/json"
           },
           body: JSON.stringify(data)
-        })
-          .then(response => {
-            console.log("response before it is broken down " + response);
+        }).then(response => {
+          console.log("response before it is broken down " + response);
 
-            return response.json();
-          })
-          .then(({ adminJwt, jwt, user, AccountValidationMessage }) => {
-            console.log(
-              "after it is broken down",
-              jwt,
-              adminJwt,
-              user,
-              AccountValidationMessage
-            );
-          });
+          return response.json();
+        });
+        // .then(({ adminJwt, jwt, user, AccountValidationMessage }) => {
+        //   console.log(
+        //     "after it is broken down",
+        //     jwt,
+        //     adminJwt,
+        //     user,
+        //     AccountValidationMessage
+        //   );
+        // });
       }
     } catch (e) {
       console.log(e);

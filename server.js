@@ -291,28 +291,50 @@ app.post("/post-question-answers", async (req, res) => {
     request.input(`Date`, sql.NVarChar, date);
     request.input(`Email`, sql.NVarChar, user);
     request.input(`SelectedWorkstation`, sql.NVarChar, selectedWorkstation);
-    request.execute("dbo.AddQuestionResponseHeader", function(err, recordset) {
-      if (err) console.log(err);
-    });
-    for (var i = 0; i < results.length; i++) {
-      var request = new sql.Request();
-      let answer = answers[i];
-      let question = questions[i];
-      // let email = emails[i];
-      let questionId = questionIds[i];
-      let soloution = suggestedSoloutions[i];
+    let result = await request.execute("dbo.AddQuestionResponseHeader");
 
-      request.input(`Question`, sql.NVarChar, question);
-      request.input(`Answer`, sql.NVarChar, answer);
-      request.input(`Email`, sql.NVarChar, user);
-      request.input(`QuestionId`, sql.NVarChar, questionId);
-      request.input(`CompleteToken`, sql.NVarChar, completeToken);
-      request.input(`SelectedWorkstation`, sql.NVarChar, selectedWorkstation);
-      request.input(`SuggestedSoloution`, sql.NVarChar, soloution);
+    console.log("HERE");
+    console.log(result);
+    if (result.hasOwnProperty("recordset") && result.recordset.length) {
+      var recordsetRow = result.recordset[0];
 
-      request.execute("dbo.SubmitQuestionResponses", function(err, recordset) {
-        if (err) console.log(err);
-      });
+      if (recordsetRow.hasOwnProperty("createdId")) {
+        var id = recordsetRow.createdId;
+        console.log(id);
+
+        for (var i = 0; i < results.length; i++) {
+          var request = new sql.Request();
+          let answer = answers[i];
+          let question = questions[i];
+          // let email = emails[i];
+          let questionId = questionIds[i];
+          let soloution = suggestedSoloutions[i];
+
+          request.input(`WSAId`, sql.Int, id);
+          request.input(`Question`, sql.NVarChar, question);
+          request.input(`Answer`, sql.NVarChar, answer);
+          request.input(`Email`, sql.NVarChar, user);
+          request.input(`QuestionId`, sql.NVarChar, questionId);
+          // request.input(`CompleteToken`, sql.NVarChar, completeToken);
+          request.input(
+            `SelectedWorkstation`,
+            sql.NVarChar,
+            selectedWorkstation
+          );
+          request.input(`SuggestedSoloution`, sql.NVarChar, soloution);
+
+          request.execute("dbo.SubmitQuestionResponses", function(
+            err,
+            recordset
+          ) {
+            if (err) console.log(err);
+          });
+        }
+      } else {
+        console.log("unexpected result format");
+      }
+    } else {
+      console.log("No results found");
     }
   } catch (e) {
     console.log(e);
@@ -502,7 +524,37 @@ app.post("/submit-note-admin", async (req, response) => {
   console.info("done");
 });
 
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post("/get-completed-questions", async (req, res) => {
+  try {
+    let WSAId = req.body.WSAId;
+    // let RUId = req.body.RUId;
+    // let workstation = req.body.Workstation;
+
+    // console.log("RUID + WORKSTAION" + RUId + workstation);
+
+    var request = new sql.Request();
+
+    // request.input("RUId", sql.Int, RUId);
+    // request.input("Workstation", sql.Bit, workstation);
+    request.input("WSAId", sql.Int, WSAId);
+    request.execute("dbo.AdminGetAnsweredQuestionsComplete", function(
+      err,
+      recordset
+    ) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.info(e);
+  }
+});
+
+////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/admin-get-notes", async (req, res) => {

@@ -1,6 +1,8 @@
 import "./ViewWorkstationModal.css";
 import React from "react";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
+
+// import "./bootstrap.min.css";
 class DisplayAddQuestion extends React.Component {
   constructor(props) {
     super(props);
@@ -12,10 +14,30 @@ class DisplayAddQuestion extends React.Component {
 
     this.state = {
       show: false,
-      show1: false
+      show1: false,
+      answeredQuestions: []
     };
   }
-
+  componentDidMount() {
+    let data = {
+      // RUId: this.props.RUId,
+      // Workstation: this.props.workStation,
+      WSAId: this.props.WSAId
+    };
+    fetch("/get-completed-questions", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(recordset => recordset.json())
+      .then(results => {
+        this.setState({ answeredQuestions: results.recordset });
+        console.log(this.state.answeredQuestions);
+      });
+  }
   handleClose() {
     this.setState({
       show: false,
@@ -44,17 +66,63 @@ class DisplayAddQuestion extends React.Component {
             style={{ float: "right" }}
             onClick={this.handleShow}
           >
-            +
+            Response Overview
           </button>
         </div>
         <div>
           <Modal
-            //   className="test"
+            size="lg"
+            style={{ width: "100%" }}
             show={this.state.show}
             onHide={this.handleClose}
             animation={true}
           >
-            <button className="modal-dialog"> Hi </button>
+            <h3 style={{ textAlign: "center" }}>{this.props.workStation}</h3>
+            {this.state.answeredQuestions &&
+              this.state.answeredQuestions.map(function(question, index) {
+                if (
+                  question.QuestionResponse === "Y" ||
+                  question.QuestionResponse === "N"
+                ) {
+                  return (
+                    <>
+                      <div
+                        style={{
+                          backgroundColor: "#E6E6E6",
+                          padding: "1px"
+                        }}
+                      >
+                        <ul>
+                          {" "}
+                          <b> Q :</b>
+                          <div style={{ float: "right" }}>✔️</div>
+                          {question.QuestionWhenAnswered}
+                        </ul>
+                      </div>
+                    </>
+                  );
+                } else if (question.QuestionResponse === "P") {
+                  return (
+                    <>
+                      <div
+                        style={{
+                          backgroundColor: "#BDBDBD",
+                          padding: "1px"
+                        }}
+                      >
+                        <ul>
+                          <b> Q :</b>
+                          {question.QuestionWhenAnswered}{" "}
+                          <div style={{ float: "right" }}>❌</div>
+                          {/* <br />
+                          <b> S :</b>
+                          {question.SuggestedSoloution} */}
+                        </ul>
+                      </div>
+                    </>
+                  );
+                }
+              })}
           </Modal>
         </div>
       </>

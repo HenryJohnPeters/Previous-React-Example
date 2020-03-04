@@ -18,6 +18,7 @@ import AdminCenterViewUsers from "./Components/Pages/AdminCenterViewUsers";
 import AdminViewWorkStationAssessmentsPage from "./Components/Pages/AdminViewWorkStationAssessmentsPage";
 import AdminViewWorkStationAssessmentsDeclinedPage from "./Components/Pages/AdminViewWorkStationAssessmentsDeclinedPage";
 import CompletedAssessmentLandingPage from "./Components/Pages/CompletedAssessmentLandingPage";
+import AdminViewFullUserWSAResponses from "./Components/Pages/AdminViewFullUserWSAResponses";
 ////
 import AdminViewUsersSeverityHigh from "./AdminComponents/AdminViewUsersSeverityHigh";
 import AdminViewUsersSeverityMedium from "./AdminComponents/AdminViewUsersSeverityMedium";
@@ -74,6 +75,11 @@ function Routing() {
           exact
           path="/confirm-Password"
           component={ConfirmPassword}
+        />
+        <AuthRoute
+          exact
+          path="/admin-view-full-user-wsa-responses"
+          component={AdminViewFullUserWSAResponses}
         />
         <AuthRoute
           exact

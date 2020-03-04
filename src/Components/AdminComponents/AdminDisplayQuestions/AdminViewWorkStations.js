@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
-import ModalFullDetails from "../AdminDisplayWorkstations/AdminViewWorkstationDetails";
+import ModalCompletedQuestions from "../AdminDisplayWorkstations/AdminViewWorkstationDetails";
 
 moment.locale(window.navigator.language);
 
@@ -121,6 +121,7 @@ class AdminWorkstations extends React.Component {
                       date={r.Date}
                       completeToken={r.QuestionStatus}
                       RUId={r.RUId}
+                      WSAId={r.WSAId}
                     ></Questions>
                   </div>
                 );
@@ -189,101 +190,122 @@ class Questions extends React.Component {
       ViewActivityToken: false,
       noteToBeAdded: "",
       notesFromDB: [],
-      addNoteToken: false
+      addNoteToken: false,
+      answeredQuestions: []
     };
-    this.checker = this.checker.bind(this);
-    this.ViewActivity = this.ViewActivity.bind(this);
-    this.SubmitNote = this.SubmitNote.bind(this);
-    this.AddNoteBtn = this.AddNoteBtn.bind(this);
+    // this.checker = this.checker.bind(this);
+    // this.ViewActivity = this.ViewActivity.bind(this);
+    // this.SubmitNote = this.SubmitNote.bind(this);
+    // this.AddNoteBtn = this.AddNoteBtn.bind(this);
   }
 
-  SubmitNote() {
-    let userToken = window.localStorage.getItem("token");
-    let adminToken = window.localStorage.getItem("adminToken");
-    let userStatus = "";
-    if (userToken) {
-      userStatus = "User";
-    } else if (adminToken) {
-      userStatus = "Admin";
-    }
+  // componentDidMount() {
+  //   let data = {
+  //     RUId: this.props.RUId,
+  //     Workstation: this.props.workStation
+  //   };
+  //   fetch("/get-completed-questions", {
+  //     method: "POST",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify(data)
+  //   })
+  //     .then(recordset => recordset.json())
+  //     .then(results => {
+  //       this.setState({ answeredQuestions: results.recordset });
+  //       //console.log(this.state.AnsweredQuestions[1].Id);
+  //     });
+  // }
 
-    var today = new Date(),
-      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+  // SubmitNote() {
+  //   let userToken = window.localStorage.getItem("token");
+  //   let adminToken = window.localStorage.getItem("adminToken");
+  //   let userStatus = "";
+  //   if (userToken) {
+  //     userStatus = "User";
+  //   } else if (adminToken) {
+  //     userStatus = "Admin";
+  //   }
 
-    let data = {
-      note: this.state.noteToBeAdded,
-      UserRUId: this.props.RUId,
-      workstation: this.props.workStation,
-      time: date,
-      seenStatus: false,
-      userStatus: userStatus
-    };
+  //   var today = new Date(),
+  //     date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+  //       1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
-    fetch("/submit-note-admin", {
-      method: "POST", // or 'PUT'
-      headers: {
-        Accept: "application/json,",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-    window.location.reload();
-  }
+  //   let data = {
+  //     note: this.state.noteToBeAdded,
+  //     UserRUId: this.props.RUId,
+  //     workstation: this.props.workStation,
+  //     time: date,
+  //     seenStatus: false,
+  //     userStatus: userStatus
+  //   };
 
-  ViewActivity() {
-    try {
-      this.setState({ ViewActivity: true });
+  //   fetch("/submit-note-admin", {
+  //     method: "POST", // or 'PUT'
+  //     headers: {
+  //       Accept: "application/json,",
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify(data)
+  //   });
+  //   window.location.reload();
+  // }
 
-      let data = {
-        UserRUId: this.props.RUId,
-        workstation: this.props.workStation
-      };
+  // ViewActivity() {
+  //   try {
+  //     this.setState({ ViewActivity: true });
 
-      fetch("/admin-get-notes", {
-        method: "POST", // or 'PUT'
-        headers: {
-          Accept: "application/json,",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
-        .then(recordset => recordset.json())
-        .then(results => {
-          this.setState({ notesFromDB: results.recordset });
-          console.log(this.state.notesFromDB);
-        });
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  //     let data = {
+  //       UserRUId: this.props.RUId,
+  //       workstation: this.props.workStation
+  //     };
 
-  checker() {
-    if (!this.state.viewDetails) {
-      this.setState({ viewDetails: true });
-    } else if (this.state.viewDetails) {
-      this.setState({ viewDetails: false });
-    }
+  //     fetch("/admin-get-notes", {
+  //       method: "POST", // or 'PUT'
+  //       headers: {
+  //         Accept: "application/json,",
+  //         "Content-Type": "application/json"
+  //       },
+  //       body: JSON.stringify(data)
+  //     })
+  //       .then(recordset => recordset.json())
+  //       .then(results => {
+  //         this.setState({ notesFromDB: results.recordset });
+  //         console.log(this.state.notesFromDB);
+  //       });
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 
-    let workstation = this.props.AssignedWorkStation;
-    let completeToken = this.props.completeToken;
-    let date = this.props.date;
-    let RUId = this.props.RUId;
+  // checker() {
+  //   if (!this.state.viewDetails) {
+  //     this.setState({ viewDetails: true });
+  //   } else if (this.state.viewDetails) {
+  //     this.setState({ viewDetails: false });
+  //   }
 
-    fetch(
-      `/admin-show-workstations-Details/${date}/${RUId}/${completeToken}/${workstation}`
-    )
-      .then(recordset => recordset.json())
-      .then(results => {
-        this.setState({ selectedSet: results.recordset });
-        console.log(this.state.selectedSet);
-      });
-  }
+  //   let workstation = this.props.AssignedWorkStation;
+  //   let completeToken = this.props.completeToken;
+  //   let date = this.props.date;
+  //   let RUId = this.props.RUId;
 
-  AddNoteBtn() {
-    this.setState({ addNoteToken: true, ViewActivity: true });
-    console.log(this.state.addNoteToken);
-  }
+  //   fetch(
+  //     `/admin-show-workstations-Details/${date}/${RUId}/${completeToken}/${workstation}`
+  //   )
+  //     .then(recordset => recordset.json())
+  //     .then(results => {
+  //       this.setState({ selectedSet: results.recordset });
+  //       console.log(this.state.selectedSet);
+  //     });
+  // }
+
+  // AddNoteBtn() {
+  //   this.setState({ addNoteToken: true, ViewActivity: true });
+  //   console.log(this.state.addNoteToken);
+  // }
 
   render() {
     if (!this.state.ViewActivity) {
@@ -291,22 +313,28 @@ class Questions extends React.Component {
         console.log(moment.locale());
         return (
           <div>
-            <ModalFullDetails />
-            <button
+            <ModalCompletedQuestions
+              RUId={this.props.RUId}
+              workStation={this.props.workStation}
+              WSAId={this.props.WSAId}
+            />
+            {/* <button
               onClick={this.checker}
               className="btn btn-primary"
               style={{ float: "right" }}
             >
               Question Responses
-            </button>
-
-            <button
-              onClick={this.ViewActivity}
-              className="btn btn-primary"
-              style={{ float: "right" }}
+            </button> */}
+            <Link
+              to={{
+                pathname: "/admin-view-full-user-wsa-responses",
+                state: {
+                  WSAId: this.props.WSAId
+                }
+              }}
             >
-              View Full Details
-            </button>
+              <button>View Full Details</button>
+            </Link>
 
             <br />
 
@@ -434,140 +462,81 @@ class Questions extends React.Component {
           </button>
         </>
       );
-    } else if (this.state.ViewActivity && this.state.addNoteToken) {
-      return (
-        <>
-          {" "}
-          <>
-            <button
-              style={{ float: "right" }}
-              onClick={e =>
-                this.setState({
-                  ViewActivity: false,
-                  viewDetails: false,
-                  ViewActivityToken: false,
-                  addNoteToken: false
-                })
-              }
-              className="btn btn-secondary"
-            >
-              Revert
-            </button>
-            <br />
-            <li>
-              <b>User Id: </b>
-              {this.props.RUId}
-            </li>
-            <li>
-              <b>Workstation: </b>
-              {this.props.workStation}
-            </li>
-            <li>
-              <b>Date: </b>
-              {moment(this.props.date).format("DD/MM/YYYY")}
-            </li>
-            <li>
-              <b>Complete Token: </b>
-              {this.props.completeToken}
-            </li>
+      // } else if (this.state.ViewActivity && this.state.addNoteToken) {
+      //   return (
+      //     <>
+      //       {" "}
+      //       <>
+      //         <button
+      //           style={{ float: "right" }}
+      //           onClick={e =>
+      //             this.setState({
+      //               ViewActivity: false,
+      //               viewDetails: false,
+      //               ViewActivityToken: false,
+      //               addNoteToken: false
+      //             })
+      //           }
+      //           className="btn btn-secondary"
+      //         >
+      //           Revert
+      //         </button>
+      //         <br />
+      //         <li>
+      //           <b>User Id: </b>
+      //           {this.props.RUId}
+      //         </li>
+      //         <li>
+      //           <b>Workstation: </b>
+      //           {this.props.workStation}
+      //         </li>
+      //         <li>
+      //           <b>Date: </b>
+      //           {moment(this.props.date).format("DD/MM/YYYY")}
+      //         </li>
+      //         <li>
+      //           <b>Complete Token: </b>
+      //           {this.props.completeToken}
+      //         </li>
 
-            {this.state.notesFromDB &&
-              this.state.notesFromDB.map((item, index) => {
-                return (
-                  <div
-                    style={{
-                      backgroundColor: "white",
-                      border: "inset",
-                      borderWidth: "0.2px"
-                    }}
-                  >
-                    <div style={{ float: "right" }}>
-                      {moment(item.CreationTime).format("L")}
-                    </div>
-                    <div>
-                      <b>{`${item.UserStatus} `}</b>
-                    </div>
+      //         {this.state.notesFromDB &&
+      //           this.state.notesFromDB.map((item, index) => {
+      //             return (
+      //               <div
+      //                 style={{
+      //                   backgroundColor: "white",
+      //                   border: "inset",
+      //                   borderWidth: "0.2px"
+      //                 }}
+      //               >
+      //                 <div style={{ float: "right" }}>
+      //                   {moment(item.CreationTime).format("L")}
+      //                 </div>
+      //                 <div>
+      //                   <b>{`${item.UserStatus} `}</b>
+      //                 </div>
 
-                    <div style={{ textAlign: "left" }}>{item.Notes}</div>
-                  </div>
-                );
-              })}
+      //                 <div style={{ textAlign: "left" }}>{item.Notes}</div>
+      //               </div>
+      //             );
+      //           })}
 
-            <br />
-            <input
-              onChange={e => this.setState({ noteToBeAdded: e.target.value })}
-            />
+      //         <br />
+      //         <input
+      //           onChange={e => this.setState({ noteToBeAdded: e.target.value })}
+      //         />
 
-            <button
-              onClick={this.SubmitNote}
-              className="btn btn-primary"
-              style={{ width: "100%" }}
-            >
-              Submit Button
-            </button>
-          </>
-        </>
-      );
+      //         <button
+      //           onClick={this.SubmitNote}
+      //           className="btn btn-primary"
+      //           style={{ width: "100%" }}
+      //         >
+      //           Submit Button
+      //         </button>
+      //       </>
+      //     </>
+      //   );
     }
   }
 }
 export default AdminWorkstations;
-
-// class DisplayAddQuestion extends React.Component {
-//   constructor(props) {
-//     super(props);
-
-//     this.handleClose = this.handleClose.bind(this);
-//     this.handleShow = this.handleShow.bind(this);
-
-//     this.handleRefresh = this.handleRefresh.bind(this);
-
-//     this.state = {
-//       show: false,
-//       show1: false
-//     };
-//   }
-
-//   handleClose() {
-//     this.setState({
-//       show: false,
-//       show1: false
-//     });
-//   }
-
-//   handleShow() {
-//     this.setState({
-//       show: true
-//     });
-//   }
-
-//   handleRefresh() {
-//     window.location.reload();
-//   }
-
-//   render() {
-//     // console.log(this.state);
-
-//     return (
-//       <div className="header-container">
-//         <button
-//           className="btn btn-primary"
-//           style={{ float: "right" }}
-//           onClick={this.handleShow}
-//         >
-//           +
-//         </button>
-
-//         <Modal
-//           className="modal-container custom-map-modal"
-//           show={this.state.show}
-//           onHide={this.handleClose}
-//           animation={true}
-//         >
-//            <Modal.Header closeButton></Modal.Header>
-//           <Modal.Body></Modal.Body>
-//         </Modal>
-//       </div>
-//     );
-//   }
-// }
