@@ -534,7 +534,7 @@ app.post("/get-completed-questions", async (req, res) => {
     // let workstation = req.body.Workstation;
 
     // console.log("RUID + WORKSTAION" + RUId + workstation);
-
+    await sql.connect(config);
     var request = new sql.Request();
 
     // request.input("RUId", sql.Int, RUId);
@@ -554,6 +554,29 @@ app.post("/get-completed-questions", async (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////
+app.post("/get-WSA-header", async (req, res) => {
+  try {
+    await sql.connect(config);
+    let WSAId = req.body.WSAId;
+    // let RUId = req.body.RUId;
+    // let workstation = req.body.Workstation;
+
+    // console.log("RUID + WORKSTAION" + RUId + workstation);
+
+    var request = new sql.Request();
+
+    // request.input("RUId", sql.Int, RUId);
+    // request.input("Workstation", sql.Bit, workstation);
+    request.input("WSAId", sql.Int, WSAId);
+    request.execute("dbo.AdminGetWSAHeaderComplete", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.info(e);
+  }
+});
 /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
