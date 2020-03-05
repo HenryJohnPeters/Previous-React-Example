@@ -35,6 +35,7 @@ class Home extends React.Component {
       .then(recordset => recordset.json())
       .then(results => {
         this.setState({ answeredQuestions: results.recordset });
+        console.log(this.state.answeredQuestions);
       });
   }
 
@@ -68,7 +69,7 @@ class Home extends React.Component {
         <h3 style={{ textAlign: "center" }}>Workstation Assessment</h3>
 
         <DisplayWSAHeader WSAHeader={this.state.WSAHeader} />
-        <DisplayWSAAnsweredQuestions
+        <WSAAnsweredQuestions
           answeredQuestions={this.state.answeredQuestions}
         />
       </>
@@ -99,7 +100,7 @@ function Header() {
 
 export default Home;
 
-class DisplayWSAAnsweredQuestions extends React.Component {
+class WSAAnsweredQuestions extends React.Component {
   constructor(props) {
     super(props);
 
@@ -112,77 +113,24 @@ class DisplayWSAAnsweredQuestions extends React.Component {
       <>
         {this.props.answeredQuestions &&
           this.props.answeredQuestions.map((question, index) => {
-            if (
-              (!this.state.viewMoreToken &&
-                question.QuestionResponse === "Y") ||
-              question.QuestionResponse === "N"
-            ) {
-              return (
-                <ul>
-                  <div
-                    style={{
-                      backgroundColor: "#E6E6E6",
-                      padding: "1px"
-                    }}
-                  >
-                    <button
-                      className="btn btn-secondary"
-                      style={{ float: "right" }}
-                      onClick={e => this.setState({ viewMoreToken: true })}
-                    >
-                      View Details
-                    </button>
-                    <ul>
-                      {question.QuestionWhenAnswered} <div>✔️</div>
-                    </ul>
-                  </div>
-                </ul>
-              );
-            } else if (
-              !this.state.viewMoreToken &&
-              question.QuestionResponse === "P"
-            ) {
-              return (
-                <ul>
-                  <div
-                    style={{
-                      backgroundColor: "#BDBDBD",
-                      padding: "1px"
-                    }}
-                  >
-                    <button
-                      className="btn btn-primary"
-                      style={{ float: "right" }}
-                      onClick={e => this.setState({ viewMoreToken: true })}
-                    >
-                      View Details
-                    </button>
-                    <ul>
-                      <u>{question.QuestionWhenAnswered} </u>
-                      <div>❌</div>{" "}
-                    </ul>
-                  </div>
-                </ul>
-              );
-            } else if (
-              (!this.state.viewMoreToken &&
-                question.QuestionResponse === "Y") ||
-              question.QuestionResponse === "N"
-            ) {
-              return <>tester</>;
-            } else if (
-              (!this.state.viewMoreToken &&
-                question.QuestionResponse === "Y") ||
-              question.QuestionResponse === "N"
-            ) {
-              return <>test</>;
-            }
+            // alert(question.SuggestedSoloution);
+            return (
+              <>
+                <DisplayWSAAnsweredQuestions
+                  id={question.Id}
+                  questionWhenAnswered={question.QuestionWhenAnswered}
+                  questionResponse={question.QuestionResponse}
+                  suggestedSoloution={question.SuggestedSoloution}
+                  WSAId={question.WSAId}
+                  ResponseId={question.ResponseId}
+                />
+              </>
+            );
           })}
       </>
     );
   }
 }
-
 class DisplayWSAHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -216,5 +164,265 @@ class DisplayWSAHeader extends React.Component {
           })}
       </>
     );
+  }
+}
+
+class DisplayWSAAnsweredQuestions extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      viewFullDetailsToken: false,
+      noteToBeAdded: ""
+    };
+    this.submitNote = this.submitNote.bind(this);
+    this.getWSAResponses = this.getWSAResponses.bind(this);
+  }
+  submitNote() {
+    // alert(this.props.ResponseId);
+    var today = new Date(),
+      date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+        1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+
+    let data = {
+      responseId: this.props.ResponseId,
+      response: this.state.noteToBeAdded,
+      date: date,
+      seenStatus: 0
+    };
+
+    fetch("/submit-WSA-Response-Admin", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(recordset => recordset.json())
+      .then(results => {
+        this.setState({ WSAHeader: results.recordset });
+        console.log(this.state.WSAHeader);
+      });
+  }
+
+  getWSAResponses() {
+    let data = { ResponseId: this.props.ResponseId };
+
+    fetch("/get-WSA-Responses", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(recordset => recordset.json())
+      .then(results => {
+        this.setState({ WSAHeader: results.recordset });
+        console.log(this.state.WSAHeader);
+      });
+
+    this.setState({ viewFullDetailsToken: true });
+  }
+
+  render() {
+    console.log(this.state.noteToBeAdded);
+    if (
+      !this.state.viewFullDetailsToken &&
+      this.props.questionResponse === "Y"
+    ) {
+      return (
+        <>
+          <ul>
+            <div
+              style={{
+                backgroundColor: "#E6E6E6",
+                padding: "1px"
+              }}
+            >
+              <button
+                style={{ float: "right" }}
+                className="btn btn-primary"
+                onClick={e => this.setState({ viewFullDetailsToken: true })}
+              >
+                View Details{" "}
+              </button>
+              <ul>
+                {" "}
+                <div style={{ float: "right" }}>✔️</div>
+                {this.props.questionWhenAnswered}
+              </ul>{" "}
+              <br />
+            </div>
+          </ul>
+        </>
+      );
+    } else if (
+      !this.state.viewFullDetailsToken &&
+      this.props.questionResponse === "P"
+    ) {
+      return (
+        <>
+          <ul>
+            <div
+              style={{
+                backgroundColor: "#BDBDBD",
+                padding: "1px"
+              }}
+            >
+              <button
+                style={{ float: "right" }}
+                className="btn btn-primary"
+                onClick={this.getWSAResponses}
+              >
+                View Details
+              </button>
+              <ul>
+                {this.props.questionWhenAnswered}{" "}
+                <div style={{ float: "right" }}>❌</div>
+              </ul>
+              <br />
+            </div>
+          </ul>
+        </>
+      );
+    } else if (
+      !this.state.viewFullDetailsToken &&
+      this.props.questionResponse === "N"
+    ) {
+      return (
+        <>
+          <ul>
+            <div
+              style={{
+                backgroundColor: "#E6E6E6",
+                padding: "1px"
+              }}
+            >
+              <button
+                style={{ float: "right" }}
+                className="btn btn-primary"
+                onClick={e => this.setState({ viewFullDetailsToken: true })}
+              >
+                View Details{" "}
+              </button>
+              <ul>
+                {" "}
+                <div style={{ float: "right" }}>✔️</div>
+                {this.props.questionWhenAnswered}
+              </ul>{" "}
+              <br />
+            </div>
+          </ul>
+        </>
+      );
+    } else if (
+      this.state.viewFullDetailsToken &&
+      this.props.questionResponse === "Y"
+    ) {
+      return (
+        <>
+          <ul>
+            <div
+              style={{
+                backgroundColor: "#E6E6E6",
+                padding: "1px"
+              }}
+            >
+              <button
+                style={{ float: "right" }}
+                className="btn btn-secondary"
+                onClick={e => this.setState({ viewFullDetailsToken: false })}
+              >
+                Revert{" "}
+              </button>
+              <ul>
+                {" "}
+                {this.props.questionWhenAnswered}
+                <div style={{ float: "right" }}>✔️</div>
+                <br />
+                Answer : Yes
+              </ul>{" "}
+            </div>
+          </ul>
+        </>
+      );
+    } else if (
+      this.state.viewFullDetailsToken &&
+      this.props.questionResponse === "N"
+    ) {
+      return (
+        <>
+          <ul>
+            <div
+              style={{
+                backgroundColor: "#E6E6E6",
+                padding: "1px"
+              }}
+            >
+              <button
+                style={{ float: "right" }}
+                className="btn btn-secondary"
+                onClick={e => this.setState({ viewFullDetailsToken: false })}
+              >
+                Revert{" "}
+              </button>
+              <ul>
+                {" "}
+                {this.props.questionWhenAnswered}
+                <div style={{ float: "right" }}>✔️</div>
+                <br />
+                Answer : No, but not a problem
+              </ul>{" "}
+            </div>
+          </ul>
+        </>
+      );
+    } else if (
+      this.state.viewFullDetailsToken &&
+      this.props.questionResponse === "P"
+    ) {
+      return (
+        <>
+          <ul>
+            <div
+              style={{
+                backgroundColor: "#BDBDBD",
+                padding: "1px"
+              }}
+            >
+              <button
+                style={{ float: "right" }}
+                className="btn btn-primary"
+                onClick={e => this.setState({ viewFullDetailsToken: false })}
+              >
+                View Details
+              </button>
+              <ul>
+                {this.props.questionWhenAnswered} <br />
+                <b> Suggested Soloution :</b> {this.props.suggestedSoloution}
+                <div style={{ float: "right" }}>❌</div>
+                <textarea
+                  style={{ width: "100%" }}
+                  onChange={e =>
+                    this.setState({ noteToBeAdded: e.target.value })
+                  }
+                />
+                <button
+                  style={{ width: "100%", textAlign: "center" }}
+                  className="btn btn-primary"
+                  onClick={this.submitNote}
+                >
+                  Submit Note{" "}
+                </button>
+              </ul>
+
+              <br />
+            </div>
+          </ul>
+        </>
+      );
+    }
   }
 }

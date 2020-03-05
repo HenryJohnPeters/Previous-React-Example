@@ -504,22 +504,20 @@ app.post("/reset-password-email", async (req, response) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.post("/submit-note-admin", async (req, response) => {
-  (note = req.body.note),
-    (UserRUId = req.body.UserRUId),
-    (workstation = req.body.workstation),
-    (time = req.body.time),
+app.post("/submit-WSA-Response-Admin", async (req, response) => {
+  (responseId = req.body.responseId),
+    (response = req.body.response),
+    (date = req.body.date),
     (seenStatus = req.body.seenStatus),
-    (userStatus = req.body.userStatus);
-  await sql.connect(config);
+    await sql.connect(config);
+
   var request = new sql.Request();
 
-  request.input("Note", sql.NVarChar, note);
-  request.input("UserRUId", sql.Int, UserRUId);
-  request.input("Workstation", sql.NVarChar, workstation);
-  request.input("Time", sql.DateTime, time);
+  request.input("ResponseId", sql.Int, responseId);
+  request.input("Response", sql.NVarChar, response);
+  request.input("Date", sql.DateTime, date);
   request.input("SeenStatus", sql.Bit, seenStatus);
-  request.input("UserStatus", sql.NVarChar, userStatus);
+
   await request.execute("dbo.SubmitNoteAdmin");
   console.info("done");
 });
