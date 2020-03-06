@@ -125,12 +125,12 @@ app.get("/admin-completed-workstations", async (req, res) => {
 });
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-//this
-app.get("/admin-Pending-workstations", async (req, res) => {
+//this should be assessments
+app.get("/g", async (req, res) => {
+  console.log("hi from express");
   // connect to your database
   try {
-    // let WorkStation = req.params.Workstation;
-
+    let responseId = req.body.responseId;
     await sql.connect(config);
 
     // create Request object
@@ -138,8 +138,8 @@ app.get("/admin-Pending-workstations", async (req, res) => {
 
     // query to the database and get the records
     // request.input("WorkStation", sql.NVarChar, WorkStation);
-
-    request.execute("dbo.AdminPendingQuestions", function(err, recordset) {
+    request.input("ResponseId", sql.NVarChar, responseId);
+    request.execute("dbo.GetWSAResponses", function(err, recordset) {
       if (err) console.log(err);
       // send records as a response
       res.json(recordset);
@@ -147,16 +147,42 @@ app.get("/admin-Pending-workstations", async (req, res) => {
   } catch (e) {
     console.log(e);
   }
+  console.log("done");
 });
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//this
+// app.get("/admin-Pending-workstations", async (req, res) => {
+//   // connect to your database
+//   try {
+//     // let WorkStation = req.params.Workstation;
+
+//     await sql.connect(config);
+
+//     // create Request object
+//     var request = new sql.Request();
+
+//     // query to the database and get the records
+//     // request.input("WorkStation", sql.NVarChar, WorkStation);
+
+//     request.execute("dbo.AdminPendingQuestions", function(err, recordset) {
+//       if (err) console.log(err);
+//       // send records as a response
+//       res.json(recordset);
+//     });
+//   } catch (e) {
+//     console.log(e);
+//   }
+// });
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-app.get("/show-questions-answered/:date/:email", async (req, res) => {
+app.get("/show-questions-answered/:date/:email", (req, res) => {
   // connect to your database
   let date = req.params.date;
 
   let email = req.params.email;
 
-  await sql.connect(config);
+  sql.connect(config);
 
   // create Request object
   var request = new sql.Request();
@@ -166,6 +192,29 @@ app.get("/show-questions-answered/:date/:email", async (req, res) => {
   request.input("Date", sql.Date, date);
   request.input("Email", sql.NVarChar, email);
   request.execute("dbo.ShowQuestionsAnswered", function(err, recordset) {
+    if (err) console.log(err);
+    // send records as a response
+    res.json(recordset);
+
+    console.info(`recordset ${recordset}`);
+  });
+});
+///////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+app.get("/showquestions-answered/:responseId", async (req, res) => {
+  // connect to your database
+  let responseId = req.params.responseId;
+
+  await sql.connect(config);
+
+  // create Request object
+  var request = new sql.Request();
+
+  // query to the database and get the records
+
+  request.input("ResponseId", sql.Int, responseId);
+
+  request.execute("dbo.GetWSAResponses", function(err, recordset) {
     if (err) console.log(err);
     // send records as a response
     res.json(recordset);
@@ -525,6 +574,24 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
 /////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// app.post("/get-WSA-responses", async (req, response) => {
+//   (responseId = req.body.responseId), await sql.connect(config);
+//   console.info("got here");
+
+//   var request = new sql.Request();
+
+//   request.input("ResponseId", sql.Int, responseId);
+//   // request.execute("dbo.GetWSAResponses", function(err, recordset) {
+//   //   if (err) console.log(err);
+//   //   // send records as a response
+//   //   res.json(recordset);
+//   // });
+//   console.info("done");
+// });
+
+/////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 app.post("/get-completed-questions", async (req, res) => {
   try {
     let WSAId = req.body.WSAId;
@@ -567,6 +634,32 @@ app.post("/get-WSA-header", async (req, res) => {
     // request.input("Workstation", sql.Bit, workstation);
     request.input("WSAId", sql.Int, WSAId);
     request.execute("dbo.AdminGetWSAHeaderComplete", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.info(e);
+  }
+});
+/////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+app.post("/get-WSA-responses", async (req, res) => {
+  try {
+    await sql.connect(config);
+    let responseId = req.body.responseId;
+    // let RUId = req.body.RUId;
+    // let workstation = req.body.Workstation;
+
+    // console.log("RUID + WORKSTAION" + RUId + workstation);
+
+    var request = new sql.Request();
+
+    // request.input("RUId", sql.Int, RUId);
+    // request.input("Workstation", sql.Bit, workstation);
+    request.input("ResponseId", sql.Int, responseId);
+    request.execute("dbo.GetWSAResponses", function(err, recordset) {
       if (err) console.log(err);
       // send records as a response
       res.json(recordset);
