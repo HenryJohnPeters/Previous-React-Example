@@ -199,114 +199,6 @@ class Questions extends React.Component {
     // this.AddNoteBtn = this.AddNoteBtn.bind(this);
   }
 
-  // componentDidMount() {
-  //   let data = {
-  //     RUId: this.props.RUId,
-  //     Workstation: this.props.workStation
-  //   };
-  //   fetch("/get-completed-questions", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify(data)
-  //   })
-  //     .then(recordset => recordset.json())
-  //     .then(results => {
-  //       this.setState({ answeredQuestions: results.recordset });
-  //       //console.log(this.state.AnsweredQuestions[1].Id);
-  //     });
-  // }
-
-  // SubmitNote() {
-  //   let userToken = window.localStorage.getItem("token");
-  //   let adminToken = window.localStorage.getItem("adminToken");
-  //   let userStatus = "";
-  //   if (userToken) {
-  //     userStatus = "User";
-  //   } else if (adminToken) {
-  //     userStatus = "Admin";
-  //   }
-
-  //   var today = new Date(),
-  //     date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-  //       1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-
-  //   let data = {
-  //     note: this.state.noteToBeAdded,
-  //     UserRUId: this.props.RUId,
-  //     workstation: this.props.workStation,
-  //     time: date,
-  //     seenStatus: false,
-  //     userStatus: userStatus
-  //   };
-
-  //   fetch("/submit-note-admin", {
-  //     method: "POST", // or 'PUT'
-  //     headers: {
-  //       Accept: "application/json,",
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify(data)
-  //   });
-  //   window.location.reload();
-  // }
-
-  // ViewActivity() {
-  //   try {
-  //     this.setState({ ViewActivity: true });
-
-  //     let data = {
-  //       UserRUId: this.props.RUId,
-  //       workstation: this.props.workStation
-  //     };
-
-  //     fetch("/admin-get-notes", {
-  //       method: "POST", // or 'PUT'
-  //       headers: {
-  //         Accept: "application/json,",
-  //         "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify(data)
-  //     })
-  //       .then(recordset => recordset.json())
-  //       .then(results => {
-  //         this.setState({ notesFromDB: results.recordset });
-  //         console.log(this.state.notesFromDB);
-  //       });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
-
-  // checker() {
-  //   if (!this.state.viewDetails) {
-  //     this.setState({ viewDetails: true });
-  //   } else if (this.state.viewDetails) {
-  //     this.setState({ viewDetails: false });
-  //   }
-
-  //   let workstation = this.props.AssignedWorkStation;
-  //   let completeToken = this.props.completeToken;
-  //   let date = this.props.date;
-  //   let RUId = this.props.RUId;
-
-  //   fetch(
-  //     `/admin-show-workstations-Details/${date}/${RUId}/${completeToken}/${workstation}`
-  //   )
-  //     .then(recordset => recordset.json())
-  //     .then(results => {
-  //       this.setState({ selectedSet: results.recordset });
-  //       console.log(this.state.selectedSet);
-  //     });
-  // }
-
-  // AddNoteBtn() {
-  //   this.setState({ addNoteToken: true, ViewActivity: true });
-  //   console.log(this.state.addNoteToken);
-  // }
-
   render() {
     if (!this.state.ViewActivity) {
       if (!this.state.viewDetails && !this.state.ViewActivityToken) {
@@ -333,7 +225,9 @@ class Questions extends React.Component {
                 }
               }}
             >
-              <button>View Full Details</button>
+              <button style={{ float: "right" }} className="btn btn-primary">
+                View Full Details
+              </button>
             </Link>
 
             <br />

@@ -72,6 +72,7 @@ class Home extends React.Component {
         <DisplayWSAHeader WSAHeader={this.state.WSAHeader} />
         <WSAAnsweredQuestions
           answeredQuestions={this.state.answeredQuestions}
+          amountOfQuestions={this.state.answeredQuestions.length}
         />
       </>
     );
@@ -124,6 +125,7 @@ class WSAAnsweredQuestions extends React.Component {
                   suggestedSoloution={question.SuggestedSoloution}
                   WSAId={question.WSAId}
                   ResponseId={question.ResponseId}
+                  amountOfQuestions={this.props.amountOfQuestions}
                 />
                 <br />
               </ul>
@@ -194,7 +196,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     this.state = {
       viewFullDetailsToken: true,
       noteToBeAdded: "",
-      WSAResponses: []
+      WSAResponses: [],
+      ViewCompletedResponsesToken: false
     };
     this.submitNote = this.submitNote.bind(this);
     this.viewDetails = this.viewDetails.bind(this);
@@ -231,7 +234,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
 
   submitNote() {
     if (this.state.noteToBeAdded.length > 5) {
-      alert(this.props.ResponseId);
+      // alert(this.props.ResponseId);
       var today = new Date(),
         date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
           1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
@@ -282,11 +285,100 @@ class DisplayWSAAnsweredQuestions extends React.Component {
   }
 
   render() {
-    console.log(this.state.noteToBeAdded);
+    // alert(this.props.ResponseId + "2");
 
     if (
+      this.state.WSAResponses.length &&
       this.state.viewFullDetailsToken &&
-      this.props.questionResponse === "Y"
+      this.props.questionResponse === "Y" &&
+      !this.state.ViewCompletedResponsesToken
+    ) {
+      return (
+        <>
+          <div
+            style={{
+              backgroundColor: "#E6E6E6",
+              paddingBottom: "40px"
+            }}
+          >
+            {" "}
+            <button
+              className="btn btn-primary"
+              style={{ float: "right" }}
+              onClick={e =>
+                this.setState({ ViewCompletedResponsesToken: true })
+              }
+            >
+              {" "}
+              View Responses{" "}
+            </button>
+            <ul>
+              {" "}
+              {this.props.questionWhenAnswered}
+              <div style={{ float: "right" }}>✔️</div>
+              <br />
+              <b>Answer :</b> Yes
+            </ul>{" "}
+          </div>
+        </>
+      );
+    } else if (
+      this.state.WSAResponses.length &&
+      this.state.viewFullDetailsToken &&
+      this.props.questionResponse === "Y" &&
+      this.state.ViewCompletedResponsesToken
+    ) {
+      return (
+        <>
+          <div
+            style={{
+              backgroundColor: "#E6E6E6",
+              paddingBottom: "40px"
+            }}
+          >
+            {" "}
+            <button
+              className="btn btn-primary"
+              style={{ float: "right" }}
+              onClick={e =>
+                this.setState({ ViewCompletedResponsesToken: false })
+              }
+            >
+              {" "}
+              View Responses{" "}
+            </button>
+            <ul>
+              {" "}
+              {this.props.questionWhenAnswered}
+              <div style={{ float: "right" }}>✔️</div>
+              <br />
+              <b>Answer :</b> Yes{" "}
+              {this.state.WSAResponses &&
+                this.state.WSAResponses.map((r, index) => {
+                  return (
+                    <div
+                      style={{
+                        backgroundColor: "#E5E5E5",
+                        border: "inset",
+                        background: "white"
+                      }}
+                    >
+                      <div style={{ float: "right" }}>
+                        {moment(r.Date).format("HH:MM  DD/MM/YYYY ")}
+                      </div>
+                      {r.Response}
+                    </div>
+                  );
+                })}{" "}
+            </ul>
+          </div>
+        </>
+      );
+    } else if (
+      !this.state.WSAResponses.length &&
+      this.state.viewFullDetailsToken &&
+      this.props.questionResponse === "Y" &&
+      !this.state.ViewCompletedResponsesToken
     ) {
       return (
         <>
@@ -389,14 +481,10 @@ class DisplayWSAAnsweredQuestions extends React.Component {
             </button>{" "}
             <br />
             <br />
-            {/* <button
-              style={{ width: "10%", textAlign: "center", float: "right" }}
-              className="btn btn-primary"
-              onClick={this.acceptSoloution}
-            >
-              <ul> Accept </ul>Soloution
-            </button> */}
-            <DisplayAddQuestion />
+            <AcceptSolutionModal
+              responseId={this.props.ResponseId}
+              amountOfQuestions={this.props.amountOfQuestions}
+            />
             <br />
             <br />
             <br />
@@ -466,7 +554,11 @@ class DisplayWSAAnsweredQuestions extends React.Component {
             </ul>
 
             <br />
-            <DisplayAddQuestion />
+
+            <AcceptSolutionModal
+              responseId={this.props.ResponseId}
+              amountOfQuestions={this.props.amountOfQuestions}
+            />
 
             <br />
             <br />
@@ -478,7 +570,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
   }
 }
 
-class DisplayAddQuestion extends React.Component {
+class AcceptSolutionModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -486,17 +578,35 @@ class DisplayAddQuestion extends React.Component {
     this.handleShow = this.handleShow.bind(this);
 
     this.handleRefresh = this.handleRefresh.bind(this);
+    this.acceptSoloution = this.acceptSoloution.bind(this);
 
     this.state = {
-      show: false,
-      show1: false
+      show: false
     };
   }
 
+  acceptSoloution() {
+    // alert(this.props.responseId);
+
+    let data = {
+      responseId: this.props.responseId,
+      amountOfQuestions: this.props.amountOfQuestions
+    };
+    fetch("/update-response-to-confirmed", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+    alert("Response Set to completed");
+    this.handleClose();
+    window.location.reload();
+  }
   handleClose() {
     this.setState({
-      show: false,
-      show1: false
+      show: false
     });
   }
 
@@ -511,6 +621,7 @@ class DisplayAddQuestion extends React.Component {
   }
 
   render() {
+    // alert(this.props.amountOfQuestions);
     // console.log(this.state);
 
     return (
@@ -526,10 +637,22 @@ class DisplayAddQuestion extends React.Component {
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
-            <>Are you sure you want to accept this soloution</>
+            <h4>Are you sure you want to accept this soloution? </h4>
             <br />
-            <button className="btn btn-primary">Yes</button>
-            <button className="btn btn-primary">No</button>
+            <button
+              onClick={this.acceptSoloution}
+              className="btn btn-primary"
+              style={{ width: "50%" }}
+            >
+              Yes
+            </button>
+            <button
+              onClick={this.handleClose}
+              className="btn btn-primary"
+              style={{ width: "50%" }}
+            >
+              No
+            </button>
           </Modal.Body>
         </Modal>
       </div>

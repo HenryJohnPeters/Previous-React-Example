@@ -127,7 +127,6 @@ app.get("/admin-completed-workstations", async (req, res) => {
 //////////////////////////////////////////////////////////////////////////
 //this should be assessments
 app.get("/g", async (req, res) => {
-  console.log("hi from express");
   // connect to your database
   try {
     let responseId = req.body.responseId;
@@ -152,28 +151,29 @@ app.get("/g", async (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //this
-// app.get("/admin-Pending-workstations", async (req, res) => {
-//   // connect to your database
-//   try {
-//     // let WorkStation = req.params.Workstation;
 
-//     await sql.connect(config);
+app.get("/admin-in-progress-WSA", async (req, res) => {
+  // connect to your database
+  try {
+    // let WorkStation = req.params.Workstation;
 
-//     // create Request object
-//     var request = new sql.Request();
+    await sql.connect(config);
 
-//     // query to the database and get the records
-//     // request.input("WorkStation", sql.NVarChar, WorkStation);
+    // create Request object
+    var request = new sql.Request();
 
-//     request.execute("dbo.AdminPendingQuestions", function(err, recordset) {
-//       if (err) console.log(err);
-//       // send records as a response
-//       res.json(recordset);
-//     });
-//   } catch (e) {
-//     console.log(e);
-//   }
-// });
+    // query to the database and get the records
+    // request.input("WorkStation", sql.NVarChar, WorkStation);
+
+    request.execute("dbo.AdminPendingQuestions", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 app.get("/show-questions-answered/:date/:email", (req, res) => {
@@ -860,6 +860,51 @@ app.post("/register-email", async (req, response) => {
     });
   }
 });
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post("/update-response-to-confirmed", async (req, response) => {
+  try {
+    await sql.connect(config);
+    const responseId = req.body.responseId;
+    const amountOfQuestions = req.body.amountOfQuestions;
+
+    var request = new sql.Request();
+
+    request.input("ResponseId", sql.Int, responseId);
+    const update = await request.execute("dbo.UpdateResponseToConfirmed");
+
+    const result = await request.execute("dbo.GetCompletedWSAlength");
+
+    console.info(result.recordset.length);
+    console.info(result.recordset.length);
+
+    if (result.recordset.length < amountOfQuestions) {
+      console.info("Less results than needed");
+    } else if (result.recordset.length == amountOfQuestions) {
+      var request = new sql.Request();
+      console.info("correct results");
+      const responseId = req.body.responseId;
+      request.input("ResponseId", sql.Int, responseId);
+      await request.execute("dbo.UpdateWSAToCompleted");
+    }
+
+    console.log("done done");
+  } catch (err) {
+    console.log("Err: ", err);
+    response.status(500).send("Check api console.log for the error");
+  }
+});
+
+// app.post("/update", async (req, response) => {
+
+//     await sql.connect(config);
+//     const responseId = req.body.responseId;
+//     var request = new sql.Request();
+
+//     request.input("ResponseId", sql.Int, responseId);
+//     const result = await request.execute("dbo.UpdateResponseToConfirmed");
+
+//////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/password-confirm", async (req, response) => {
