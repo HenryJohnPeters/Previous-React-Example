@@ -75,29 +75,29 @@ app.get("/profile-account-details/:email", async (req, res) => {
 });
 
 //////////////////////////////////////////////////////////////////////////
-app.get("/user-completed-questions/:Email", async (req, res) => {
-  // connect to your database
-  try {
-    let Email = req.params.Email;
-    // let WorkStation = req.params.Workstation;
-    console.log(`WorkStation express end ${Email}`);
-    await sql.connect(config);
+// app.get("/user-completed-questions/:Email", async (req, res) => {
+//   // connect to your database
+//   try {
+//     let Email = req.params.Email;
+//     // let WorkStation = req.params.Workstation;
+//     console.log(`WorkStation express end ${Email}`);
+//     await sql.connect(config);
 
-    // create Request object
-    var request = new sql.Request();
+//     // create Request object
+//     var request = new sql.Request();
 
-    // query to the database and get the records
-    // request.input("WorkStation", sql.NVarChar, WorkStation);
-    request.input("Email", sql.NVarChar, Email);
-    request.execute("dbo.ViewWorkStations", function(err, recordset) {
-      if (err) console.log(err);
-      // send records as a response
-      res.json(recordset);
-    });
-  } catch (e) {
-    console.log(e);
-  }
-});
+//     // query to the database and get the records
+//     // request.input("WorkStation", sql.NVarChar, WorkStation);
+//     request.input("Email", sql.NVarChar, Email);
+//     request.execute("dbo.ViewWorkStations", function(err, recordset) {
+//       if (err) console.log(err);
+//       // send records as a response
+//       res.json(recordset);
+//     });
+//   } catch (e) {
+//     console.log(e);
+//   }
+// });
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //this should be assessments
@@ -123,7 +123,32 @@ app.get("/admin-completed-workstations", async (req, res) => {
     console.log(e);
   }
 });
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////
+app.get("/user-completed-WSA/:user", async (req, res) => {
+  // connect to your database
+  try {
+    // let WorkStation = req.params.Workstation;
+    let Email = req.params.user;
+
+    await sql.connect(config);
+
+    // create Request object
+    var request = new sql.Request();
+
+    // query to the database and get the records
+    // request.input("WorkStation", sql.NVarChar, WorkStation);
+    request.input("Email", sql.NVarChar, Email);
+    request.execute("dbo.UserCompletedWSA", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+//////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //this should be assessments
 app.get("/g", async (req, res) => {
@@ -554,21 +579,51 @@ app.post("/reset-password-email", async (req, response) => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/submit-WSA-Response-Admin", async (req, response) => {
-  (responseId = req.body.responseId),
-    (response = req.body.response),
-    (date = req.body.date),
-    (seenStatus = req.body.seenStatus),
-    await sql.connect(config);
+  let responseId = req.body.responseId;
+  let adminResponse = req.body.response;
+  let date = req.body.date;
+  let seenStatus = req.body.seenStatus;
+  let email = req.body.email;
+  let questionWhenAnswered = req.body.questionWhenAnswered;
+  let url = "http://localhost:3000/home";
+  await sql.connect(config);
 
   var request = new sql.Request();
 
   request.input("ResponseId", sql.Int, responseId);
-  request.input("Response", sql.NVarChar, response);
+  request.input("Response", sql.NVarChar, adminResponse);
   request.input("Date", sql.DateTime, date);
   request.input("SeenStatus", sql.Bit, seenStatus);
 
   await request.execute("dbo.SubmitNoteAdmin");
   console.info("done");
+
+  var transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: "hpf9703@gmail.com",
+      pass: "Cows4422"
+    }
+  });
+
+  var mailOptions = {
+    from: "CodeStoneDeskAssessment@outlook.com",
+    to: `${email}`,
+    subject: `Admin Update on Workstation Self-Assessment question.`,
+
+    html: `
+     <b>Question</b> : "${questionWhenAnswered}"<br>
+     <b>Answer</b> : "${adminResponse}"<br>
+    Please click this link to view your completed assessments <a href = "${url}">${url} </a>`
+  };
+
+  transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
 });
 
 /////////////////////////
@@ -865,15 +920,17 @@ app.post("/register-email", async (req, response) => {
 app.post("/update-response-to-confirmed", async (req, response) => {
   try {
     await sql.connect(config);
-    const responseId = req.body.responseId;
-    const amountOfQuestions = req.body.amountOfQuestions;
+    let responseId = req.body.responseId;
+    let amountOfQuestions = req.body.amountOfQuestions;
+    let email = req.body.email;
+    let questionWhenAnswered = req.body.questionWhenAnswered;
 
     var request = new sql.Request();
 
     request.input("ResponseId", sql.Int, responseId);
-    const update = await request.execute("dbo.UpdateResponseToConfirmed");
+    await request.execute("dbo.UpdateResponseToConfirmed");
 
-    const result = await request.execute("dbo.GetCompletedWSAlength");
+    let result = await request.execute("dbo.GetCompletedWSAlength");
 
     console.info(result.recordset.length);
     console.info(result.recordset.length);
@@ -886,6 +943,30 @@ app.post("/update-response-to-confirmed", async (req, response) => {
       const responseId = req.body.responseId;
       request.input("ResponseId", sql.Int, responseId);
       await request.execute("dbo.UpdateWSAToCompleted");
+
+      var transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: "hpf9703@gmail.com",
+          pass: "Cows4422"
+        }
+      });
+
+      var mailOptions = {
+        from: "CodeStoneDeskAssessment@outlook.com",
+        to: `${email}`,
+        subject: `Admin Accepted Soloution "${questionWhenAnswered}"`,
+
+        html: `Click this link to see your completed workstation assessments :<a href = http://localhost:3000/home>http://localhost:3000/home </a>`
+      };
+
+      transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
     }
 
     console.log("done done");

@@ -71,6 +71,7 @@ class Home extends React.Component {
 
         <DisplayWSAHeader WSAHeader={this.state.WSAHeader} />
         <WSAAnsweredQuestions
+          WSAHeader={this.state.WSAHeader}
           answeredQuestions={this.state.answeredQuestions}
           amountOfQuestions={this.state.answeredQuestions.length}
         />
@@ -126,6 +127,7 @@ class WSAAnsweredQuestions extends React.Component {
                   WSAId={question.WSAId}
                   ResponseId={question.ResponseId}
                   amountOfQuestions={this.props.amountOfQuestions}
+                  WSAHeader={this.props.WSAHeader}
                 />
                 <br />
               </ul>
@@ -201,32 +203,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     };
     this.submitNote = this.submitNote.bind(this);
     this.viewDetails = this.viewDetails.bind(this);
-    // this.acceptSoloution = this.acceptSoloution.bind(this);
   }
-  // acceptSoloution() {
-  //   //   var today = new Date(),
-  // //     date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-  // //       1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
-
-  //   let data = {
-  //     responseId: this.props.ResponseId,
-  //     response: this.state.noteToBeAdded,
-  //     date: date,
-  //     seenStatus: 0
-  //   };
-
-  //   fetch("/submit-WSA-Response-Admin", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify(data)
-  //   });
-
-  //   window.location.reload();
-  //   alert("Response Added");
-  // }
 
   viewDetails() {
     this.setState({ viewFullDetailsToken: false });
@@ -234,16 +211,18 @@ class DisplayWSAAnsweredQuestions extends React.Component {
 
   submitNote() {
     if (this.state.noteToBeAdded.length > 5) {
-      // alert(this.props.ResponseId);
       var today = new Date(),
         date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
           1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+      let email = window.localStorage.getItem("User");
 
       let data = {
         responseId: this.props.ResponseId,
         response: this.state.noteToBeAdded,
         date: date,
-        seenStatus: 0
+        seenStatus: 0,
+        email: email,
+        questionWhenAnswered: this.props.questionWhenAnswered
       };
 
       fetch("/submit-WSA-Response-Admin", {
@@ -286,6 +265,13 @@ class DisplayWSAAnsweredQuestions extends React.Component {
 
   render() {
     // alert(this.props.ResponseId + "2");
+    alert(this.props.WSAHeader);
+    // alert(this.props.WSAHeader.WSAId);
+    // alert(this.props.WSAHeader.WSId);
+    // alert(this.props.WSAHeader.QuestionStatus);
+    // alert(this.props.WSAHeader.Date);
+    // alert(this.props.WSAHeader.RUId);
+    // alert(this.props.WSAHeader.AssignedWorkstation);
 
     if (
       this.state.WSAResponses.length &&
@@ -484,6 +470,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
             <AcceptSolutionModal
               responseId={this.props.ResponseId}
               amountOfQuestions={this.props.amountOfQuestions}
+              questionWhenAnswered={this.props.questionWhenAnswered}
+              WSAHeader={this.props.WSAHeader}
             />
             <br />
             <br />
@@ -558,6 +546,9 @@ class DisplayWSAAnsweredQuestions extends React.Component {
             <AcceptSolutionModal
               responseId={this.props.ResponseId}
               amountOfQuestions={this.props.amountOfQuestions}
+              questionWhenAnswered={this.props.questionWhenAnswered}
+              noteToBeAdded={this.props.noteToBeAdded}
+              WSAHeader={this.props.WSAHeader}
             />
 
             <br />
@@ -586,11 +577,15 @@ class AcceptSolutionModal extends React.Component {
   }
 
   acceptSoloution() {
-    // alert(this.props.responseId);
+    alert(this.props.questionWhenAnswered);
+
+    let email = window.localStorage.getItem("User");
 
     let data = {
       responseId: this.props.responseId,
-      amountOfQuestions: this.props.amountOfQuestions
+      amountOfQuestions: this.props.amountOfQuestions,
+      email: email,
+      questionWhenAnswered: this.props.questionWhenAnswered
     };
     fetch("/update-response-to-confirmed", {
       method: "POST",
