@@ -54,7 +54,14 @@ class Home extends React.Component {
     })
       .then(recordset => recordset.json())
       .then(results => {
-        this.setState({ WSAHeader: results.recordset });
+        this.setState({
+          WSAHeader: results.recordset
+        });
+        this.setState({
+          userName: this.state.WSAHeader[0].NameOfUser,
+          workstation: this.state.WSAHeader[0].AssignedWorkstation
+        });
+
         console.log(this.state.WSAHeader);
       });
   }
@@ -64,14 +71,28 @@ class Home extends React.Component {
     this.getWSAAnsweredQuestions();
   }
   render() {
+    // alert(this.state.WSAHeader.NameOfUser);
+    console.log(this.state.WSAHeader);
+    // console.log(this.state.WSAHeader[0].NameOfUser);
+    console.log(this.state.WSAHeader.QuestionStatus);
+
     return (
       <>
         <Header />
         {/* <h3 style={{ textAlign: "center" }}>Workstation Assessment</h3> */}
+        {/* <button
+          onClick={e =>
+            alert(
+              this.state.WSAHeader[0].AssignedWorkstation +
+                this.state.WSAHeader[0].NameOfUser
+            )
+          }
+        ></button> */}
 
         <DisplayWSAHeader WSAHeader={this.state.WSAHeader} />
         <WSAAnsweredQuestions
-          WSAHeader={this.state.WSAHeader}
+          workstation={this.state.workstation}
+          userName={this.state.userName}
           answeredQuestions={this.state.answeredQuestions}
           amountOfQuestions={this.state.answeredQuestions.length}
         />
@@ -128,6 +149,8 @@ class WSAAnsweredQuestions extends React.Component {
                   ResponseId={question.ResponseId}
                   amountOfQuestions={this.props.amountOfQuestions}
                   WSAHeader={this.props.WSAHeader}
+                  userName={this.props.userName}
+                  workstation={this.props.workstation}
                 />
                 <br />
               </ul>
@@ -222,7 +245,9 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         date: date,
         seenStatus: 0,
         email: email,
-        questionWhenAnswered: this.props.questionWhenAnswered
+        questionWhenAnswered: this.props.questionWhenAnswered,
+        userName: this.props.userName,
+        workstation: this.props.workstation
       };
 
       fetch("/submit-WSA-Response-Admin", {
@@ -264,15 +289,6 @@ class DisplayWSAAnsweredQuestions extends React.Component {
   }
 
   render() {
-    // alert(this.props.ResponseId + "2");
-    alert(this.props.WSAHeader);
-    // alert(this.props.WSAHeader.WSAId);
-    // alert(this.props.WSAHeader.WSId);
-    // alert(this.props.WSAHeader.QuestionStatus);
-    // alert(this.props.WSAHeader.Date);
-    // alert(this.props.WSAHeader.RUId);
-    // alert(this.props.WSAHeader.AssignedWorkstation);
-
     if (
       this.state.WSAResponses.length &&
       this.state.viewFullDetailsToken &&
@@ -453,6 +469,9 @@ class DisplayWSAAnsweredQuestions extends React.Component {
                       <div style={{ float: "right" }}>
                         {moment(r.Date).format("HH:MM  DD/MM/YYYY ")}
                       </div>
+                      <b>
+                        <>{r.UserName}: </>
+                      </b>
                       {r.Response}
                     </div>
                   );
@@ -577,7 +596,7 @@ class AcceptSolutionModal extends React.Component {
   }
 
   acceptSoloution() {
-    alert(this.props.questionWhenAnswered);
+    // alert(this.props.questionWhenAnswered);
 
     let email = window.localStorage.getItem("User");
 

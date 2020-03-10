@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import Popup from "reactjs-popup";
+import { ErrorMessage } from "formik";
 
 var results = [];
 var questionCounter = 0;
@@ -15,9 +16,11 @@ class DisplayQuestions extends React.Component {
       QuestionsAnswer: [],
       workstations: [],
       selectedWorkStation: "",
-      QuestionAndAnswer: {}
+      QuestionAndAnswer: {},
+      AccountValidationMessage: ""
     };
     this.submitAnswers = this.submitAnswers.bind(this);
+    this.pageRelocator = this.pageRelocator.bind(this);
   }
   // sets the questions form sql into state for questions
   getItems() {
@@ -44,7 +47,13 @@ class DisplayQuestions extends React.Component {
       WorkStations: this.getWorkStations()
     });
   }
-
+  pageRelocator(mssg) {
+    if (mssg.length < 35) {
+      window.location.href = "http://localhost:3000/completed-assessment";
+    } else if (mssg.length > 35) {
+      window.location.href = "http://localhost:3000/user-questions";
+    }
+  }
   submitAnswers() {
     let selectedWorkstation = window.localStorage.getItem("Workstation");
     let user = window.localStorage.getItem("User");
@@ -52,49 +61,55 @@ class DisplayQuestions extends React.Component {
     let completeToken = "";
     let declinedCounter = 0;
 
-    if (questionCounter == this.state.questions.length) {
-      var today = new Date(),
-        date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-          1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+    try {
+      if (questionCounter == this.state.questions.length) {
+        var today = new Date(),
+          date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+            1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
-      for (var i = 0; i < results.length; i++) {
-        if (results[i].answer == "P") {
-          declinedCounter++;
-        } else {
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].answer == "P") {
+            declinedCounter++;
+          } else {
+          }
         }
+
+        if (declinedCounter > 0) {
+          completeToken = "In Progress";
+        } else if (declinedCounter <= 0) {
+          completeToken = "Complete";
+        }
+
+        console.log(completeToken);
+        const data = {
+          completeToken,
+          results,
+          selectedWorkstation,
+          date,
+          user: user
+        };
+
+        fetch("/post-question-answers/", {
+          method: "POST", // or 'PUT'
+          headers: {
+            Accept: "application/json,",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+          .then(result => {
+            result.json().then(({ AccountValidationMessage }) => {
+              alert(AccountValidationMessage);
+              this.pageRelocator(AccountValidationMessage);
+            });
+          })
+
+          .catch(err => alert(err));
+      } else {
+        alert("Please enter all of The questions");
       }
-
-      if (declinedCounter > 0) {
-        completeToken = "In Progress";
-      } else if (declinedCounter <= 0) {
-        completeToken = "Complete";
-      }
-
-      console.log(completeToken);
-      const data = {
-        completeToken,
-        results,
-        selectedWorkstation,
-        date,
-        user: user
-      };
-
-      fetch("/post-question-answers/", {
-        method: "POST", // or 'PUT'
-        headers: {
-          Accept: "application/json,",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      }).then(response => {
-        console.log("response before it is broken down " + response);
-
-        return response.json();
-      });
-
-      window.location.href = "http://localhost:3000/completed-assessment";
-    } else {
-      alert("Please enter all of The questions");
+    } catch (e) {
+      console.info(e);
     }
   }
 

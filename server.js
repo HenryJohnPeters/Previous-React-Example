@@ -239,7 +239,7 @@ app.get("/showquestions-answered/:responseId", async (req, res) => {
 
   request.input("ResponseId", sql.Int, responseId);
 
-  request.execute("dbo.GetWSAResponses", function(err, recordset) {
+  request.execute("dbo.GetWSAResponses", async function(err, recordset) {
     if (err) console.log(err);
     // send records as a response
     res.json(recordset);
@@ -339,76 +339,100 @@ app.post("/post-question-answers", async (req, res) => {
     await sql.connect(config);
 
     // create Request object
-    let user = req.body.user;
-    console.log(`${user} this is the user email `);
+
     let selectedWorkstation = req.body.selectedWorkstation;
-    let results = req.body.results;
-    let completeToken = req.body.completeToken;
-    let date = req.body.date;
-
-    let questions = [];
-    let answers = [];
-    // let emails = [];
-    let questionIds = [];
-    let suggestedSoloutions = [];
-
-    results.forEach(element => answers.push(element.answer));
-    results.forEach(element => questions.push(element.question));
-    // results.forEach(element => emails.push(element.email));
-    results.forEach(element => questionIds.push(element.questionId));
-    results.forEach(element =>
-      suggestedSoloutions.push(element.suggestedSoloution)
-    );
+    console.info(selectedWorkstation + "check this");
 
     var request = new sql.Request();
-    request.input(`QuestionStatus`, sql.NVarChar, completeToken);
-    request.input(`Date`, sql.NVarChar, date);
-    request.input(`Email`, sql.NVarChar, user);
     request.input(`SelectedWorkstation`, sql.NVarChar, selectedWorkstation);
-    let result = await request.execute("dbo.AddQuestionResponseHeader");
+    let existingWSA = await request.execute("dbo.CheckIfWSAExists");
+    if (!existingWSA.recordset.length) {
+      console.info("hello from first if");
+      let user = req.body.user;
+      let results = req.body.results;
+      let completeToken = req.body.completeToken;
+      let date = req.body.date;
 
-    console.log("HERE");
-    console.log(result);
-    if (result.hasOwnProperty("recordset") && result.recordset.length) {
-      var recordsetRow = result.recordset[0];
+      let questions = [];
+      let answers = [];
+      // let emails = [];
+      let questionIds = [];
+      let suggestedSoloutions = [];
 
-      if (recordsetRow.hasOwnProperty("createdId")) {
-        var id = recordsetRow.createdId;
-        console.log(id);
+      results.forEach(element => answers.push(element.answer));
+      results.forEach(element => questions.push(element.question));
+      // results.forEach(element => emails.push(element.email));
+      results.forEach(element => questionIds.push(element.questionId));
+      results.forEach(element =>
+        suggestedSoloutions.push(element.suggestedSoloution)
+      );
 
-        for (var i = 0; i < results.length; i++) {
-          var request = new sql.Request();
-          let answer = answers[i];
-          let question = questions[i];
-          // let email = emails[i];
-          let questionId = questionIds[i];
-          let soloution = suggestedSoloutions[i];
+      var request = new sql.Request();
+      request.input(`QuestionStatus`, sql.NVarChar, completeToken);
+      request.input(`Date`, sql.NVarChar, date);
+      request.input(`Email`, sql.NVarChar, user);
+      request.input(`SelectedWorkstation`, sql.NVarChar, selectedWorkstation);
+      let result = await request.execute("dbo.AddQuestionResponseHeader");
 
-          request.input(`WSAId`, sql.Int, id);
-          request.input(`Question`, sql.NVarChar, question);
-          request.input(`Answer`, sql.NVarChar, answer);
-          request.input(`Email`, sql.NVarChar, user);
-          request.input(`QuestionId`, sql.NVarChar, questionId);
-          // request.input(`CompleteToken`, sql.NVarChar, completeToken);
-          request.input(
-            `SelectedWorkstation`,
-            sql.NVarChar,
-            selectedWorkstation
-          );
-          request.input(`SuggestedSoloution`, sql.NVarChar, soloution);
+      console.log("HERE");
+      console.log(result);
+      if (result.hasOwnProperty("recordset") && result.recordset.length) {
+        var recordsetRow = result.recordset[0];
 
-          request.execute("dbo.SubmitQuestionResponses", function(
-            err,
-            recordset
-          ) {
-            if (err) console.log(err);
+        if (recordsetRow.hasOwnProperty("createdId")) {
+          var id = recordsetRow.createdId;
+          console.log(id);
+
+          for (var i = 0; i < results.length; i++) {
+            var request = new sql.Request();
+            let answer = answers[i];
+            let question = questions[i];
+            // let email = emails[i];
+            let questionId = questionIds[i];
+            let soloution = suggestedSoloutions[i];
+
+            request.input(`WSAId`, sql.Int, id);
+            request.input(`Question`, sql.NVarChar, question);
+            request.input(`Answer`, sql.NVarChar, answer);
+            request.input(`Email`, sql.NVarChar, user);
+            request.input(`QuestionId`, sql.NVarChar, questionId);
+            // request.input(`CompleteToken`, sql.NVarChar, completeToken);
+            request.input(
+              `SelectedWorkstation`,
+              sql.NVarChar,
+              selectedWorkstation
+            );
+            request.input(`SuggestedSoloution`, sql.NVarChar, soloution);
+
+            request.execute("dbo.SubmitQuestionResponses", function(
+              err,
+              recordset
+            ) {
+              if (err) console.log(err);
+            });
+          }
+          res.json({
+            AccountValidationMessage: "Added to database"
+          });
+        } else {
+          console.log("unexpected result format");
+          res.json({
+            AccountValidationMessage: "unexpected result format"
           });
         }
       } else {
-        console.log("unexpected result format");
+        console.log("No results found");
+        res.json({
+          AccountValidationMessage: "No results found"
+        });
       }
     } else {
-      console.log("No results found");
+      console.info("This account exists");
+
+      res.json({
+        AccountValidationMessage:
+          "This Workstation currently has an assessment in progress. This has NOT been added to the database please complete or edit In progress Assesment for this workstation"
+      });
     }
   } catch (e) {
     console.log(e);
@@ -522,7 +546,7 @@ app.post("/reset-password-email", async (req, response) => {
   var request = new sql.Request();
 
   request.input("Email", sql.VarChar, Email);
-  const result = await request.execute("dbo.CheckEmailExists");
+  let result = await request.execute("dbo.CheckEmailExists");
 
   if (result.recordsets[0].length > 0) {
     console.log("well done this does not exist ");
@@ -586,18 +610,25 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
   let email = req.body.email;
   let questionWhenAnswered = req.body.questionWhenAnswered;
   let url = "http://localhost:3000/home";
+  let userName = req.body.userName;
+  let workstation = req.body.workstation;
+  let name = req.body.nameOfSender;
   await sql.connect(config);
 
   var request = new sql.Request();
 
-  request.input("ResponseId", sql.Int, responseId);
-  request.input("Response", sql.NVarChar, adminResponse);
-  request.input("Date", sql.DateTime, date);
-  request.input("SeenStatus", sql.Bit, seenStatus);
+  try {
+    request.input("ResponseId", sql.Int, responseId);
+    request.input("Response", sql.NVarChar, adminResponse);
+    request.input("Date", sql.DateTime, date);
+    request.input("SeenStatus", sql.Bit, seenStatus);
+    request.input("Name", sql.NVarChar, name);
 
-  await request.execute("dbo.SubmitNoteAdmin");
-  console.info("done");
-
+    await request.execute("dbo.SubmitNoteAdmin");
+    console.info("done");
+  } catch (e) {
+    console.info(e);
+  }
   var transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
@@ -612,8 +643,9 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
     subject: `Admin Update on Workstation Self-Assessment question.`,
 
     html: `
+    Hi ${userName},<br/> an admin has updated your workstation assessment for the workstation ${workstation}.<br>
      <b>Question</b> : "${questionWhenAnswered}"<br>
-     <b>Answer</b> : "${adminResponse}"<br>
+     <b>Response</b> : "${adminResponse}"<br>
     Please click this link to view your completed assessments <a href = "${url}">${url} </a>`
   };
 
@@ -629,21 +661,43 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
 /////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// app.post("/get-WSA-responses", async (req, response) => {
+// app.post("/get-user-name", async (req, response) => {
 //   (responseId = req.body.responseId), await sql.connect(config);
-//   console.info("got here");
+
+//   let email = req.body.email;
 
 //   var request = new sql.Request();
 
-//   request.input("ResponseId", sql.Int, responseId);
-//   // request.execute("dbo.GetWSAResponses", function(err, recordset) {
-//   //   if (err) console.log(err);
-//   //   // send records as a response
-//   //   res.json(recordset);
-//   // });
+//   request.input("Email", sql.NVarChar, email);
+//   request.execute("dbo.GetUserName", function(err, recordset) {
+//     if (err) console.log(err);
+//     // send records as a response
+//     res.json(recordset);
+//   });
 //   console.info("done");
 // });
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+app.post("/get-user-name", (req, res) => {
+  try {
+    sql.connect(config);
+    var request = new sql.Request();
+    let email = req.body.email;
+
+    console.info(email);
+
+    request.input("Email", sql.NVarChar, email);
+    request.execute("dbo.GetUserName", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.info(e);
+  }
+});
+
+////////////////////////////////////////////////////////////////
 /////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -861,7 +915,7 @@ app.post("/register-email", async (req, response) => {
   var request = new sql.Request();
 
   request.input("Email", sql.VarChar, Email);
-  const result = await request.execute("dbo.CheckEmailExists");
+  let result = await request.execute("dbo.CheckEmailExists");
 
   if (result.recordsets[0].length > 0) {
     Errors = "This user already exists";
@@ -957,7 +1011,12 @@ app.post("/update-response-to-confirmed", async (req, response) => {
         to: `${email}`,
         subject: `Admin Accepted Soloution "${questionWhenAnswered}"`,
 
-        html: `Click this link to see your completed workstation assessments :<a href = http://localhost:3000/home>http://localhost:3000/home </a>`
+        html: `
+        Admin Accepted Soloution "${questionWhenAnswered}"<br>
+        Your assesment for 
+
+        <br>
+        Click this link to see your completed workstation assessments :<a href = http://localhost:3000/home>http://localhost:3000/home </a>`
       };
 
       transporter.sendMail(mailOptions, function(error, info) {
@@ -991,14 +1050,14 @@ app.post("/update-response-to-confirmed", async (req, response) => {
 app.post("/password-confirm", async (req, response) => {
   try {
     await sql.connect(config);
-    const Email = req.body.email;
-    const PasswordHash = req.body.password;
-    const UserEmail = req.body.email;
+    let Email = req.body.email;
+    let PasswordHash = req.body.password;
+    let UserEmail = req.body.email;
 
     var request = new sql.Request();
 
     request.input("Email", sql.VarChar, Email);
-    const result = await request.execute("dbo.CheckEmailExists");
+    let result = await request.execute("dbo.CheckEmailExists");
 
     if (result.recordsets[0].length > 0) {
       console.info("Email found");
