@@ -5,11 +5,8 @@ import { Link } from "react-router-dom";
 
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
+import Fade from "react-reveal";
 // import ModalCompletedQuestions from "../";
-
-moment.locale(window.navigator.language);
-
-console.log(window.navigator.language);
 
 var results = [];
 class AdminWorkstations extends React.Component {
@@ -88,7 +85,6 @@ class AdminWorkstations extends React.Component {
       pageNumbers.push(i);
     }
 
-    console.log(this.state.questions);
     if (!this.state.FullDetailsPageToken) {
       if (this.state.questions.length) {
         return (
@@ -132,10 +128,6 @@ class AdminWorkstations extends React.Component {
           <>
             {" "}
             <div>
-              <h2 style={{ textAlign: "center" }}>
-                Completed Workstation Assessments
-              </h2>
-
               <ul>
                 <br />
                 <br />{" "}
@@ -174,10 +166,6 @@ class Questions extends React.Component {
       addNoteToken: false,
       answeredQuestions: []
     };
-    // this.checker = this.checker.bind(this);
-    // this.ViewActivity = this.ViewActivity.bind(this);
-    // this.SubmitNote = this.SubmitNote.bind(this);
-    // this.AddNoteBtn = this.AddNoteBtn.bind(this);
   }
 
   render() {
@@ -191,13 +179,7 @@ class Questions extends React.Component {
               workStation={this.props.workStation}
               WSAId={this.props.WSAId}
             />
-            {/* <button
-              onClick={this.checker}
-              className="btn btn-primary"
-              style={{ float: "right" }}
-            >
-              Question Responses
-            </button> */}
+
             <Link
               to={{
                 pathname: "/admin-view-full-user-wsa-responses",

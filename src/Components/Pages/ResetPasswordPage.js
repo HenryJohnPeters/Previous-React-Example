@@ -5,12 +5,15 @@ import Header from "../PageDetails/Headers/Header";
 import ResetPasswordForm from "../PageDetails/ResetPasswordForm/ResetPasswordForm";
 
 import "./Login.css";
+import { Fade } from "react-reveal";
 
 function ResetPasswordPage() {
   return (
     <div className="App">
       <Header />
-      <ResetPasswordForm />
+      <Fade bottom>
+        <ResetPasswordForm />
+      </Fade>
     </div>
   );
 }

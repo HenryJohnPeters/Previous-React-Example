@@ -612,23 +612,21 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
   let url = "http://localhost:3000/home";
   let userName = req.body.userName;
   let workstation = req.body.workstation;
-  let name = req.body.nameOfSender;
+  let name = req.body.name;
+
   await sql.connect(config);
 
   var request = new sql.Request();
 
-  try {
-    request.input("ResponseId", sql.Int, responseId);
-    request.input("Response", sql.NVarChar, adminResponse);
-    request.input("Date", sql.DateTime, date);
-    request.input("SeenStatus", sql.Bit, seenStatus);
-    request.input("Name", sql.NVarChar, name);
+  request.input("ResponseId", sql.Int, responseId);
+  request.input("Response", sql.NVarChar, adminResponse);
+  request.input("Date", sql.DateTime, date);
+  request.input("SeenStatus", sql.Bit, seenStatus);
+  request.input("Name", sql.NVarChar, name);
 
-    await request.execute("dbo.SubmitNoteAdmin");
-    console.info("done");
-  } catch (e) {
-    console.info(e);
-  }
+  await request.execute("dbo.SubmitNoteAdmin");
+  console.info("done");
+
   var transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
@@ -676,26 +674,26 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
 //   });
 //   console.info("done");
 // });
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.post("/get-user-name", (req, res) => {
-  try {
-    sql.connect(config);
-    var request = new sql.Request();
-    let email = req.body.email;
+// app.post("/get-user-name-for-response", (req, res) => {
+//   try {
+//     sql.connect(config);
+//     var request = new sql.Request();
+//     let email = req.body.email;
 
-    console.info(email);
+//     console.info(email);
 
-    request.input("Email", sql.NVarChar, email);
-    request.execute("dbo.GetUserName", function(err, recordset) {
-      if (err) console.log(err);
-      // send records as a response
-      res.json(recordset);
-    });
-  } catch (e) {
-    console.info(e);
-  }
-});
+//     request.input("Email", sql.NVarChar, email);
+//     request.execute("dbo.GetUserName", function(err, recordset) {
+//       if (err) console.log(err);
+//       // send records as a response
+//       res.json(recordset);
+//     });
+//   } catch (e) {
+//     console.info(e);
+//   }
+// });
 
 ////////////////////////////////////////////////////////////////
 /////////////////////////
@@ -732,17 +730,30 @@ app.post("/get-WSA-header", async (req, res) => {
   try {
     await sql.connect(config);
     let WSAId = req.body.WSAId;
-    // let RUId = req.body.RUId;
-    // let workstation = req.body.Workstation;
-
-    // console.log("RUID + WORKSTAION" + RUId + workstation);
 
     var request = new sql.Request();
 
-    // request.input("RUId", sql.Int, RUId);
-    // request.input("Workstation", sql.Bit, workstation);
     request.input("WSAId", sql.Int, WSAId);
     request.execute("dbo.AdminGetWSAHeaderComplete", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.info(e);
+  }
+});
+/////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+app.post("/get-user-name-for-response", (req, res) => {
+  try {
+    sql.connect(config);
+    let email = req.body.email;
+
+    var request = new sql.Request();
+
+    request.input("Email", sql.NVarChar, email);
+    request.execute("dbo.GetUserName", function(err, recordset) {
       if (err) console.log(err);
       // send records as a response
       res.json(recordset);

@@ -7,12 +7,15 @@ import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import AdminWorkstations from "../AdminComponents/AdminDisplayQuestions/AdminViewWorkStationsDeclined";
+import Fade from "react-reveal";
 
 function AdminViewWorkstations() {
   return (
     <div>
       <Header />
-      <AdminWorkstations />
+      <Fade left>
+        <AdminWorkstations />
+      </Fade>
     </div>
   );
 }

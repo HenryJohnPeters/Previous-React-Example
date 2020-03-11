@@ -8,6 +8,7 @@ import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 
 import logo from "../codestone logo.png";
+import Zoom from "react-reveal";
 
 class LandingPage extends React.Component {
   constructor() {
@@ -34,18 +35,20 @@ class LandingPage extends React.Component {
           width="340"
           height="60"
         /> */}
-        <div className="jumbotron blue">
-          <h2 style={{ textAlign: "center" }}>Congradulations</h2>
-          <p style={{ textAlign: "center" }}>
-            Your desk assessment has been completed. Return home to see this
-          </p>
-          <Link to="/home">
-            <button style={{ width: "100%" }} className="btn btn-primary">
-              {" "}
-              Home
-            </button>
-          </Link>
-        </div>
+        <Zoom left>
+          <div className="jumbotron blue">
+            <h2 style={{ textAlign: "center" }}>Congradulations</h2>
+            <p style={{ textAlign: "center" }}>
+              Your desk assessment has been completed. Return home to see this
+            </p>
+            <Link to="/home">
+              <button style={{ width: "100%" }} className="btn btn-primary">
+                {" "}
+                Home
+              </button>
+            </Link>
+          </div>
+        </Zoom>
       </>
     );
   }

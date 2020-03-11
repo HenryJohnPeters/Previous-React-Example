@@ -6,7 +6,7 @@ import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import { Modal } from "react-bootstrap";
-
+import Fade from "react-reveal";
 import { Link } from "react-router-dom";
 import { get } from "http";
 
@@ -78,9 +78,10 @@ class Home extends React.Component {
 
     return (
       <>
-        <Header />
-        {/* <h3 style={{ textAlign: "center" }}>Workstation Assessment</h3> */}
-        {/* <button
+        <div style={{ border: "offset" }}>
+          <Header />
+          {/* <h3 style={{ textAlign: "center" }}>Workstation Assessment</h3> */}
+          {/* <button
           onClick={e =>
             alert(
               this.state.WSAHeader[0].AssignedWorkstation +
@@ -88,14 +89,18 @@ class Home extends React.Component {
             )
           }
         ></button> */}
-
-        <DisplayWSAHeader WSAHeader={this.state.WSAHeader} />
-        <WSAAnsweredQuestions
-          workstation={this.state.workstation}
-          userName={this.state.userName}
-          answeredQuestions={this.state.answeredQuestions}
-          amountOfQuestions={this.state.answeredQuestions.length}
-        />
+          <Fade left>
+            <DisplayWSAHeader WSAHeader={this.state.WSAHeader} />
+          </Fade>
+          <Fade right>
+            <WSAAnsweredQuestions
+              workstation={this.state.workstation}
+              userName={this.state.userName}
+              answeredQuestions={this.state.answeredQuestions}
+              amountOfQuestions={this.state.answeredQuestions.length}
+            />
+          </Fade>
+        </div>
       </>
     );
   }
@@ -140,18 +145,20 @@ class WSAAnsweredQuestions extends React.Component {
             // alert(question.SuggestedSoloution);
             return (
               <ul>
-                <DisplayWSAAnsweredQuestions
-                  id={question.Id}
-                  questionWhenAnswered={question.QuestionWhenAnswered}
-                  questionResponse={question.QuestionResponse}
-                  suggestedSoloution={question.SuggestedSoloution}
-                  WSAId={question.WSAId}
-                  ResponseId={question.ResponseId}
-                  amountOfQuestions={this.props.amountOfQuestions}
-                  WSAHeader={this.props.WSAHeader}
-                  userName={this.props.userName}
-                  workstation={this.props.workstation}
-                />
+                <div style={{ border: "100px" }}>
+                  <DisplayWSAAnsweredQuestions
+                    id={question.Id}
+                    questionWhenAnswered={question.QuestionWhenAnswered}
+                    questionResponse={question.QuestionResponse}
+                    suggestedSoloution={question.SuggestedSoloution}
+                    WSAId={question.WSAId}
+                    ResponseId={question.ResponseId}
+                    amountOfQuestions={this.props.amountOfQuestions}
+                    WSAHeader={this.props.WSAHeader}
+                    userName={this.props.userName}
+                    workstation={this.props.workstation}
+                  />
+                </div>
                 <br />
               </ul>
             );
@@ -226,6 +233,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     };
     this.submitNote = this.submitNote.bind(this);
     this.viewDetails = this.viewDetails.bind(this);
+    this.getUserName = this.getUserName.bind(this);
   }
 
   viewDetails() {
@@ -247,7 +255,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         email: email,
         questionWhenAnswered: this.props.questionWhenAnswered,
         userName: this.props.userName,
-        workstation: this.props.workstation
+        workstation: this.props.workstation,
+        name: this.state.name[0].NameOfUser
       };
 
       fetch("/submit-WSA-Response-Admin", {
@@ -285,7 +294,31 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         console.log(this.state.WSAResponses);
         // alert(this.state.WSAResponses);
       });
+
+    this.getUserName();
+
     this.setState({ viewFullDetailsToken: true });
+  }
+
+  getUserName() {
+    let email = window.localStorage.getItem("User");
+    let data = {
+      email: email
+    };
+    fetch("/get-user-name-for-response", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(recordset => recordset.json())
+      .then(results => {
+        this.setState({ name: results.recordset });
+        console.log(this.state.name);
+        // alert(this.state.WSAResponses);
+      });
   }
 
   render() {

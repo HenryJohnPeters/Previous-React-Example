@@ -7,6 +7,7 @@ import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import AdminDisplayQuestions from "../AdminComponents/AdminDisplayQuestions/AdminDisplayQuestions";
+import Fade from "react-reveal";
 
 function Home() {
   return (
@@ -14,8 +15,6 @@ function Home() {
       <Header />
 
       <AdminDisplayQuestions />
-
-      <p>Admin section of the webpage </p>
     </div>
   );
 }

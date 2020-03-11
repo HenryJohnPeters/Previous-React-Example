@@ -120,9 +120,6 @@ class DisplayQuestions extends React.Component {
     if (this.state.workstations.length) {
       return (
         <div>
-          <h3 style={{ textAlign: "center" }}>
-            <u>Workstation Self-Assessment</u>
-          </h3>
           <ul>
             <DropdownButton
               style={{ float: "right" }}
@@ -178,10 +175,6 @@ class DisplayQuestions extends React.Component {
     } else {
       return (
         <div>
-          <h3 style={{ textAlign: "center" }}>
-            <u>Workstation Self-Assessment</u>
-          </h3>
-
           <ul>
             <DropdownButton
               style={{ float: "right" }}

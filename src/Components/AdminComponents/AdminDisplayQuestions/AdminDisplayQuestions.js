@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import AddQuestion from "./AdminAddQuestion";
+import Fade from "react-reveal";
 class DisplayQuestions extends React.Component {
   constructor() {
     super();
@@ -63,51 +64,60 @@ class DisplayQuestions extends React.Component {
 
     return (
       <>
-        <h3 style={{ textAlign: "center" }}>
-          <u>Edit Questions</u>
-        </h3>
+        <Fade>
+          <Fade left>
+            <h3 style={{ textAlign: "center" }}>Edit Questions</h3>
+          </Fade>
+          <Fade right>
+            <ul>
+              <Link to="/admin-view-workstation-assessments">
+                <button
+                  className="btn btn-secondary"
+                  style={{ float: "left " }}
+                >
+                  Workstation Assessments
+                </button>
+              </Link>
 
-        <ul>
-          <Link to="/admin-view-workstation-assessments">
-            <button className="btn btn-secondary" style={{ float: "left " }}>
-              Workstation Assessments
-            </button>
-          </Link>
+              <button
+                disabled
+                className="btn btn-secondary"
+                style={{ float: "left " }}
+              >
+                Edit Questions
+              </button>
 
-          <button
-            disabled
-            className="btn btn-secondary"
-            style={{ float: "left " }}
-          >
-            Edit Questions
-          </button>
+              <DisplayAddQuestion />
 
-          <DisplayAddQuestion />
+              <button
+                onClick={this.refresh}
+                style={{ float: "right" }}
+                className="btn btn-secondary"
+              >
+                ⟳
+              </button>
+              <Link to="./admin-center-view-users">
+                <button
+                  className="btn btn-secondary"
+                  style={{ float: "left " }}
+                >
+                  View Users
+                </button>
+              </Link>
+              <br />
+              <br />
 
-          <button
-            onClick={this.refresh}
-            style={{ float: "right" }}
-            className="btn btn-secondary"
-          >
-            ⟳
-          </button>
-          <Link to="./admin-center-view-users">
-            <button className="btn btn-secondary" style={{ float: "left " }}>
-              View Users
-            </button>
-          </Link>
-          <br />
-          <br />
-
-          {this.state.questions &&
-            this.state.questions.map(function(questions, index) {
-              return (
-                <div className="jumbotron">
-                  <WorkStations questions={questions}></WorkStations>
-                </div>
-              );
-            })}
-        </ul>
+              {this.state.questions &&
+                this.state.questions.map(function(questions, index) {
+                  return (
+                    <div className="jumbotron">
+                      <WorkStations questions={questions}></WorkStations>
+                    </div>
+                  );
+                })}
+            </ul>
+          </Fade>
+        </Fade>
       </>
     );
   }

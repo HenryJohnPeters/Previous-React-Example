@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import React from "react";
 
 import { Link } from "react-router-dom";
+import Fade from "react-reveal";
 
 class LoginForm extends React.Component {
   constructor() {
@@ -126,56 +127,69 @@ class LoginForm extends React.Component {
                 method="POST"
               >
                 <div className="jumbotron">
-                  <h2>Login </h2>
-                  <div className="help"></div>
-
-                  <label htmlFor="email">Email</label>
-
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value1={values.email}
-                    value={this.state.email}
-                    onInput={handleChange}
-                    onChange={e => this.setState({ email: e.target.value })}
-                    onBlur={handleBlur}
-                    className={errors.email && touched.email && "error"}
-                  />
+                  <Fade left>
+                    <h2>Login </h2>
+                  </Fade>
+                  <Fade right>
+                    <label htmlFor="email">Email</label>
+                  </Fade>
+                  <Fade left>
+                    <input
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value1={values.email}
+                      value={this.state.email}
+                      onInput={handleChange}
+                      onChange={e => this.setState({ email: e.target.value })}
+                      onBlur={handleBlur}
+                      className={errors.email && touched.email && "error"}
+                    />
+                  </Fade>
                   {errors.email && touched.email && (
                     <div className="input-feedback">{errors.email}</div>
                   )}
-                  <label htmlFor="email">Password</label>
-                  <input
-                    name="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value2={values.password}
-                    value={this.state.password}
-                    onInput={handleChange}
-                    onChange={e => this.setState({ password: e.target.value })}
-                    onBlur={handleBlur}
-                    className={errors.password && touched.password && "error"}
-                  />
+                  <Fade right>
+                    <label htmlFor="email">Password</label>
+                  </Fade>
+                  <Fade left>
+                    <input
+                      name="password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value2={values.password}
+                      value={this.state.password}
+                      onInput={handleChange}
+                      onChange={e =>
+                        this.setState({ password: e.target.value })
+                      }
+                      onBlur={handleBlur}
+                      className={errors.password && touched.password && "error"}
+                    />{" "}
+                  </Fade>
                   {errors.password && touched.password && (
                     <div className="input-feedback">{errors.password} </div>
                   )}
-
-                  <button
-                    className="btn btn-primary"
-                    style={{ width: "100%" }}
-                    type="submit"
-                    onClick={this.onSubmit}
-                  >
-                    Login
-                  </button>
-
-                  <p>
-                    <Link to="/register"> Sign Up </Link>
-                  </p>
-                  <p>
-                    <Link to="/reset"> Reset Password </Link>
-                  </p>
+                  <Fade right>
+                    <button
+                      className="btn btn-primary"
+                      style={{ width: "100%" }}
+                      type="submit"
+                      onClick={this.onSubmit}
+                    >
+                      Login
+                    </button>
+                  </Fade>
+                  <Fade left>
+                    <p>
+                      <Link to="/register"> Sign Up </Link>
+                    </p>
+                  </Fade>
+                  <Fade right>
+                    <p>
+                      <Link to="/reset"> Reset Password </Link>
+                    </p>
+                  </Fade>
                 </div>
               </form>
             );
