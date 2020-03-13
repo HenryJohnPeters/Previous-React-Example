@@ -10,6 +10,8 @@ class LogoutButton extends React.Component {
 
   LogOut(e) {
     window.localStorage.removeItem("myToken");
+    window.localStorage.removeItem("User");
+    window.localStorage.removeItem("adminToken");
   }
 
   render() {

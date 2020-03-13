@@ -2,6 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
 import Header from "../PageDetails/Headers/Header";
+import Fade from "react-reveal";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class LoginPage extends React.Component {
   constructor() {
@@ -12,18 +15,29 @@ class LoginPage extends React.Component {
 
   handleSubmit() {
     this.setState({ confirmedUser: true });
-    alert(`Email Confirmed `);
+
+    toast.info("Email Confirmed", {
+      draggable: true,
+      autoClose: 1500
+    });
   }
 
   render() {
     return (
       <div className="App">
+        <ToastContainer transition={Zoom} position="top-right" />
         <Header />
-        <p>If you are real press the button. If you are a robot dont.</p>
-        <button onClick={this.handleSubmit}>Confirm</button>{" "}
-        <Link to="/">
-          <button>Back to Login</button>
-        </Link>
+        <Fade left>
+          <p>If you are real press the button. If you are a robot dont.</p>
+        </Fade>
+        <Fade right>
+          <button onClick={this.handleSubmit}>Confirm</button>{" "}
+        </Fade>
+        <Fade>
+          <Link to="/">
+            <button>Back to Login</button>
+          </Link>
+        </Fade>
       </div>
     );
   }

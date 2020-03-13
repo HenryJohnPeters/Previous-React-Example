@@ -5,6 +5,9 @@ import * as Yup from "yup";
 import React from "react";
 
 import { Link } from "react-router-dom";
+import Fade from "react-reveal";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class ResetPasswordForm extends React.Component {
   constructor() {
@@ -17,7 +20,10 @@ class ResetPasswordForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     if (this.state.email.length < 8) {
-      alert(`please enter email correctly `);
+      toast.error("please enter email correctly", {
+        draggable: true,
+        autoClose: 1500
+      });
     } else {
       const data = { email: this.state.email };
 
@@ -38,7 +44,13 @@ class ResetPasswordForm extends React.Component {
           console.log("After it is broken down", jwt, user, EmailAvailability);
           window.localStorage.setItem("resetToken", jwt);
           window.localStorage.setItem("User", user);
-          alert(EmailAvailability);
+
+          toast.error(`${EmailAvailability}`, {
+            // className: "custom-toast",
+            draggable: true,
+
+            autoClose: 1500
+          });
         })
 
         .catch(error => {
@@ -52,6 +64,7 @@ class ResetPasswordForm extends React.Component {
     console.log(this.state.password);
     return (
       <div>
+        <ToastContainer transition={Zoom} position="top-right" />
         <Formik
           class="form-signin"
           action="auth"
@@ -89,45 +102,58 @@ class ResetPasswordForm extends React.Component {
                 method="POST"
               >
                 <div className="jumbotron">
-                  <h2>Reset Password </h2>
-                  <div className="help">
-                    <Popup trigger={<Link> Help?</Link>} className="center">
-                      <div>
-                        Enter Codestone Email address and Password connected to
-                        the account.
-                      </div>
-                    </Popup>
-                  </div>
-                  <label htmlFor="email">Email</label>
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value1={values.email}
-                    value={this.state.email}
-                    onInput={handleChange}
-                    onChange={e => this.setState({ email: e.target.value })}
-                    onBlur={handleBlur}
-                    className={errors.email && touched.email && "error"}
-                  />
+                  <Fade left>
+                    <h2>Reset Password </h2>
+                  </Fade>
+                  <Fade right>
+                    <div className="help">
+                      <Popup trigger={<Link> Help?</Link>} className="center">
+                        <div>
+                          Enter Codestone Email address and Password connected
+                          to the account.
+                        </div>
+                      </Popup>
+                    </div>
+                  </Fade>
+                  <Fade left>
+                    <label htmlFor="email">Email</label>
+                  </Fade>
+                  <Fade right>
+                    <input
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value1={values.email}
+                      value={this.state.email}
+                      onInput={handleChange}
+                      onChange={e => this.setState({ email: e.target.value })}
+                      onBlur={handleBlur}
+                      className={errors.email && touched.email && "error"}
+                    />
+                  </Fade>
                   {errors.email && touched.email && (
                     <div className="input-feedback">{errors.email}</div>
                   )}
-
-                  <button
-                    className="btn btn-primary"
-                    style={{ width: "100%" }}
-                    type="submit"
-                    onClick={this.onSubmit}
-                  >
-                    Send Email
-                  </button>
-                  <p>
-                    <Link to="/"> Login </Link>
-                  </p>
-                  <p>
-                    <Link to="/Register"> Sign Up </Link>
-                  </p>
+                  <Fade left>
+                    <button
+                      className="btn btn-primary"
+                      style={{ width: "100%" }}
+                      type="submit"
+                      onClick={this.onSubmit}
+                    >
+                      Send Email
+                    </button>
+                  </Fade>
+                  <Fade right>
+                    <p>
+                      <Link to="/"> Login </Link>
+                    </p>
+                  </Fade>
+                  <Fade left>
+                    <p>
+                      <Link to="/Register"> Sign Up </Link>
+                    </p>
+                  </Fade>
                 </div>
               </form>
             );

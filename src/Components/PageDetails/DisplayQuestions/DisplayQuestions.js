@@ -2,22 +2,29 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import Popup from "reactjs-popup";
+import { ErrorMessage } from "formik";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const queryString = require("query-string");
 
 var results = [];
 var questionCounter = 0;
 
 class DisplayQuestions extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       questions: [],
       QuestionsAnswer: [],
       workstations: [],
       selectedWorkStation: "",
-      QuestionAndAnswer: {}
+      QuestionAndAnswer: {},
+      AccountValidationMessage: ""
     };
     this.submitAnswers = this.submitAnswers.bind(this);
+    this.pageRelocator = this.pageRelocator.bind(this);
   }
   // sets the questions form sql into state for questions
   getItems() {
@@ -39,12 +46,30 @@ class DisplayQuestions extends React.Component {
     }
   }
   componentDidMount() {
+    let mssg = window.localStorage.getItem("mssg");
+    if (mssg) {
+      toast.error(`${mssg}`, {
+        draggable: true,
+        autoClose: 10000,
+        position: "top-center"
+      });
+    }
+
     this.setState({
       questions: this.getItems(),
       WorkStations: this.getWorkStations()
     });
+    window.localStorage.removeItem("mssg");
   }
-
+  pageRelocator(mssg) {
+    window.localStorage.removeItem("mssg");
+    if (mssg.length < 35) {
+      window.location.href = "http://localhost:3000/completed-assessment";
+    } else if (mssg.length > 35) {
+      window.localStorage.setItem("mssg", mssg);
+      window.location.href = `http://localhost:3000/user-questions`;
+    }
+  }
   submitAnswers() {
     let selectedWorkstation = window.localStorage.getItem("Workstation");
     let user = window.localStorage.getItem("User");
@@ -52,49 +77,58 @@ class DisplayQuestions extends React.Component {
     let completeToken = "";
     let declinedCounter = 0;
 
-    if (questionCounter == this.state.questions.length) {
-      var today = new Date(),
-        date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
-          1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
+    try {
+      if (questionCounter == this.state.questions.length) {
+        var today = new Date(),
+          date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
+            1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
 
-      for (var i = 0; i < results.length; i++) {
-        if (results[i].answer == "P") {
-          declinedCounter++;
-        } else {
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].answer == "P") {
+            declinedCounter++;
+          } else {
+          }
         }
+
+        if (declinedCounter > 0) {
+          completeToken = "In Progress";
+        } else if (declinedCounter <= 0) {
+          completeToken = "Complete";
+        }
+
+        console.log(completeToken);
+        const data = {
+          completeToken,
+          results,
+          selectedWorkstation,
+          date,
+          user: user
+        };
+
+        fetch("/post-question-answers/", {
+          method: "POST", // or 'PUT'
+          headers: {
+            Accept: "application/json,",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+          .then(result => {
+            result.json().then(({ AccountValidationMessage }) => {
+              this.pageRelocator(AccountValidationMessage);
+            });
+          })
+
+          .catch(err => console.log(err));
+      } else {
+        toast.error("Please enter all of The questions", {
+          draggable: true,
+
+          autoClose: 1500
+        });
       }
-
-      if (declinedCounter > 0) {
-        completeToken = "In Progress";
-      } else if (declinedCounter <= 0) {
-        completeToken = "Complete";
-      }
-
-      console.log(completeToken);
-      const data = {
-        completeToken,
-        results,
-        selectedWorkstation,
-        date,
-        user: user
-      };
-
-      fetch("/post-question-answers/", {
-        method: "POST", // or 'PUT'
-        headers: {
-          Accept: "application/json,",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      }).then(response => {
-        console.log("response before it is broken down " + response);
-
-        return response.json();
-      });
-
-      window.location.href = "http://localhost:3000/completed-assessment";
-    } else {
-      alert("Please enter all of The questions");
+    } catch (e) {
+      console.info(e);
     }
   }
 
@@ -105,9 +139,8 @@ class DisplayQuestions extends React.Component {
     if (this.state.workstations.length) {
       return (
         <div>
-          <h3 style={{ textAlign: "center" }}>
-            <u>Workstation Self-Assessment</u>
-          </h3>
+          <ToastContainer transition={Zoom} position="top-center" />
+
           <ul>
             <DropdownButton
               style={{ float: "right" }}
@@ -163,9 +196,7 @@ class DisplayQuestions extends React.Component {
     } else {
       return (
         <div>
-          <h3 style={{ textAlign: "center" }}>
-            <u>Workstation Self-Assessment</u>
-          </h3>
+          <ToastContainer transition={Zoom} position="top-right" />
 
           <ul>
             <DropdownButton

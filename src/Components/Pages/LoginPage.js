@@ -3,12 +3,15 @@ import React from "react";
 import "../bootstrap.min.css";
 import Header from "../PageDetails/Headers/Header";
 import LoginForm from "../PageDetails/LoginForm/LoginForm";
+import { Fade } from "react-reveal";
 
 function LoginPage() {
   return (
     <div className="App">
       <Header />
-      <LoginForm />
+      <Fade bottom>
+        <LoginForm />
+      </Fade>
     </div>
   );
 }

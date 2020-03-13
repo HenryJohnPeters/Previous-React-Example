@@ -6,6 +6,8 @@ import Popup from "reactjs-popup";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class ConfirmResetPasswordForm extends React.Component {
   constructor() {
@@ -22,7 +24,12 @@ class ConfirmResetPasswordForm extends React.Component {
       this.state.password.length < 8 ||
       !(this.state.password === this.state.passwordConfirm)
     ) {
-      alert(`please enter the form correctly `);
+      toast.error("please enter the form correctly  ", {
+        // className: "custom-toast",
+        draggable: true,
+
+        autoClose: 1500
+      });
     } else {
       var today = new Date(),
         date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
@@ -39,7 +46,11 @@ class ConfirmResetPasswordForm extends React.Component {
         },
         body: JSON.stringify(data)
       });
-      alert(`Password updated `);
+      toast.info(`Password updated`, {
+        draggable: true,
+
+        autoClose: 1500
+      });
     }
   }
 
@@ -93,6 +104,7 @@ class ConfirmResetPasswordForm extends React.Component {
                 action="auth"
                 method="POST"
               >
+                <ToastContainer transition={Zoom} position="top-right" />
                 <div className="jumbotron">
                   <h2>Update Password </h2>
                   <div className="help">

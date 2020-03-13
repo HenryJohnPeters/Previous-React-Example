@@ -6,18 +6,34 @@ import "../bootstrap.min.css";
 import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import CompletedAssessments from "../PageDetails/CompletedAssessments/CompletedAssessments";
-
+import Fade from "react-reveal";
 import { Link } from "react-router-dom";
 
 function Home() {
   return (
     <div>
       <Header />
-      <CompletedAssessments />
+      <PageTitle />
+      <Fade left>
+        <CompletedAssessments />
+      </Fade>
     </div>
   );
+}
+class PageTitle extends React.Component {
+  render() {
+    return (
+      <div>
+        <Fade right>
+          <h2 style={{ textAlign: "center" }}>
+            Completed Workstation Assessments
+          </h2>
+        </Fade>
+      </div>
+    );
+  }
 }
 
 function Header() {
@@ -26,7 +42,7 @@ function Header() {
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
-        <AdminButton />
+        {/* <AdminButton /> */}
       </div>
 
       <div className="User-Menu"></div>

@@ -20,10 +20,12 @@ import AdminViewWorkStationAssessmentsDeclinedPage from "./Components/Pages/Admi
 import CompletedAssessmentLandingPage from "./Components/Pages/CompletedAssessmentLandingPage";
 import AdminViewFullUserWSAResponses from "./Components/Pages/AdminViewFullUserWSAResponses";
 ////
-import AdminViewUsersSeverityHigh from "./AdminComponents/AdminViewUsersSeverityHigh";
-import AdminViewUsersSeverityMedium from "./AdminComponents/AdminViewUsersSeverityMedium";
-import AdminViewUsersSeverityCompleted from "./AdminComponents/AdminViewUsersSeverityCompleted";
+// import AdminViewUsersSeverityHigh from "./AdminComponents/AdminViewUsersSeverityHigh";
+// import AdminViewUsersSeverityMedium from "./AdminComponents/AdminViewUsersSeverityMedium";
+// import AdminViewUsersSeverityCompleted from "./AdminComponents/AdminViewUsersSeverityCompleted";
 import AdminViewUsers from "./AdminComponents/AdminViewUsers";
+
+// import Parent from "./Components/Andys-examples/parent";
 
 import AuthRoute from "./Routing/AuthRoute";
 //import ResetAuthRoute from "./Routing/AuthRoute";
@@ -66,6 +68,7 @@ function Routing() {
   return (
     <BrowserRouter>
       <Switch>
+        {/* <Route exact path="/test" component={Parent} /> */}
         <Route exact path="/reset" component={ResetPassword} />
         <Route exact path="/" component={LoginPage} />
         {/* <Route exact path="/Register" component={RegisterPage} /> */}
@@ -100,6 +103,11 @@ function Routing() {
         <AuthRoute exact path="/profile" component={ProfilePage} />
         <AuthRoute exact path="/home" component={Home} />
         <AuthRoute exact path="/user-questions" component={UserQuestions} />
+        <AuthRoute
+          exact
+          path="/user-questions/:mssg"
+          component={UserQuestions}
+        />
         <AuthRoute exact path="/user-history" component={History} />
         />
         <AdminAuthRoute

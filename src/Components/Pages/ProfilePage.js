@@ -5,26 +5,29 @@ import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import DisplayUserPasswordDetails from "../PageDetails/UpdateProfileForm/DisplayUserPasswordDetails";
- 
+import Fade from "react-reveal";
+
 import { Link } from "react-router-dom";
 function ProfilePage() {
   return (
     <>
       <Header />
-      <h3 style={{ textAlign: "center" }}>
-        <u> Account Details</u>
-      </h3>
-
-      <DisplayUserAccountDetails />
-      <DisplayUserPasswordDetails />
+      <Fade right>
+        <h3 style={{ textAlign: "center" }}>
+          <u> Account Details</u>
+        </h3>
+      </Fade>
+      <Fade left>
+        <DisplayUserAccountDetails />
+      </Fade>
+      <Fade left>
+        <DisplayUserPasswordDetails />
+      </Fade>
     </>
   );
 }
 
 export default ProfilePage;
-
-
-
 
 function Header() {
   return (
@@ -43,9 +46,9 @@ function Header() {
         width="340"
         height="60"
       />
-<br/>
- <Link to="./home">
-      <button className = "btn btn-secondary">Home</button>
+      <br />
+      <Link to="./home">
+        <button className="btn btn-secondary">Home</button>
       </Link>
     </div>
   );
