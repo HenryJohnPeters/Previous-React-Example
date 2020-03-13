@@ -5,7 +5,9 @@ import * as Yup from "yup";
 import React from "react";
 
 import { Link } from "react-router-dom";
-import { Alert } from "react-bootstrap";
+
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class AddQuestion extends React.Component {
   constructor() {
@@ -19,13 +21,19 @@ class AddQuestion extends React.Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault();
-
     try {
       if (this.state.Question.length < 10) {
-        alert(`Please enter a more descriptive question`);
+        toast.error("Please enter a more descriptive question", {
+          draggable: true,
+          autoClose: 1500
+        });
       } else if (this.state.GuidanceNote.length < 10) {
-        alert("Please enter a more descriptive guidance note");
+        toast.error("Please enter a more descriptive guidance note", {
+          // className: "custom-toast",
+          draggable: true,
+
+          autoClose: 1500
+        });
       } else {
         var today = new Date(),
           date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
@@ -44,22 +52,26 @@ class AddQuestion extends React.Component {
             "Content-Type": "application/json"
           },
           body: JSON.stringify(data)
-        })
-          .then(response => {
-            console.log("response before it is broken down " + response);
+        }).then(response => {
+          console.log("response before it is broken down " + response);
 
-            return response.json();
-          })
-          .then(({ adminJwt, jwt, user, AccountValidationMessage }) => {
-            console.log(
-              "after it is broken down",
-              jwt,
-              adminJwt,
-              user,
-              AccountValidationMessage
-            );
-          });
-        alert("Question Added");
+          return response.json();
+        });
+        // .then(({ adminJwt, jwt, user, AccountValidationMessage }) => {
+        //   console.log(
+        //     "after it is broken down",
+        //     jwt,
+        //     adminJwt,
+        //     user,
+        //     AccountValidationMessage
+        //   );
+        // });
+
+        toast.info("Question Added", {
+          draggable: true,
+          autoClose: 1500
+        });
+        window.location.reload();
         //
       }
     } catch (e) {
@@ -102,6 +114,7 @@ class AddQuestion extends React.Component {
                 action="auth"
                 method="POST"
               >
+                <ToastContainer transition={Zoom} position="top-right" />
                 <div className="jumbotron">
                   <h3 style={{ textAlign: "center" }}>Enter New Question</h3>
                   <div className="help"></div>

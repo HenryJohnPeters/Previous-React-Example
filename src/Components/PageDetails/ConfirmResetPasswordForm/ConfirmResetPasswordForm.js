@@ -8,6 +8,9 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import Fade from "react-reveal";
 
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 class ConfirmResetPasswordForm extends React.Component {
   constructor() {
     super();
@@ -23,7 +26,12 @@ class ConfirmResetPasswordForm extends React.Component {
       this.state.password.length < 8 ||
       !(this.state.password === this.state.passwordConfirm)
     ) {
-      alert(`please enter the form correctly `);
+      toast.error("please enter the credentials correctly ", {
+        // className: "custom-toast",
+        draggable: true,
+
+        autoClose: 1500
+      });
     } else {
       console.log({ email });
       const data = { email, password: this.state.password };
@@ -36,13 +44,17 @@ class ConfirmResetPasswordForm extends React.Component {
         },
         body: JSON.stringify(data)
       });
-      alert(`Password updated `);
+      toast.info("Password updated", {
+        // className: "custom-toast",
+        draggable: true,
+
+        autoClose: 1500
+      });
     }
   }
 
   catch(e) {
     console.log(e);
-    alert(e);
   }
 
   render() {
@@ -90,6 +102,7 @@ class ConfirmResetPasswordForm extends React.Component {
                 action="auth"
                 method="POST"
               >
+                <ToastContainer transition={Zoom} position="top-right" />
                 <div className="jumbotron">
                   <Fade left>
                     <h2>Confirm Password Reset </h2>

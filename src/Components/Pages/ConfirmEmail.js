@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
 import Header from "../PageDetails/Headers/Header";
 import Fade from "react-reveal";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class LoginPage extends React.Component {
   constructor() {
@@ -13,12 +15,17 @@ class LoginPage extends React.Component {
 
   handleSubmit() {
     this.setState({ confirmedUser: true });
-    alert(`Email Confirmed `);
+
+    toast.info("Email Confirmed", {
+      draggable: true,
+      autoClose: 1500
+    });
   }
 
   render() {
     return (
       <div className="App">
+        <ToastContainer transition={Zoom} position="top-right" />
         <Header />
         <Fade left>
           <p>If you are real press the button. If you are a robot dont.</p>

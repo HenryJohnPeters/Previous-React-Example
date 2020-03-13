@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import AddQuestion from "./AdminAddQuestion";
 import Fade from "react-reveal";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 class DisplayQuestions extends React.Component {
   constructor() {
     super();
@@ -65,6 +68,7 @@ class DisplayQuestions extends React.Component {
     return (
       <>
         <Fade>
+          <ToastContainer transition={Zoom} position="top-right" />
           <Fade left>
             <h3 style={{ textAlign: "center" }}>Edit Questions</h3>
           </Fade>
@@ -271,7 +275,13 @@ class DisplayDeleteConfirmation extends React.Component {
       },
       body: JSON.stringify(data)
     });
-    alert("Item Deleted");
+
+    toast.info("Question and guidance note deleted ", {
+      // className: "custom-toast",
+      draggable: true,
+
+      autoClose: 1500
+    });
     window.location.reload();
   }
 
@@ -280,6 +290,7 @@ class DisplayDeleteConfirmation extends React.Component {
 
     return (
       <div className="header-container">
+        <ToastContainer transition={Zoom} position="top-right" />
         <button
           className="btn btn-danger"
           style={{ float: "right" }}
@@ -404,9 +415,19 @@ class EditQuestion extends React.Component {
   handleSubmit(e) {
     try {
       if (this.state.question.length < 10) {
-        alert(`Please enter a more descriptive question`);
+        toast.error("Please enter a more descriptive question", {
+          // className: "custom-toast",
+          draggable: true,
+
+          autoClose: 1500
+        });
       } else if (this.state.guidanceNote.length < 10) {
-        alert("Please enter a more descriptive guidance note");
+        toast.error("Please enter a more descriptive guidance note", {
+          // className: "custom-toast",
+          draggable: true,
+
+          autoClose: 1500
+        });
       } else {
         var today = new Date(),
           date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
@@ -431,15 +452,6 @@ class EditQuestion extends React.Component {
 
           return response.json();
         });
-        // .then(({ adminJwt, jwt, user, AccountValidationMessage }) => {
-        //   console.log(
-        //     "after it is broken down",
-        //     jwt,
-        //     adminJwt,
-        //     user,
-        //     AccountValidationMessage
-        //   );
-        // });
       }
     } catch (e) {
       console.log(e);
@@ -451,6 +463,7 @@ class EditQuestion extends React.Component {
     console.log(this.state.password);
     return (
       <div>
+        <ToastContainer transition={Zoom} position="top-right" />
         <form>
           <div className="jumbotron">
             <h3 style={{ textAlign: "center" }}>Edit Question</h3>

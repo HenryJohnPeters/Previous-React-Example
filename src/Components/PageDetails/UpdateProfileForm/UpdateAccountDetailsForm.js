@@ -6,6 +6,8 @@ import Popup from "reactjs-popup";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class RegisterForm extends React.Component {
   constructor() {
@@ -27,7 +29,10 @@ class RegisterForm extends React.Component {
     const currentEmail = window.localStorage.getItem("User");
 
     if (this.state.contactNumber.length < 10) {
-      alert(`Contact number to short `);
+      toast.error("Contact number to short", {
+        draggable: true,
+        autoClose: 1500
+      });
     } else {
       const data = {
         currentEmail: currentEmail,
@@ -48,18 +53,18 @@ class RegisterForm extends React.Component {
 
       window.localStorage.removeItem("User");
       window.localStorage.setItem("User", this.state.email);
-      alert(`Details updated. PLease Refresh the page`);
-      console.log(data);
+
+      window.location.reload();
     }
   }
   catch(e) {
     console.log(e);
-    alert(e);
   }
 
   render() {
     return (
       <div>
+        <ToastContainer transition={Zoom} position="top-right" />
         <Formik
           class="form-signin"
           action="auth"

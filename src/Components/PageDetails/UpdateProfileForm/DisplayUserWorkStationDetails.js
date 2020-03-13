@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Popup from "reactjs-popup";
 import moment from "moment";
 import { Modal, Button } from "react-bootstrap";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import AddWorkstation from "./UpdateUserWorkStationDetailsForm";
 
@@ -127,13 +129,14 @@ class WorkStations extends React.Component {
       },
       body: JSON.stringify(data)
     });
-    alert("Item Deleted");
+
     window.location.reload();
   }
 
   render() {
     return (
       <div className="jumbotron">
+        <ToastContainer transition={Zoom} position="top-right" />
         <button
           onClick={this.deleteWorkStation}
           style={{ float: "right" }}

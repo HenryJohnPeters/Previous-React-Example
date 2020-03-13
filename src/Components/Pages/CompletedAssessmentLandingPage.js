@@ -1,6 +1,5 @@
 import React from "react";
 
-import balloons from "../PageDetails/Pictures/balloons.png";
 import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
 
@@ -72,9 +71,9 @@ function Header() {
       />
       <br />
       <br />
-      <Link to="./home">
+      {/* <Link to="./home">
         <button className="btn btn-secondary">Home </button>
-      </Link>
+      </Link> */}
     </div>
   );
 }

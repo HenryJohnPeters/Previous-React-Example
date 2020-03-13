@@ -7,6 +7,8 @@ import Popup from "reactjs-popup";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Fade from "react-reveal";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class ConfirmRegisterForm extends React.Component {
   constructor() {
@@ -31,7 +33,12 @@ class ConfirmRegisterForm extends React.Component {
       this.state.password.length < 8 ||
       !(this.state.password === this.state.passwordConfirm)
     ) {
-      alert(`please enter the form correctly `);
+      toast.error("please enter the credentials correctly  ", {
+        // className: "custom-toast",
+        draggable: true,
+
+        autoClose: 1500
+      });
     } else {
       const data = {
         email: this.state.email,
@@ -48,15 +55,18 @@ class ConfirmRegisterForm extends React.Component {
         },
         body: JSON.stringify(data)
       });
+      toast.info("Account Created", {
+        // className: "custom-toast",
+        draggable: true,
 
-      alert(`Account Created `);
+        autoClose: 1500
+      });
 
       window.location.href = "http://localhost:3000/";
     }
   }
   catch(e) {
     console.log(e);
-    alert(e);
   }
 
   render() {
@@ -120,6 +130,8 @@ class ConfirmRegisterForm extends React.Component {
                 action="auth"
                 method="POST"
               >
+                <ToastContainer transition={Zoom} position="top-right" />
+
                 <div className="jumbotron">
                   <Fade left>
                     <h2>Sign Up </h2>

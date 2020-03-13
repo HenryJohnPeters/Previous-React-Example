@@ -5,7 +5,7 @@ import "../bootstrap.min.css";
 
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import AdminDisplayQuestions from "../AdminComponents/AdminDisplayQuestions/AdminDisplayQuestions";
 import Fade from "react-reveal";
 
@@ -23,9 +23,9 @@ function Header() {
   return (
     <div className="jumbotron">
       <div style={{ textAlign: "right" }}>
-        <ProfileButton />
+        {/* <ProfileButton /> */}
         <LogOutButton />
-        <AdminButton />
+        {/* <AdminButton /> */}
       </div>
 
       <div className="User-Menu"></div>
@@ -38,9 +38,9 @@ function Header() {
       />
       <br />
       <br />
-      <Link to="./home">
+      {/* <Link to="./home">
         <button className="btn btn-secondary">Home </button>
-      </Link>
+      </Link> */}
     </div>
   );
 }

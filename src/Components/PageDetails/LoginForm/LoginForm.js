@@ -7,6 +7,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Fade from "react-reveal";
 
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 class LoginForm extends React.Component {
   constructor() {
     super();
@@ -16,6 +19,7 @@ class LoginForm extends React.Component {
       password: ""
     };
     this.onSubmit = this.handleSubmit.bind(this);
+    // this.successToast = this.successToast.bind(this);
   }
 
   handleSubmit(e) {
@@ -23,7 +27,13 @@ class LoginForm extends React.Component {
     let User = window.localStorage.getItem("User");
 
     if (this.state.email.length < 8 || this.state.password.length < 8) {
-      alert(`please enter the form correctly `);
+      // alert(`please enter the form correctly `);
+      toast.error("please enter the credentials correctly  ", {
+        // className: "custom-toast",
+        draggable: true,
+
+        autoClose: 1500
+      });
     } else {
       var today = new Date(),
         date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
@@ -71,7 +81,12 @@ class LoginForm extends React.Component {
               "http://localhost:3000/admin-view-workstation-assessments-declined";
           }
           if (AccountValidationMessage) {
-            alert(AccountValidationMessage);
+            toast.error(`${AccountValidationMessage}`, {
+              // className: "custom-toast",
+              draggable: true,
+
+              autoClose: 1500
+            });
           }
         })
         .catch(error => {
@@ -126,6 +141,7 @@ class LoginForm extends React.Component {
                 action="auth"
                 method="POST"
               >
+                <ToastContainer transition={Zoom} position="top-right" />
                 <div className="jumbotron">
                   <Fade left>
                     <h2>Login </h2>

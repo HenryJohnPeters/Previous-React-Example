@@ -3,13 +3,17 @@ import { Link } from "react-router-dom";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import Popup from "reactjs-popup";
 import { ErrorMessage } from "formik";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const queryString = require("query-string");
 
 var results = [];
 var questionCounter = 0;
 
 class DisplayQuestions extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       questions: [],
@@ -42,16 +46,28 @@ class DisplayQuestions extends React.Component {
     }
   }
   componentDidMount() {
+    let mssg = window.localStorage.getItem("mssg");
+    if (mssg) {
+      toast.error(`${mssg}`, {
+        draggable: true,
+        autoClose: 10000,
+        position: "top-center"
+      });
+    }
+
     this.setState({
       questions: this.getItems(),
       WorkStations: this.getWorkStations()
     });
+    window.localStorage.removeItem("mssg");
   }
   pageRelocator(mssg) {
+    window.localStorage.removeItem("mssg");
     if (mssg.length < 35) {
       window.location.href = "http://localhost:3000/completed-assessment";
     } else if (mssg.length > 35) {
-      window.location.href = "http://localhost:3000/user-questions";
+      window.localStorage.setItem("mssg", mssg);
+      window.location.href = `http://localhost:3000/user-questions`;
     }
   }
   submitAnswers() {
@@ -99,14 +115,17 @@ class DisplayQuestions extends React.Component {
         })
           .then(result => {
             result.json().then(({ AccountValidationMessage }) => {
-              alert(AccountValidationMessage);
               this.pageRelocator(AccountValidationMessage);
             });
           })
 
-          .catch(err => alert(err));
+          .catch(err => console.log(err));
       } else {
-        alert("Please enter all of The questions");
+        toast.error("Please enter all of The questions", {
+          draggable: true,
+
+          autoClose: 1500
+        });
       }
     } catch (e) {
       console.info(e);
@@ -120,6 +139,8 @@ class DisplayQuestions extends React.Component {
     if (this.state.workstations.length) {
       return (
         <div>
+          <ToastContainer transition={Zoom} position="top-center" />
+
           <ul>
             <DropdownButton
               style={{ float: "right" }}
@@ -175,6 +196,8 @@ class DisplayQuestions extends React.Component {
     } else {
       return (
         <div>
+          <ToastContainer transition={Zoom} position="top-right" />
+
           <ul>
             <DropdownButton
               style={{ float: "right" }}

@@ -1,14 +1,14 @@
 import React from "react";
 import logo from "../codestone logo.png";
 import moment from "moment";
-import NavBar from "../PageDetails/Headers/NavBarUsers";
+// import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
-import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+// import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
+// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import { Modal } from "react-bootstrap";
 import Fade from "react-reveal";
-import { Link } from "react-router-dom";
-import { get } from "http";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class Home extends React.Component {
   constructor(props) {
@@ -71,24 +71,16 @@ class Home extends React.Component {
     this.getWSAAnsweredQuestions();
   }
   render() {
-    // alert(this.state.WSAHeader.NameOfUser);
     console.log(this.state.WSAHeader);
-    // console.log(this.state.WSAHeader[0].NameOfUser);
+
     console.log(this.state.WSAHeader.QuestionStatus);
 
     return (
       <>
         <div style={{ border: "offset" }}>
           <Header />
-          {/* <h3 style={{ textAlign: "center" }}>Workstation Assessment</h3> */}
-          {/* <button
-          onClick={e =>
-            alert(
-              this.state.WSAHeader[0].AssignedWorkstation +
-                this.state.WSAHeader[0].NameOfUser
-            )
-          }
-        ></button> */}
+          <ToastContainer transition={Zoom} position="top-right" />
+
           <Fade left>
             <DisplayWSAHeader WSAHeader={this.state.WSAHeader} />
           </Fade>
@@ -110,9 +102,9 @@ function Header() {
   return (
     <div className="jumbotron">
       <div style={{ textAlign: "right" }}>
-        <ProfileButton />
+        {/* <ProfileButton /> */}
         <LogOutButton />
-        <AdminButton />
+        {/* <AdminButton /> */}
       </div>
 
       <div className="User-Menu"></div>
@@ -140,9 +132,9 @@ class WSAAnsweredQuestions extends React.Component {
   render() {
     return (
       <>
+        <ToastContainer transition={Zoom} position="top-right" />
         {this.props.answeredQuestions &&
           this.props.answeredQuestions.map((question, index) => {
-            // alert(question.SuggestedSoloution);
             return (
               <ul>
                 <div style={{ border: "100px" }}>
@@ -178,6 +170,8 @@ class DisplayWSAHeader extends React.Component {
           this.props.WSAHeader.map(function(header, index) {
             return (
               <>
+                {" "}
+                <ToastContainer transition={Zoom} position="top-right" />
                 <ul style={{ paddingBottom: "25px" }}>
                   <div style={{ backgroundColor: "lightGrey" }}>
                     <h3
@@ -240,7 +234,9 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     this.setState({ viewFullDetailsToken: false });
   }
 
-  submitNote() {
+  waitAndReload() {}
+
+  async submitNote() {
     if (this.state.noteToBeAdded.length > 5) {
       var today = new Date(),
         date = `${today.getUTCFullYear()}-${today.getUTCMonth() +
@@ -268,10 +264,21 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         body: JSON.stringify(data)
       });
 
+      await toast.info("Added", {
+        // className: "custom-toast",
+        draggable: true,
+
+        autoClose: 3500
+      });
+
       window.location.reload();
-      alert("Response Added");
     } else if (!this.state.noteToBeAdded.length < 5) {
-      alert("A Response must consist of more than 5 characters");
+      toast.error("A Response must consist of more than 5 characters", {
+        // className: "custom-toast",
+        draggable: true,
+
+        autoClose: 1500
+      });
     }
   }
   componentDidMount() {
@@ -292,7 +299,6 @@ class DisplayWSAAnsweredQuestions extends React.Component {
       .then(results => {
         this.setState({ WSAResponses: results.recordset });
         console.log(this.state.WSAResponses);
-        // alert(this.state.WSAResponses);
       });
 
     this.getUserName();
@@ -317,7 +323,6 @@ class DisplayWSAAnsweredQuestions extends React.Component {
       .then(results => {
         this.setState({ name: results.recordset });
         console.log(this.state.name);
-        // alert(this.state.WSAResponses);
       });
   }
 
@@ -330,6 +335,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     ) {
       return (
         <>
+          <ToastContainer transition={Zoom} position="top-right" />
           <div
             style={{
               backgroundColor: "#E6E6E6",
@@ -365,6 +371,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     ) {
       return (
         <>
+          <ToastContainer transition={Zoom} position="top-right" />
           <div
             style={{
               backgroundColor: "#E6E6E6",
@@ -391,18 +398,21 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               {this.state.WSAResponses &&
                 this.state.WSAResponses.map((r, index) => {
                   return (
-                    <div
-                      style={{
-                        backgroundColor: "#E5E5E5",
-                        border: "inset",
-                        background: "white"
-                      }}
-                    >
-                      <div style={{ float: "right" }}>
-                        {moment(r.Date).format("HH:MM  DD/MM/YYYY ")}
+                    <>
+                      <ToastContainer transition={Zoom} position="top-right" />
+                      <div
+                        style={{
+                          backgroundColor: "#E5E5E5",
+                          border: "inset",
+                          background: "white"
+                        }}
+                      >
+                        <div style={{ float: "right" }}>
+                          {moment(r.Date).format("HH:MM  DD/MM/YYYY ")}
+                        </div>
+                        {r.Response}
                       </div>
-                      {r.Response}
-                    </div>
+                    </>
                   );
                 })}{" "}
             </ul>
@@ -417,6 +427,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     ) {
       return (
         <>
+          <ToastContainer transition={Zoom} position="top-right" />
           <div
             style={{
               backgroundColor: "#E6E6E6",
@@ -439,6 +450,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     ) {
       return (
         <>
+          <ToastContainer transition={Zoom} position="top-right" />
           <div
             style={{
               backgroundColor: "#E6E6E6",
@@ -479,6 +491,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     ) {
       return (
         <>
+          <ToastContainer transition={Zoom} position="top-right" />
           <div
             style={{
               backgroundColor: "#BDBDBD",
@@ -537,6 +550,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     ) {
       return (
         <>
+          <ToastContainer transition={Zoom} position="top-right" />
           <div
             style={{
               backgroundColor: "#BDBDBD",
@@ -629,8 +643,6 @@ class AcceptSolutionModal extends React.Component {
   }
 
   acceptSoloution() {
-    // alert(this.props.questionWhenAnswered);
-
     let email = window.localStorage.getItem("User");
 
     let data = {
@@ -647,8 +659,14 @@ class AcceptSolutionModal extends React.Component {
       },
       body: JSON.stringify(data)
     });
-    alert("Response Set to completed");
-    this.handleClose();
+
+    toast.info("please enter the credentials correctly  ", {
+      // className: "custom-toast",
+      draggable: true,
+
+      autoClose: 1500
+    });
+
     window.location.reload();
   }
   handleClose() {
@@ -668,11 +686,9 @@ class AcceptSolutionModal extends React.Component {
   }
 
   render() {
-    // alert(this.props.amountOfQuestions);
-    // console.log(this.state);
-
     return (
       <div className="header-container">
+        <ToastContainer transition={Zoom} position="top-right" />
         <button
           className="btn btn-primary"
           style={{ width: "10%", textAlign: "center", float: "right" }}

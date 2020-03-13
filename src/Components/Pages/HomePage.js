@@ -6,7 +6,7 @@ import "../bootstrap.min.css";
 import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import CompletedAssessments from "../PageDetails/CompletedAssessments/CompletedAssessments";
 import Fade from "react-reveal";
 import { Link } from "react-router-dom";
@@ -42,7 +42,7 @@ function Header() {
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
-        <AdminButton />
+        {/* <AdminButton /> */}
       </div>
 
       <div className="User-Menu"></div>

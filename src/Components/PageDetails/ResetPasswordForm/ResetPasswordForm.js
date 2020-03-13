@@ -6,6 +6,8 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 import Fade from "react-reveal";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class ResetPasswordForm extends React.Component {
   constructor() {
@@ -18,7 +20,10 @@ class ResetPasswordForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     if (this.state.email.length < 8) {
-      alert(`please enter email correctly `);
+      toast.error("please enter email correctly", {
+        draggable: true,
+        autoClose: 1500
+      });
     } else {
       const data = { email: this.state.email };
 
@@ -39,7 +44,13 @@ class ResetPasswordForm extends React.Component {
           console.log("After it is broken down", jwt, user, EmailAvailability);
           window.localStorage.setItem("resetToken", jwt);
           window.localStorage.setItem("User", user);
-          alert(EmailAvailability);
+
+          toast.error(`${EmailAvailability}`, {
+            // className: "custom-toast",
+            draggable: true,
+
+            autoClose: 1500
+          });
         })
 
         .catch(error => {
@@ -53,6 +64,7 @@ class ResetPasswordForm extends React.Component {
     console.log(this.state.password);
     return (
       <div>
+        <ToastContainer transition={Zoom} position="top-right" />
         <Formik
           class="form-signin"
           action="auth"

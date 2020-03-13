@@ -1,5 +1,8 @@
 import React from "react";
 
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 class AddWorkstation extends React.Component {
   constructor() {
     super();
@@ -13,9 +16,14 @@ class AddWorkstation extends React.Component {
   }
 
   handleSubmit(e) {
+    e.preventDefault();
     try {
       if (this.state.Location.length < 3) {
-        alert("Location has to be 3 characters minimum");
+        toast.error("Location has to be 3 characters minimum", {
+          draggable: true,
+
+          autoClose: 1500
+        });
       } else {
         console.log(this.state.ExtraInformation);
         console.log(this.state.Location);
@@ -43,9 +51,9 @@ class AddWorkstation extends React.Component {
           },
           body: JSON.stringify(data)
         });
-        alert("Workstation Added. Refresh the page to view updates");
+
+        window.location.reload();
       }
-      window.location.reload();
     } catch (e) {
       console.log(e);
     }
@@ -53,12 +61,12 @@ class AddWorkstation extends React.Component {
 
   catch(e) {
     console.log(e);
-    alert(e);
   }
 
   render() {
     return (
       <div>
+        <ToastContainer transition={Zoom} position="top-right" />
         <form>
           <div className="jumbotron">
             <h2 style={{ textAlign: "center" }}>Add Workstation </h2>

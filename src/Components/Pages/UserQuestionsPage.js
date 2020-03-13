@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import DisplayQuestions from "../PageDetails/DisplayQuestions/DisplayQuestions";
 import Fade from "react-reveal";
 function Home() {
@@ -38,7 +38,7 @@ function Header() {
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
-        <AdminButton />
+        {/* <AdminButton /> */}
       </div>
 
       <div className="User-Menu"></div>
