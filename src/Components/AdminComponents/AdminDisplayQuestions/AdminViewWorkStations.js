@@ -38,7 +38,7 @@ class AdminWorkstations extends React.Component {
     this.setState({ activePage: pageNumber });
   }
 
-  componentDidMount = () => {
+  componentWillMount = () => {
     fetch(`/admin-completed-workstations`)
       .then(recordset => recordset.json())
       .then(results => {
