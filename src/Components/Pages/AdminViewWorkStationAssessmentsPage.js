@@ -1,11 +1,11 @@
 import React from "react";
 import logo from "../codestone logo.png";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
 
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
-import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+// import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
+// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import AdminWorkstations from "../AdminComponents/AdminDisplayQuestions/AdminViewWorkStations";
 import Fade from "react-reveal";
 

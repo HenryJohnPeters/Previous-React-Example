@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 
 import { Link } from "react-router-dom";
@@ -6,193 +6,340 @@ import { Link } from "react-router-dom";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
 import ModalCompletedQuestions from "../AdminDisplayWorkstations/AdminViewWorkstationDetails";
+import Slide from "react-reveal";
+import Fade from "react-reveal";
+import "./WSA.css";
 
-moment.locale(window.navigator.language);
+function AdminWorkstationss({ initialCount }) {
+  const [WSAHeaders, setWSAHeaders] = useState([{}]);
+  const [currentPage, setPage] = useState(1);
+  const [WSAPerPage, setWSA] = useState(10);
+  const [pageNumbers, createPageNumber] = useState([]);
+  const [loadingToken, setLoadingToken] = useState(null);
 
-console.log(window.navigator.language);
+  const indexOfLastTodo = currentPage * WSAPerPage;
+  const indexOfFirstTodo = indexOfLastTodo - WSAPerPage;
+  const currentTodos = WSAHeaders.slice(indexOfFirstTodo, indexOfLastTodo);
 
-var results = [];
-class AdminWorkstations extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      questions: [],
-      viewDetails: false,
-
-      currentPage: 1,
-      todosPerPage: 10,
-      pageNumbers: [],
-      FullDetailsPageToken: false
-    };
-    this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
-    // this.test = this.test.bind(this);
-  }
-  // sets the questions form sql into state for questions
-  handleClick = event => {
-    this.setState({
-      currentPage: Number(event.target.id)
-    });
-  };
-
-  handlePageChange(pageNumber) {
-    this.setState({ activePage: pageNumber });
-  }
-
-  componentDidMount() {
+  // const pageNumbers = [];
+  useEffect(() => {
+    setLoadingToken(true);
     fetch(`/admin-in-progress-WSA`)
       .then(recordset => recordset.json())
       .then(results => {
-        this.setState({ questions: results.recordset });
-        console.log(`QuestionResponses array ${this.state.questions}`);
-
-        this.state.questions &&
-          this.getQuestionByUniqueDate(this.state.questions);
+        setWSAHeaders(results.recordset);
+        var pNumbers = [];
+        for (
+          let i = 1;
+          i <= Math.ceil(results.recordset.length / WSAPerPage);
+          i++
+        ) {
+          // pageNumbers.push(i);
+          pNumbers.push(i);
+        }
+        createPageNumber(pNumbers);
       });
+
+    setLoadingToken(false);
+  }, []);
+  function handleClick(event) {
+    setPage(Number(event.target.id));
   }
 
-  getQuestionByUniqueDate(questions) {
-    for (var i = 0; i < questions.length; i++) {
-      if (
-        !results.find(q => q.Date == questions[i].Date) ||
-        !results.find(
-          q => q.AssignedWorkStation == questions[i].AssignedWorkStation
-        )
-      ) {
-        results.push(questions[i]);
-        this.setState({ amountOfWorkstations: results.length });
-      }
-    }
-  }
-
-  render() {
-    // Logic for displaying current todos
-    const indexOfLastTodo = this.state.currentPage * this.state.todosPerPage;
-    const indexOfFirstTodo = indexOfLastTodo - this.state.todosPerPage;
-    const currentTodos = results.slice(indexOfFirstTodo, indexOfLastTodo);
-
-    const pageNumbers = [];
-    for (
-      let i = 1;
-      i <= Math.ceil(this.state.amountOfWorkstations / this.state.todosPerPage);
-      i++
-    ) {
-      pageNumbers.push(i);
-    }
-
-    console.log(this.state.questions);
-    if (!this.state.FullDetailsPageToken) {
-      if (this.state.questions.length) {
-        return (
-          <div>
+  if (!loadingToken) {
+    return (
+      <>
+        <Fade>
+          <Slide left>
             <h2 style={{ textAlign: "center" }}>
-              In Progress Workstation Assessments
+              Workstation Assessments(<b> In Progress</b>)
             </h2>
-            <ul>
-              <button disabled className="btn btn-secondary">
-                Workstation Assessments
-              </button>
-              <Link to="./admin-center">
-                <button className="btn btn-secondary">Edit Questions</button>
-              </Link>
-              <Link to="./admin-center-view-users">
-                <button className="btn btn-secondary">View Users</button>
-              </Link>
-              <DropdownButton
-                style={{ float: "right" }}
-                id="dropdown-basic-button"
-                title="In Progress"
-              >
-                <Dropdown.Item>
-                  {" "}
-                  <Link to="admin-view-workstation-assessments">Completed</Link>
-                </Dropdown.Item>
-              </DropdownButton>{" "}
-            </ul>
-
-            <ul>
-              {currentTodos.map(function(r, index) {
-                return (
-                  <div className="jumbotron">
-                    <Questions
-                      workStation={r.AssignedWorkstation}
-                      date={r.Date}
-                      completeToken={r.QuestionStatus}
-                      RUId={r.RUId}
-                      WSAId={r.WSAId}
-                    ></Questions>
-                  </div>
-                );
-              })}
-              <div
-                style={{ userSelect: "none", cursor: "pointer" }}
-                id="page-numbers"
-              >
-                {pageNumbers.map(number => {
-                  return (
-                    <button
-                      className="btn btn-primary"
-                      key={number}
-                      id={number}
-                      onClick={this.handleClick}
-                    >
-                      {number}
-                    </button>
-                  );
-                })}
-              </div>
-            </ul>
-          </div>
-        );
-      } else if (!this.state.questions.length) {
-        return (
-          <>
+          </Slide>
+        </Fade>
+        <ul>
+          <button disabled className="btn btn-secondary">
+            Workstation Assessments
+          </button>
+          <Link to="./admin-center">
+            <button className="btn btn-secondary">Edit Questions</button>
+          </Link>
+          <Link to="./admin-center-view-users">
+            <button className="btn btn-secondary">View Users</button>
+          </Link>
+          <DropdownButton
+            style={{ float: "right" }}
+            id="dropdown-basic-button"
+            title="WSA's Per Page"
+          >
+            <Dropdown.Item onClick={() => setWSA(10)}>10</Dropdown.Item>
+            <Dropdown.Item onClick={() => setWSA(20)}>20</Dropdown.Item>
+            <Dropdown.Item onClick={() => setWSA(40)}>40</Dropdown.Item>
+            <Dropdown.Item onClick={() => setWSA(100)}>100</Dropdown.Item>
+          </DropdownButton>{" "}
+          <DropdownButton
+            style={{ float: "right" }}
+            id="dropdown-basic-button"
+            title="Completed"
+          >
+            <Dropdown.Item>
+              {" "}
+              <Link to="admin-view-workstation-assessments">In Progress</Link>
+            </Dropdown.Item>
+          </DropdownButton>{" "}
+        </ul>
+        {currentTodos.map(number => (
+          <ul>
             {" "}
-            <div>
-              <h2 style={{ textAlign: "center" }}>
-                In Progress Workstation Assessments
-              </h2>
-              <ul>
-                <button disabled className="btn btn-secondary">
-                  Workstation Assessments
-                </button>
-                <Link to="./admin-center">
-                  <button className="btn btn-secondary">Edit Questions</button>
-                </Link>
-                <Link to="./admin-center-view-users">
-                  <button className="btn btn-secondary">View Users</button>
-                </Link>
-                <DropdownButton
-                  style={{ float: "right" }}
-                  id="dropdown-basic-button"
-                  title="In Progress"
-                >
-                  <Dropdown.Item>
-                    {" "}
-                    <Link to="admin-view-workstation-assessments">
-                      Completed
-                    </Link>
-                  </Dropdown.Item>
-                </DropdownButton>{" "}
-                <br />{" "}
-                <div>
-                  <h6> </h6>
-                </div>
-                <div className="jumbotron">
-                  <li style={{ textAlign: "center" }}>
-                    <b>No In Progress Workstation Self-Assessments</b>{" "}
-                  </li>
-                </div>
-              </ul>
+            <div className="jumbotron">
+              <Questions
+                workStation={number.AssignedWorkstation}
+                date={number.Date}
+                completeToken={number.QuestionStatus}
+                RUId={number.RUId}
+                WSAId={number.WSAId}
+              ></Questions>
             </div>
-          </>
-        );
-      } else if (this.state.FullDetailsPageToken) {
-        return <></>;
-      }
-    }
+          </ul>
+        ))}
+        <div style={{ alignContent: "center", width: "10%" }}></div>
+        <div style={{ textAlign: "center", alignContent: "center" }}>
+          {" "}
+          <b> Current Page </b>: {currentPage}
+          <br />
+          <div>
+            {pageNumbers.map(number => (
+              <button
+                className="btn btn-primary"
+                key={number}
+                id={number}
+                onClick={handleClick}
+              >
+                {number}
+              </button>
+            ))}
+          </div>
+        </div>
+        <br />
+      </>
+    );
+  } else if (loadingToken) {
+    return (
+      <>
+        <ul>
+          <button disabled className="btn btn-secondary">
+            Workstation Assessments
+          </button>
+          <Link to="./admin-center">
+            <button className="btn btn-secondary">Edit Questions</button>
+          </Link>
+          <Link to="./admin-center-view-users">
+            <button className="btn btn-secondary">View Users</button>
+          </Link>
+          <DropdownButton
+            style={{ float: "right" }}
+            id="dropdown-basic-button"
+            title="Completed"
+          >
+            <Dropdown.Item>
+              {" "}
+              <Link to="admin-view-workstation-assessments-declined">
+                In Progress
+              </Link>
+            </Dropdown.Item>
+          </DropdownButton>{" "}
+        </ul>
+        <h3 style={{ textAlign: "center" }}>LOADING</h3>
+      </>
+    );
   }
 }
+
+export default AdminWorkstationss;
+
+// // var results = [];
+// class AdminWorkstations extends React.Component {
+//   constructor() {
+//     super();
+
+//     this.state = {
+//       questions: [],
+//       viewDetails: false,
+
+//       currentPage: 1,
+//       todosPerPage: 10,
+//       pageNumbers: [],
+//       FullDetailsPageToken: false,
+//       loadingToken: true
+//     };
+//     this.getQuestionByUniqueDate = this.getQuestionByUniqueDate.bind(this);
+//     // this.test = this.test.bind(this);
+//   }
+//   // sets the questions form sql into state for questions
+//   handleClick = event => {
+//     this.setState({
+//       currentPage: Number(event.target.id)
+//     });
+//   };
+
+//   handlePageChange(pageNumber) {
+//     this.setState({ activePage: pageNumber });
+//   }
+
+//   componentWillMount = () => {
+//     fetch(`/admin-completed-workstations`)
+//       .then(recordset => recordset.json())
+//       .then(results => {
+//         this.setState({ questions: results.recordset });
+//         console.log(`QuestionResponses array ${this.state.questions}`);
+
+//         this.state.questions &&
+//           this.getQuestionByUniqueDate(this.state.questions);
+//       });
+//   };
+
+//   getQuestionByUniqueDate(questions) {
+//     for (var i = 0; i < questions.length; i++) {
+//       if (
+//         !results.find(q => q.Date == questions[i].Date) ||
+//         !results.find(
+//           q => q.AssignedWorkStation == questions[i].AssignedWorkStation
+//         )
+//       ) {
+//         results.push(questions[i]);
+//         this.setState({ amountOfWorkstations: results.length });
+//       }
+//     }
+//     this.setState({ loadingToken: false });
+//   }
+
+//   render() {
+//     const indexOfLastTodo = this.state.currentPage * this.state.todosPerPage;
+//     const indexOfFirstTodo = indexOfLastTodo - this.state.todosPerPage;
+//     const currentTodos = results.slice(indexOfFirstTodo, indexOfLastTodo);
+
+//     const pageNumbers = [];
+//     for (
+//       let i = 1;
+//       i <= Math.ceil(this.state.amountOfWorkstations / this.state.todosPerPage);
+//       i++
+//     ) {
+//       pageNumbers.push(i);
+//     }
+
+//     console.log(this.state.questions);
+
+//     if (this.state.questions.length && !this.state.loadingToken) {
+//       return (
+//         <div>
+//           <Fade left>
+//             <h3 style={{ textAlign: "center" }}>
+//               Completed Workstation Assessments
+//             </h3>
+//           </Fade>
+
+//           <ul>
+//             <button disabled className="btn btn-secondary">
+//               Workstation Assessments
+//             </button>
+//             <Link to="./admin-center">
+//               <button className="btn btn-secondary">Edit Questions</button>
+//             </Link>
+//             <Link to="./admin-center-view-users">
+//               <button className="btn btn-secondary">View Users</button>
+//             </Link>
+//             <DropdownButton
+//               style={{ float: "right" }}
+//               id="dropdown-basic-button"
+//               title="Completed"
+//             >
+//               <Dropdown.Item>
+//                 {" "}
+//                 <Link to="admin-view-workstation-assessments-declined">
+//                   In Progress
+//                 </Link>
+//               </Dropdown.Item>
+//             </DropdownButton>{" "}
+//           </ul>
+
+//           <ul>
+//             {currentTodos.map(function(r, index) {
+//               return (
+//                 <div className="jumbotron">
+//                   <Slide>
+//                     {/* <Questions
+//                       workStation={r.AssignedWorkstation}
+//                       date={r.Date}
+//                       completeToken={r.QuestionStatus}
+//                       RUId={r.RUId}
+//                       WSAId={r.WSAId}
+//                     ></Questions> */}
+//                   </Slide>
+//                 </div>
+//               );
+//             })}
+//             <div
+//               style={{ userSelect: "none", cursor: "pointer" }}
+//               id="page-numbers"
+//             >
+//               {pageNumbers.map(number => {
+//                 return (
+//                   <button
+//                     className="btn btn-primary"
+//                     key={number}
+//                     id={number}
+//                     onClick={this.handleClick}
+//                   >
+//                     {number}
+//                   </button>
+//                 );
+//               })}
+//             </div>
+//           </ul>
+//         </div>
+//       );
+//     } else if (!this.state.questions.length && !this.state.loadingToken) {
+//       return (
+//         <>
+//           {" "}
+//           <Fade left>
+//             <h3 style={{ textAlign: "center" }}>
+//               Completed Workstation Assessments
+//             </h3>
+//           </Fade>
+//           <div>
+//             <ul>
+//               <br />
+//               <br />{" "}
+//               <div>
+//                 <h6> </h6>
+//               </div>
+//               <div className="jumbotron">
+//                 <li style={{ textAlign: "center" }}>
+//                   <b>no completed Workstation Self-Assessments</b>{" "}
+//                 </li>
+//               </div>
+//             </ul>
+//           </div>
+//         </>
+//       );
+//     } else if (this.state.loadingToken) {
+//       return (
+//         <>
+//           <Fade left>
+//             <h3 style={{ textAlign: "center" }}>
+//               Completed Workstation Assessments
+//             </h3>
+//           </Fade>
+//           <div style={{ textAlign: "center" }}>LOADING</div>
+
+//           <div className="loader center">
+//             <i className="fa fa-cog fa-spin" />
+//           </div>
+//         </>
+//       );
+//     }
+//   }
+// }
 
 class Questions extends React.Component {
   constructor(props) {
@@ -210,10 +357,6 @@ class Questions extends React.Component {
       addNoteToken: false,
       answeredQuestions: []
     };
-    // this.checker = this.checker.bind(this);
-    // this.ViewActivity = this.ViewActivity.bind(this);
-    // this.SubmitNote = this.SubmitNote.bind(this);
-    // this.AddNoteBtn = this.AddNoteBtn.bind(this);
   }
 
   render() {
@@ -227,13 +370,7 @@ class Questions extends React.Component {
               workStation={this.props.workStation}
               WSAId={this.props.WSAId}
             />
-            {/* <button
-              onClick={this.checker}
-              className="btn btn-primary"
-              style={{ float: "right" }}
-            >
-              Question Responses
-            </button> */}
+
             <Link
               to={{
                 pathname: "/admin-view-full-user-wsa-responses",
@@ -287,8 +424,6 @@ class Questions extends React.Component {
             </button>
             <br />
             <br />
-
-            <li> {results.Date}</li>
 
             {this.state.selectedSet &&
               this.state.selectedSet.map((item, index) => {
@@ -373,81 +508,7 @@ class Questions extends React.Component {
           </button>
         </>
       );
-      // } else if (this.state.ViewActivity && this.state.addNoteToken) {
-      //   return (
-      //     <>
-      //       {" "}
-      //       <>
-      //         <button
-      //           style={{ float: "right" }}
-      //           onClick={e =>
-      //             this.setState({
-      //               ViewActivity: false,
-      //               viewDetails: false,
-      //               ViewActivityToken: false,
-      //               addNoteToken: false
-      //             })
-      //           }
-      //           className="btn btn-secondary"
-      //         >
-      //           Revert
-      //         </button>
-      //         <br />
-      //         <li>
-      //           <b>User Id: </b>
-      //           {this.props.RUId}
-      //         </li>
-      //         <li>
-      //           <b>Workstation: </b>
-      //           {this.props.workStation}
-      //         </li>
-      //         <li>
-      //           <b>Date: </b>
-      //           {moment(this.props.date).format("DD/MM/YYYY")}
-      //         </li>
-      //         <li>
-      //           <b>Complete Token: </b>
-      //           {this.props.completeToken}
-      //         </li>
-
-      //         {this.state.notesFromDB &&
-      //           this.state.notesFromDB.map((item, index) => {
-      //             return (
-      //               <div
-      //                 style={{
-      //                   backgroundColor: "white",
-      //                   border: "inset",
-      //                   borderWidth: "0.2px"
-      //                 }}
-      //               >
-      //                 <div style={{ float: "right" }}>
-      //                   {moment(item.CreationTime).format("L")}
-      //                 </div>
-      //                 <div>
-      //                   <b>{`${item.UserStatus} `}</b>
-      //                 </div>
-
-      //                 <div style={{ textAlign: "left" }}>{item.Notes}</div>
-      //               </div>
-      //             );
-      //           })}
-
-      //         <br />
-      //         <input
-      //           onChange={e => this.setState({ noteToBeAdded: e.target.value })}
-      //         />
-
-      //         <button
-      //           onClick={this.SubmitNote}
-      //           className="btn btn-primary"
-      //           style={{ width: "100%" }}
-      //         >
-      //           Submit Button
-      //         </button>
-      //       </>
-      //     </>
-      //   );
     }
   }
 }
-export default AdminWorkstations;
+// export default AdminWorkstationss;

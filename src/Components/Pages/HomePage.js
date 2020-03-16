@@ -3,7 +3,7 @@ import logo from "../codestone logo.png";
 
 import "../bootstrap.min.css";
 
-import NavBar from "../PageDetails/Headers/NavBarUsers";
+// import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 // import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";

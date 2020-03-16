@@ -27,7 +27,6 @@ class LoginForm extends React.Component {
     let User = window.localStorage.getItem("User");
 
     if (this.state.email.length < 8 || this.state.password.length < 8) {
-      // alert(`please enter the form correctly `);
       toast.error("please enter the credentials correctly  ", {
         // className: "custom-toast",
         draggable: true,

@@ -7,7 +7,7 @@ import DisplayUserPasswordDetails from "../PageDetails/UpdateProfileForm/Display
 import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 
 import Popup from "reactjs-popup";
 import { Link } from "react-router-dom";
@@ -34,7 +34,7 @@ function Header() {
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
-        <AdminButton />
+        {/* <AdminButton /> */}
       </div>
 
       <div className="User-Menu"></div>

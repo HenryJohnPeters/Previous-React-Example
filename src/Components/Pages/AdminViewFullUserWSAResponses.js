@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../codestone logo.png";
 import moment from "moment";
 // import NavBar from "../PageDetails/Headers/NavBarUsers";
@@ -9,6 +9,48 @@ import { Modal } from "react-bootstrap";
 import Fade from "react-reveal";
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+// function Homes() {
+//   const [answeredQuestions, setAnsweredQuestions] = useState([]);
+//   const [WSAHeader, setWSAHeader] = useState([]);
+
+//   let data = {
+//     WSAId: this.props.location.state.WSAId
+//   };
+
+//   const getQuestions = async () => {
+//     let recordset = await fetch("/get-completed-questions", {
+//       method: "POST",
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify(data)
+//     });
+//     let results = await recordset.json();
+//     setAnsweredQuestions(results.recordset);
+//   };
+//   const getWSAHeader = async () => {
+//     let data = {
+//       WSAId: this.props.location.state.WSAId
+//     };
+//     let recordset = await fetch("/get-WSA-header", {
+//       method: "POST",
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify(data)
+//     });
+//     let results = await recordset.json();
+//     setWSAHeader(results.recordset);
+//   };
+
+//   useEffect(async () => {
+//     getQuestions();
+//     getWSAHeader();
+//   }, []);
+// }
 
 class Home extends React.Component {
   constructor(props) {
@@ -56,10 +98,6 @@ class Home extends React.Component {
       .then(results => {
         this.setState({
           WSAHeader: results.recordset
-        });
-        this.setState({
-          userName: this.state.WSAHeader[0].NameOfUser,
-          workstation: this.state.WSAHeader[0].AssignedWorkstation
         });
 
         console.log(this.state.WSAHeader);

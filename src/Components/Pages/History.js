@@ -3,10 +3,10 @@ import logo from "../codestone logo.png";
 
 import "../bootstrap.min.css";
 
-import NavBar from "../PageDetails/Headers/NavBarUsers";
+// import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import { Link } from "react-router-dom";
 import DisplayHistory from "../PageDetails/DisplayQuestions/DisplayHistory";
 
@@ -14,7 +14,7 @@ function Home() {
   return (
     <div>
       <Header />
-      <DisplayHistory/>
+      <DisplayHistory />
     </div>
   );
 }
@@ -25,7 +25,7 @@ function Header() {
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
-        <AdminButton />
+        {/* <AdminButton /> */}
       </div>
 
       <div className="User-Menu"></div>
@@ -36,8 +36,11 @@ function Header() {
         width="340"
         height="60"
       />
-<br/><br/>
-     <Link to = "./home"><button className = "btn btn-secondary"> Home </button></Link>
+      <br />
+      <br />
+      <Link to="./home">
+        <button className="btn btn-secondary"> Home </button>
+      </Link>
     </div>
   );
 }
