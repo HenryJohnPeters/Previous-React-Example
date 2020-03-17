@@ -15,8 +15,7 @@ class ManageWorkstations extends React.Component {
     this.state = { AccountDetails: [], exist: "" };
     this.getItems = this.getItems.bind(this);
   }
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
-  // sets the questions form sql into state for questions
+
   getItems() {
     try {
       var user = window.localStorage.getItem("User");
@@ -36,8 +35,7 @@ class ManageWorkstations extends React.Component {
       console.log(e);
     }
   }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////
-  //when the component mounts make the sql questions the
+
   componentDidMount() {
     this.getItems();
 
@@ -144,15 +142,14 @@ class WorkStations extends React.Component {
         >
           x
         </button>
-        <h3>Work Station</h3>
 
         <li key="Desk-Location">
-          Desk Location : {this.state.AccountDetails.AssignedWorkstation}
+          Desk Location : <b>{this.state.AccountDetails.AssignedWorkstation}</b>
         </li>
 
         <li key="Date-Added">
-          Date Added :
-          {moment(this.state.AccountDetails.DateAdded).format(" DD/MM/YYYY ")}
+          Date Added :{" "}
+          {moment(this.state.AccountDetails.DateAdded).format("LLL")}
         </li>
       </div>
     );

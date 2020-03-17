@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import moment from "moment";
+
+import moment from "moment-timezone";
 
 import { Link } from "react-router-dom";
 
@@ -50,43 +51,58 @@ function AdminWorkstations(props) {
   }
 
   if (!loadingToken) {
-    return (
-      <>
-        {currentTodos.map(number => (
-          <ul>
+    if (WSAHeaders.length) {
+      return (
+        <>
+          {currentTodos.map(number => (
+            <ul>
+              {" "}
+              <div className="jumbotron">
+                <Questions
+                  workStation={number.AssignedWorkstation}
+                  date={number.Date}
+                  completeToken={number.QuestionStatus}
+                  RUId={number.RUId}
+                  WSAId={number.WSAId}
+                ></Questions>
+              </div>
+            </ul>
+          ))}
+          <div style={{ alignContent: "center", width: "10%" }}></div>
+          <div style={{ textAlign: "center", alignContent: "center" }}>
             {" "}
-            <div className="jumbotron">
-              <Questions
-                workStation={number.AssignedWorkstation}
-                date={number.Date}
-                completeToken={number.QuestionStatus}
-                RUId={number.RUId}
-                WSAId={number.WSAId}
-              ></Questions>
+            <b> Current Page </b>: {currentPage}
+            <br />
+            <div>
+              {pageNumbers.map(number => (
+                <button
+                  className="btn btn-primary"
+                  key={number}
+                  id={number}
+                  onClick={handleClick}
+                >
+                  {number}
+                </button>
+              ))}
             </div>
-          </ul>
-        ))}
-        <div style={{ alignContent: "center", width: "10%" }}></div>
-        <div style={{ textAlign: "center", alignContent: "center" }}>
-          {" "}
-          <b> Current Page </b>: {currentPage}
-          <br />
-          <div>
-            {pageNumbers.map(number => (
-              <button
-                className="btn btn-primary"
-                key={number}
-                id={number}
-                onClick={handleClick}
-              >
-                {number}
-              </button>
-            ))}
           </div>
-        </div>
-        <br />
-      </>
-    );
+          <br />
+        </>
+      );
+    } else if (!WSAHeaders.length) {
+      return (
+        <ul>
+          <div className="jumbotron">
+            <p style={{ textAlign: "center" }}>
+              <b>
+                You have not completed any workstation self-assessments. To view
+                your workstation self-assessments please perform one.
+              </b>
+            </p>
+          </div>
+        </ul>
+      );
+    }
   } else if (loadingToken) {
     return (
       <>
@@ -146,24 +162,31 @@ function Questions(props) {
       </Link>
 
       <br />
+      <Fade left>
+        <li>
+          <b>User Id: </b>
+          {props.RUId}
+        </li>
+      </Fade>
+      <Fade right>
+        <li>
+          <b>Workstation: </b>
+          {props.workStation}
+        </li>
+      </Fade>
+      <Fade left>
+        <li>
+          <b>Date: </b>
 
-      <li>
-        <b>User Id: </b>
-        {props.RUId}
-      </li>
-      <li>
-        <b>Workstation: </b>
-        {props.workStation}
-      </li>
-      <li>
-        <b>Date: </b>
-
-        {moment(props.date).format("L")}
-      </li>
-      <li>
-        <b>Complete Token: </b>
-        {props.completeToken}
-      </li>
+          {moment(props.date).format("LLL")}
+        </li>
+      </Fade>
+      <Fade right>
+        <li>
+          <b>Complete Token: </b>
+          {props.completeToken}
+        </li>
+      </Fade>
     </div>
   );
 }

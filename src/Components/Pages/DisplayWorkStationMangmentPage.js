@@ -36,7 +36,6 @@ function Header() {
         <LogOutButton />
         {/* <AdminButton /> */}
       </div>
-
       <div className="User-Menu"></div>
       <img
         className="profile-image"
@@ -45,8 +44,7 @@ function Header() {
         width="340"
         height="60"
       />
-      <br />
-
+      <br /> <br />
       <Link to="./home">
         <button className=" btn btn-secondary">Home</button>
       </Link>

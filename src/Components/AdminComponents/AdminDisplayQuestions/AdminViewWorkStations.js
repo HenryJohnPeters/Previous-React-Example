@@ -42,6 +42,8 @@ function AdminWorkstationss({ initialCount }) {
       });
 
     setLoadingToken(false);
+    console.log(WSAHeaders);
+    console.log(WSAHeaders[0].WSAId);
   }, []);
 
   function handleClick(event) {
@@ -49,83 +51,138 @@ function AdminWorkstationss({ initialCount }) {
   }
 
   if (!loadingToken) {
-    return (
-      <>
-        <Fade>
-          <Slide left>
-            <h2 style={{ textAlign: "center" }}>
-              Workstation Assessments(<b> Completed</b>)
-            </h2>
-          </Slide>
-        </Fade>
-        <ul>
-          <button disabled className="btn btn-secondary">
-            Workstation Assessments
-          </button>
-          <Link to="./admin-center">
-            <button className="btn btn-secondary">Edit Questions</button>
-          </Link>
-          <Link to="./admin-center-view-users">
-            <button className="btn btn-secondary">View Users</button>
-          </Link>
-          <DropdownButton
-            style={{ float: "right" }}
-            id="dropdown-basic-button"
-            title="WSA's Per Page"
-          >
-            <Dropdown.Item onClick={() => setWSA(10)}>10</Dropdown.Item>
-            <Dropdown.Item onClick={() => setWSA(20)}>20</Dropdown.Item>
-            <Dropdown.Item onClick={() => setWSA(40)}>40</Dropdown.Item>
-            <Dropdown.Item onClick={() => setWSA(100)}>100</Dropdown.Item>
-          </DropdownButton>{" "}
-          <DropdownButton
-            style={{ float: "right" }}
-            id="dropdown-basic-button"
-            title="Completed"
-          >
-            <Dropdown.Item>
-              {" "}
-              <Link to="admin-view-workstation-assessments-declined">
-                In Progress
-              </Link>
-            </Dropdown.Item>
-          </DropdownButton>{" "}
-        </ul>
-        {currentTodos.map(number => (
+    if (!loadingToken) {
+      return (
+        <>
+          {/* <Fade> */}
+
+          {/* </Fade> */}
           <ul>
+            <Slide right>
+              <h2 style={{ textAlign: "center" }}>
+                Workstation Assessments(<b> Completed</b>)
+              </h2>
+            </Slide>
+            <button disabled className="btn btn-secondary">
+              Workstation Assessments
+            </button>
+            <Link to="./admin-center">
+              <button className="btn btn-secondary">Edit Questions</button>
+            </Link>
+            <Link to="./admin-center-view-users">
+              <button className="btn btn-secondary">View Users</button>
+            </Link>
+            <DropdownButton
+              style={{ float: "right" }}
+              id="dropdown-basic-button"
+              title="WSA's Per Page"
+            >
+              <Dropdown.Item onClick={() => setWSA(10)}>10</Dropdown.Item>
+              <Dropdown.Item onClick={() => setWSA(20)}>20</Dropdown.Item>
+              <Dropdown.Item onClick={() => setWSA(40)}>40</Dropdown.Item>
+              <Dropdown.Item onClick={() => setWSA(100)}>100</Dropdown.Item>
+            </DropdownButton>{" "}
+            <DropdownButton
+              style={{ float: "right" }}
+              id="dropdown-basic-button"
+              title="Completed"
+            >
+              <Dropdown.Item>
+                {" "}
+                <Link to="admin-view-workstation-assessments-declined">
+                  In Progress
+                </Link>
+              </Dropdown.Item>
+            </DropdownButton>{" "}
+          </ul>
+          {currentTodos.map(number => (
+            <ul>
+              {" "}
+              <div className="jumbotron">
+                <Questions
+                  workStation={number.AssignedWorkstation}
+                  date={number.Date}
+                  completeToken={number.QuestionStatus}
+                  RUId={number.RUId}
+                  WSAId={number.WSAId}
+                ></Questions>
+              </div>
+            </ul>
+          ))}
+          <div style={{ alignContent: "center", width: "10%" }}></div>
+          <div style={{ textAlign: "center", alignContent: "center" }}>
             {" "}
+            <b> Current Page </b>: {currentPage}
+            <br />
+            <div>
+              {pageNumbers.map(number => (
+                <button
+                  className="btn btn-primary"
+                  key={number}
+                  id={number}
+                  onClick={handleClick}
+                >
+                  {number}
+                </button>
+              ))}
+            </div>
+          </div>
+          <br />
+        </>
+      );
+    } else if (loadingToken) {
+      return (
+        <>
+          <Fade>
+            <Slide left>
+              <h2 style={{ textAlign: "center" }}>
+                Workstation Assessments(<b> Completed</b>)
+              </h2>
+            </Slide>
+          </Fade>
+          <ul>
+            <button disabled className="btn btn-secondary">
+              Workstation Assessments
+            </button>
+            <Link to="./admin-center">
+              <button className="btn btn-secondary">Edit Questions</button>
+            </Link>
+            <Link to="./admin-center-view-users">
+              <button className="btn btn-secondary">View Users</button>
+            </Link>
+            <DropdownButton
+              style={{ float: "right" }}
+              id="dropdown-basic-button"
+              title="WSA's Per Page"
+            >
+              <Dropdown.Item onClick={() => setWSA(10)}>10</Dropdown.Item>
+              <Dropdown.Item onClick={() => setWSA(20)}>20</Dropdown.Item>
+              <Dropdown.Item onClick={() => setWSA(40)}>40</Dropdown.Item>
+              <Dropdown.Item onClick={() => setWSA(100)}>100</Dropdown.Item>
+            </DropdownButton>{" "}
+            <DropdownButton
+              style={{ float: "right" }}
+              id="dropdown-basic-button"
+              title="Completed"
+            >
+              <Dropdown.Item>
+                {" "}
+                <Link to="admin-view-workstation-assessments-declined">
+                  In Progress
+                </Link>
+              </Dropdown.Item>
+            </DropdownButton>{" "}
+          </ul>
+          <ul>
             <div className="jumbotron">
-              <Questions
-                workStation={number.AssignedWorkstation}
-                date={number.Date}
-                completeToken={number.QuestionStatus}
-                RUId={number.RUId}
-                WSAId={number.WSAId}
-              ></Questions>
+              <p style={{ textAlign: "center" }}>
+                <b>No Workstation assessments found with status of completed</b>
+              </p>
             </div>
           </ul>
-        ))}
-        <div style={{ alignContent: "center", width: "10%" }}></div>
-        <div style={{ textAlign: "center", alignContent: "center" }}>
-          {" "}
-          <b> Current Page </b>: {currentPage}
-          <br />
-          <div>
-            {pageNumbers.map(number => (
-              <button
-                className="btn btn-primary"
-                key={number}
-                id={number}
-                onClick={handleClick}
-              >
-                {number}
-              </button>
-            ))}
-          </div>
-        </div>
-        <br />
-      </>
-    );
+        </>
+      );
+    }
   } else if (loadingToken) {
     return (
       <>
@@ -167,167 +224,55 @@ class Questions extends React.Component {
     console.log(props);
     this.state = {
       ...props,
-      questionsAccepted: [],
-      questionsAcceptedCounter: "",
+
       selectedSet: [],
-      ViewActivityToken: false,
-      noteToBeAdded: "",
-      notesFromDB: [],
-      addNoteToken: false,
+
       answeredQuestions: []
     };
   }
 
   render() {
-    if (!this.state.ViewActivity) {
-      if (!this.state.viewDetails && !this.state.ViewActivityToken) {
-        console.log(moment.locale());
-        return (
-          <div>
-            <ModalCompletedQuestions
-              RUId={this.props.RUId}
-              workStation={this.props.workStation}
-              WSAId={this.props.WSAId}
-            />
+    return (
+      <div>
+        <ModalCompletedQuestions
+          RUId={this.props.RUId}
+          workStation={this.props.workStation}
+          WSAId={this.props.WSAId}
+        />
 
-            <Link
-              to={{
-                pathname: "/admin-view-full-user-wsa-responses",
-                state: {
-                  WSAId: this.props.WSAId
-                }
-              }}
-            >
-              <button style={{ float: "right" }} className="btn btn-primary">
-                View Full Details
-              </button>
-            </Link>
-
-            <br />
-
-            <li>
-              <b>User Id: </b>
-              {this.props.RUId}
-            </li>
-            <li>
-              <b>Workstation: </b>
-              {this.props.workStation}
-            </li>
-            <li>
-              <b>Date: </b>
-
-              {moment(this.props.date).format("L")}
-            </li>
-            <li>
-              <b>Complete Token: </b>
-              {this.props.completeToken}
-            </li>
-          </div>
-        );
-      } else if (this.state.viewDetails && !this.state.ViewActivityToken) {
-        return (
-          <div>
-            <button
-              style={{ float: "right" }}
-              onClick={e =>
-                this.setState({
-                  ViewActivity: false,
-                  viewDetails: false,
-                  ViewActivityToken: false,
-                  addNoteToken: false
-                })
-              }
-              className="btn btn-secondary"
-            >
-              Revert
-            </button>
-            <br />
-            <br />
-
-            {this.state.selectedSet &&
-              this.state.selectedSet.map((item, index) => {
-                return (
-                  <div>
-                    <li>
-                      {" "}
-                      <b>{item.QuestionWhenAnswered}</b>{" "}
-                    </li>
-                    <li>{item.QuestionResponse}</li>
-                    <li>{item.Accepted}</li>
-                  </div>
-                );
-              })}
-          </div>
-        );
-      }
-    } else if (this.state.ViewActivity && !this.state.addNoteToken) {
-      return (
-        <>
-          <button
-            style={{ float: "right" }}
-            onClick={e =>
-              this.setState({
-                ViewActivity: false,
-                viewDetails: false,
-                ViewActivityToken: false,
-                addNoteToken: false
-              })
+        <Link
+          to={{
+            pathname: "/admin-view-full-user-wsa-responses",
+            state: {
+              WSAId: this.props.WSAId
             }
-            className="btn btn-secondary"
-          >
-            Revert
+          }}
+        >
+          <button style={{ float: "right" }} className="btn btn-primary">
+            View Full Details
           </button>
-          <br />
-          <li>
-            <b>User Id: </b>
-            {this.props.RUId}
-          </li>
-          <li>
-            <b>Workstation: </b>
-            {this.props.workStation}
-          </li>
-          <li>
-            <b>Date: </b>
-            {moment(this.props.date).format("DD/MM/YYYY")}
-          </li>
-          <li>
-            <b>Complete Token: </b>
-            {this.props.completeToken}
-          </li>
+        </Link>
 
-          {this.state.notesFromDB &&
-            this.state.notesFromDB.map((item, index) => {
-              return (
-                <div
-                  style={{
-                    backgroundColor: "white",
-                    border: "inset",
-                    borderWidth: "0.2px"
-                  }}
-                >
-                  <div style={{ float: "right" }}>
-                    {moment(item.CreationTime).format("HH:MM  DD/MM/YYYY ")}
-                  </div>
-                  <div>
-                    <b>{`${item.UserStatus} `}</b>
-                  </div>
+        <br />
 
-                  <div style={{ textAlign: "left" }}>{item.Notes}</div>
-                </div>
-              );
-            })}
+        <li>
+          <b>User Id: </b>
+          {this.props.RUId}
+        </li>
+        <li>
+          <b>Workstation: </b>
+          {this.props.workStation}
+        </li>
+        <li>
+          <b>Date: </b>
 
-          <br />
-          <button
-            onClick={this.AddNoteBtn}
-            className="btn btn-primary"
-            style={{ width: "100%" }}
-          >
-            Add Note
-          </button>
-        </>
-      );
-    }
+          {moment(this.props.date).format("LLLL")}
+        </li>
+        <li>
+          <b>Complete Token: </b>
+          {this.props.completeToken}
+        </li>
+      </div>
+    );
   }
 }
-// export default AdminWorkstationss;

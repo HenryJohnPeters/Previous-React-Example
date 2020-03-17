@@ -79,11 +79,11 @@ function AdminWorkstationss({ initialCount }) {
           <DropdownButton
             style={{ float: "right" }}
             id="dropdown-basic-button"
-            title="Completed"
+            title="In Progress"
           >
             <Dropdown.Item>
               {" "}
-              <Link to="admin-view-workstation-assessments">In Progress</Link>
+              <Link to="admin-view-workstation-assessments">Complete</Link>
             </Dropdown.Item>
           </DropdownButton>{" "}
         </ul>
@@ -138,12 +138,12 @@ function AdminWorkstationss({ initialCount }) {
           <DropdownButton
             style={{ float: "right" }}
             id="dropdown-basic-button"
-            title="Completed"
+            title="In Progress"
           >
             <Dropdown.Item>
               {" "}
               <Link to="admin-view-workstation-assessments-declined">
-                In Progress
+                Complete
               </Link>
             </Dropdown.Item>
           </DropdownButton>{" "}
@@ -362,7 +362,6 @@ class Questions extends React.Component {
   render() {
     if (!this.state.ViewActivity) {
       if (!this.state.viewDetails && !this.state.ViewActivityToken) {
-        console.log(moment.locale());
         return (
           <div>
             <ModalCompletedQuestions
@@ -397,7 +396,7 @@ class Questions extends React.Component {
             <li>
               <b>Date: </b>
 
-              {moment(this.props.date).format("L")}
+              {moment(this.props.date).format("LLLL")}
             </li>
             <li>
               <b>Complete Token: </b>
@@ -405,110 +404,7 @@ class Questions extends React.Component {
             </li>
           </div>
         );
-      } else if (this.state.viewDetails && !this.state.ViewActivityToken) {
-        return (
-          <div>
-            <button
-              style={{ float: "right" }}
-              onClick={e =>
-                this.setState({
-                  ViewActivity: false,
-                  viewDetails: false,
-                  ViewActivityToken: false,
-                  addNoteToken: false
-                })
-              }
-              className="btn btn-secondary"
-            >
-              Revert
-            </button>
-            <br />
-            <br />
-
-            {this.state.selectedSet &&
-              this.state.selectedSet.map((item, index) => {
-                return (
-                  <div>
-                    <li>
-                      {" "}
-                      <b>{item.QuestionWhenAnswered}</b>{" "}
-                    </li>
-                    <li>{item.QuestionResponse}</li>
-                    <li>{item.Accepted}</li>
-                  </div>
-                );
-              })}
-          </div>
-        );
       }
-    } else if (this.state.ViewActivity && !this.state.addNoteToken) {
-      return (
-        <>
-          <button
-            style={{ float: "right" }}
-            onClick={e =>
-              this.setState({
-                ViewActivity: false,
-                viewDetails: false,
-                ViewActivityToken: false,
-                addNoteToken: false
-              })
-            }
-            className="btn btn-secondary"
-          >
-            Revert
-          </button>
-          <br />
-          <li>
-            <b>User Id: </b>
-            {this.props.RUId}
-          </li>
-          <li>
-            <b>Workstation: </b>
-            {this.props.workStation}
-          </li>
-          <li>
-            <b>Date: </b>
-            {moment(this.props.date).format("DD/MM/YYYY")}
-          </li>
-          <li>
-            <b>Complete Token: </b>
-            {this.props.completeToken}
-          </li>
-
-          {this.state.notesFromDB &&
-            this.state.notesFromDB.map((item, index) => {
-              return (
-                <div
-                  style={{
-                    backgroundColor: "white",
-                    border: "inset",
-                    borderWidth: "0.2px"
-                  }}
-                >
-                  <div style={{ float: "right" }}>
-                    {moment(item.CreationTime).format("HH:MM  DD/MM/YYYY ")}
-                  </div>
-                  <div>
-                    <b>{`${item.UserStatus} `}</b>
-                  </div>
-
-                  <div style={{ textAlign: "left" }}>{item.Notes}</div>
-                </div>
-              );
-            })}
-
-          <br />
-          <button
-            onClick={this.AddNoteBtn}
-            className="btn btn-primary"
-            style={{ width: "100%" }}
-          >
-            Add Note
-          </button>
-        </>
-      );
     }
   }
 }
-// export default AdminWorkstationss;
