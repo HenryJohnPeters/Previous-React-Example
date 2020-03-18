@@ -56,7 +56,6 @@ class ConfirmResetPasswordForm extends React.Component {
 
   catch(e) {
     console.log(e);
-    alert(e);
   }
 
   render() {

@@ -23,7 +23,7 @@ import AdminViewFullUserWSAResponses from "./Components/Pages/AdminViewFullUserW
 // import AdminViewUsersSeverityHigh from "./AdminComponents/AdminViewUsersSeverityHigh";
 // import AdminViewUsersSeverityMedium from "./AdminComponents/AdminViewUsersSeverityMedium";
 // import AdminViewUsersSeverityCompleted from "./AdminComponents/AdminViewUsersSeverityCompleted";
-import AdminViewUsers from "./AdminComponents/AdminViewUsers";
+// import AdminViewUsers from "./AdminComponents/AdminViewUsers";
 
 // import Parent from "./Components/Andys-examples/parent";
 
@@ -110,11 +110,11 @@ function Routing() {
         />
         <AuthRoute exact path="/user-history" component={History} />
         />
-        <AdminAuthRoute
+        {/* <AdminAuthRoute
           exact
           path="/admin-view-users"
           component={AdminViewUsers}
-        />
+        /> */}
         <AdminAuthRoute
           exact
           path="/admin-view-workstation-assessments"
@@ -140,7 +140,7 @@ function Routing() {
           path="/admin-view-users-severity-completed"
           component={AdminViewUsersSeverityCompleted}
         /> */}
-        <AuthRoute exact path="/admin-view-users" component={AdminViewUsers} />
+        {/* <AuthRoute exact path="/admin-view-users" component={AdminViewUsers} /> */}
       </Switch>
     </BrowserRouter>
   );

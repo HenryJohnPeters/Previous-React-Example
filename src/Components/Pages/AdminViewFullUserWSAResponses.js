@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../codestone logo.png";
 import moment from "moment";
-// import NavBar from "../PageDetails/Headers/NavBarUsers";
+
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
-// import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+
 import { Modal } from "react-bootstrap";
 import Fade from "react-reveal";
 import { toast, Zoom, ToastContainer } from "react-toastify";
@@ -57,10 +56,6 @@ class Home extends React.Component {
         this.setState({
           WSAHeader: results.recordset
         });
-        this.setState({
-          userName: this.state.WSAHeader[0].NameOfUser,
-          workstation: this.state.WSAHeader[0].AssignedWorkstation
-        });
 
         console.log(this.state.WSAHeader);
       });
@@ -69,6 +64,8 @@ class Home extends React.Component {
   componentDidMount() {
     this.getWSAHeader();
     this.getWSAAnsweredQuestions();
+
+    // alert(this.state.userName, this.state.workstation);
   }
   render() {
     console.log(this.state.WSAHeader);
@@ -86,10 +83,12 @@ class Home extends React.Component {
           </Fade>
           <Fade right>
             <WSAAnsweredQuestions
+              WSAHeader={this.state.WSAHeader}
               workstation={this.state.workstation}
               userName={this.state.userName}
               answeredQuestions={this.state.answeredQuestions}
               amountOfQuestions={this.state.answeredQuestions.length}
+              WSAId={this.props.location.state.WSAId}
             />
           </Fade>
         </div>
@@ -143,12 +142,12 @@ class WSAAnsweredQuestions extends React.Component {
                     questionWhenAnswered={question.QuestionWhenAnswered}
                     questionResponse={question.QuestionResponse}
                     suggestedSoloution={question.SuggestedSoloution}
-                    WSAId={question.WSAId}
                     ResponseId={question.ResponseId}
                     amountOfQuestions={this.props.amountOfQuestions}
                     WSAHeader={this.props.WSAHeader}
                     userName={this.props.userName}
                     workstation={this.props.workstation}
+                    WSAId={this.props.WSAId}
                   />
                 </div>
                 <br />
@@ -189,10 +188,6 @@ class DisplayWSAHeader extends React.Component {
                     <ul>
                       <b>Workstation :</b> {header.AssignedWorkstation}
                     </ul>
-                    {/* <ul>
-                      <b>Date: </b>
-                      {moment(header.Date).format(" DD/MM/YYYY ")}
-                    </ul> */}
                     <ul>
                       <b>Status :</b> {header.QuestionStatus}
                     </ul>
@@ -233,8 +228,6 @@ class DisplayWSAAnsweredQuestions extends React.Component {
   viewDetails() {
     this.setState({ viewFullDetailsToken: false });
   }
-
-  waitAndReload() {}
 
   async submitNote() {
     if (this.state.noteToBeAdded.length > 5) {
@@ -463,8 +456,6 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               <div style={{ float: "right" }}>✔️</div>
               <br />
               <b> Answer :</b> No, but not a problem
-              {/* {this.props.questionWhenAnswered} <br /> */}
-              {/* <b> Suggested Soloution :</b> {this.props.suggestedSoloution} */}
               {this.state.WSAResponses &&
                 this.state.WSAResponses.map((r, index) => {
                   return (
@@ -537,6 +528,9 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               amountOfQuestions={this.props.amountOfQuestions}
               questionWhenAnswered={this.props.questionWhenAnswered}
               WSAHeader={this.props.WSAHeader}
+              WSAId={this.props.WSAId}
+              workstation={this.props.workstation}
+              userName={this.props.userName}
             />
             <br />
             <br />
@@ -615,6 +609,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               questionWhenAnswered={this.props.questionWhenAnswered}
               noteToBeAdded={this.props.noteToBeAdded}
               WSAHeader={this.props.WSAHeader}
+              workstation={this.props.workstation}
+              userName={this.props.userName}
             />
 
             <br />
@@ -641,15 +637,23 @@ class AcceptSolutionModal extends React.Component {
       show: false
     };
   }
+  componentDidMount() {
+    // console.log(this.props.WSAHeader[0].NameOfUser);
+    // console.log(this.props.WSAHeader[0].AssignedWorkstation);
+    // console.log(this.props.workstation);
+  }
 
   acceptSoloution() {
     let email = window.localStorage.getItem("User");
 
     let data = {
+      WSAId: this.props.WSAId,
       responseId: this.props.responseId,
-      amountOfQuestions: this.props.amountOfQuestions,
+      // amountOfQuestions: this.props.amountOfQuestions,
       email: email,
-      questionWhenAnswered: this.props.questionWhenAnswered
+      questionWhenAnswered: this.props.questionWhenAnswered,
+      userName: this.props.WSAHeader[0].NameOfUser,
+      workstation: this.props.WSAHeader[0].AssignedWorkstation
     };
     fetch("/update-response-to-confirmed", {
       method: "POST",

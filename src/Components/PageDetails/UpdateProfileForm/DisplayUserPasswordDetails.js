@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment-timezone";
 import { Link } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import UpdatePassword from "./UpdatePasswordForm";
@@ -40,7 +41,12 @@ class DisplayUserAcountDetails extends React.Component {
                   <div className="jumbotron">
                     <DisplayAddWorkstation />
                     <h3>Password Details</h3>
-                    <li> Last Updated: {AccountDetails.LastPasswordUpdate}</li>
+                    <li>
+                      {" "}
+                      Last Updated:{" "}
+                      {moment(AccountDetails.LastPasswordUpdate).format("LLL")}
+                      {/* {AccountDetails.LastPasswordUpdate} */}
+                    </li>
 
                     <li></li>
                   </div>

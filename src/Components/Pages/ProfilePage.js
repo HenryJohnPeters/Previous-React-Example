@@ -47,6 +47,7 @@ function Header() {
         height="60"
       />
       <br />
+      <br />
       <Link to="./home">
         <button className="btn btn-secondary">Home</button>
       </Link>

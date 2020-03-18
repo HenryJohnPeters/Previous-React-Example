@@ -3,10 +3,9 @@ import logo from "../codestone logo.png";
 
 import "../bootstrap.min.css";
 
-import NavBar from "../PageDetails/Headers/NavBarUsers";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-// import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
+
 import CompletedAssessments from "../PageDetails/CompletedAssessments/CompletedAssessments";
 import Fade from "react-reveal";
 import { Link } from "react-router-dom";
@@ -27,9 +26,7 @@ class PageTitle extends React.Component {
     return (
       <div>
         <Fade right>
-          <h2 style={{ textAlign: "center" }}>
-            Completed Workstation Assessments
-          </h2>
+          <h2 style={{ textAlign: "center" }}>Workstation Assessments</h2>
         </Fade>
       </div>
     );

@@ -638,13 +638,13 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
   var mailOptions = {
     from: "CodeStoneDeskAssessment@outlook.com",
     to: `${email}`,
-    subject: `Admin Update on Workstation Self-Assessment question.`,
+    subject: `Update on Workstation Self-Assessment question.`,
 
     html: `
-    Hi ${userName},<br/> an admin has updated your workstation assessment for the workstation ${workstation}.<br>
+    Response added to workstation self-assessment.<br/>
      <b>Question</b> : "${questionWhenAnswered}"<br>
      <b>Response</b> : "${adminResponse}"<br>
-    Please click this link to view your completed assessments <a href = "${url}">${url} </a>`
+    Click this link to view your completed assessments <a href = "${url}">${url} </a>`
   };
 
   transporter.sendMail(mailOptions, function(error, info) {
@@ -655,49 +655,6 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
     }
   });
 });
-
-/////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// app.post("/get-user-name", async (req, response) => {
-//   (responseId = req.body.responseId), await sql.connect(config);
-
-//   let email = req.body.email;
-
-//   var request = new sql.Request();
-
-//   request.input("Email", sql.NVarChar, email);
-//   request.execute("dbo.GetUserName", function(err, recordset) {
-//     if (err) console.log(err);
-//     // send records as a response
-//     res.json(recordset);
-//   });
-//   console.info("done");
-// });
-// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// app.post("/get-user-name-for-response", (req, res) => {
-//   try {
-//     sql.connect(config);
-//     var request = new sql.Request();
-//     let email = req.body.email;
-
-//     console.info(email);
-
-//     request.input("Email", sql.NVarChar, email);
-//     request.execute("dbo.GetUserName", function(err, recordset) {
-//       if (err) console.log(err);
-//       // send records as a response
-//       res.json(recordset);
-//     });
-//   } catch (e) {
-//     console.info(e);
-//   }
-// });
-
-////////////////////////////////////////////////////////////////
-/////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/get-completed-questions", async (req, res) => {
   try {
@@ -985,28 +942,32 @@ app.post("/register-email", async (req, response) => {
 app.post("/update-response-to-confirmed", async (req, response) => {
   try {
     await sql.connect(config);
+    let WSAId = req.body.WSAId;
     let responseId = req.body.responseId;
-    let amountOfQuestions = req.body.amountOfQuestions;
+    // let amountOfQuestions = req.body.amountOfQuestions;
     let email = req.body.email;
     let questionWhenAnswered = req.body.questionWhenAnswered;
+    let userName = req.body.userName;
+    let workstation = req.body.workstation;
 
     var request = new sql.Request();
+    console.log(WSAId);
 
     request.input("ResponseId", sql.Int, responseId);
     await request.execute("dbo.UpdateResponseToConfirmed");
 
+    var request = new sql.Request();
+    request.input("WSAId", sql.Int, WSAId);
     let result = await request.execute("dbo.GetCompletedWSAlength");
 
     console.info(result.recordset.length);
-    console.info(result.recordset.length);
 
-    if (result.recordset.length < amountOfQuestions) {
-      console.info("Less results than needed");
-    } else if (result.recordset.length == amountOfQuestions) {
+    if (result.recordset.length == 0) {
       var request = new sql.Request();
       console.info("correct results");
       const responseId = req.body.responseId;
-      request.input("ResponseId", sql.Int, responseId);
+
+      request.input("WSAId", sql.Int, WSAId);
       await request.execute("dbo.UpdateWSAToCompleted");
 
       var transporter = nodemailer.createTransport({
@@ -1020,14 +981,45 @@ app.post("/update-response-to-confirmed", async (req, response) => {
       var mailOptions = {
         from: "CodeStoneDeskAssessment@outlook.com",
         to: `${email}`,
-        subject: `Admin Accepted Soloution "${questionWhenAnswered}"`,
+        subject: `Assesment completed`,
 
         html: `
-        Admin Accepted Soloution "${questionWhenAnswered}"<br>
-        Your assesment for 
+        Hi ${userName},<br>
+        The Workstaion Self-Assessment status has been set to completed for the workstation <b>${workstation}</b>.
+        If any new issues arrise for this workstaion please complete a new workstation self-assessment.
+        <br>
+        <br>
+        Click this link to see your  workstation self-assessments :<a href = http://localhost:3000/home>http://localhost:3000/home </a>`
+      };
+
+      transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+    } else {
+      var transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: "hpf9703@gmail.com",
+          pass: "Cows4422"
+        }
+      });
+
+      var mailOptions = {
+        from: "CodeStoneDeskAssessment@outlook.com",
+        to: `${email}`,
+        subject: `Accepted soloution for Workstation self assessment`,
+
+        html: `
+        Hi ${userName},<br>
+        A soloution has been accepted for "${questionWhenAnswered}" for the workstation "${workstation}".<br>
+        
 
         <br>
-        Click this link to see your completed workstation assessments :<a href = http://localhost:3000/home>http://localhost:3000/home </a>`
+        Click this link to see your  workstation self-assessments :<a href = http://localhost:3000/home>http://localhost:3000/home </a>`
       };
 
       transporter.sendMail(mailOptions, function(error, info) {

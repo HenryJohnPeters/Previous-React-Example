@@ -5,6 +5,7 @@ import Popup from "reactjs-popup";
 import { ErrorMessage } from "formik";
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Fade from "react-reveal";
 
 const queryString = require("query-string");
 
@@ -41,7 +42,6 @@ class DisplayQuestions extends React.Component {
         .then(recordset => recordset.json())
         .then(results => {
           this.setState({ workstations: results.recordset });
-          console.log(this.state.workstations);
         });
     }
   }
@@ -96,7 +96,6 @@ class DisplayQuestions extends React.Component {
           completeToken = "Complete";
         }
 
-        console.log(completeToken);
         const data = {
           completeToken,
           results,
@@ -135,12 +134,10 @@ class DisplayQuestions extends React.Component {
   render() {
     let selectedWorkStation = window.localStorage.getItem("Workstation");
 
-    console.log(this.state.questions);
     if (this.state.workstations.length) {
       return (
         <div>
           <ToastContainer transition={Zoom} position="top-center" />
-
           <ul>
             <DropdownButton
               style={{ float: "right" }}
@@ -161,7 +158,7 @@ class DisplayQuestions extends React.Component {
                 })}
             </DropdownButton>
             <br />
-            <br />{" "}
+
             <div>
               <h6>
                 {" "}
@@ -174,23 +171,31 @@ class DisplayQuestions extends React.Component {
             {this.state.questions &&
               this.state.questions.map(function(questions, index) {
                 return (
-                  <div
-                    className="jumbotron"
-                    style={{ border: "solid", borderColor: "LightGray" }}
-                  >
-                    <Questions questions={questions}></Questions>
-                  </div>
+                  <Fade>
+                    <div
+                      className="jumbotron"
+                      style={{ border: "solid", borderColor: "LightGray" }}
+                    >
+                      <Questions questions={questions}></Questions>
+                    </div>
+                  </Fade>
                 );
               })}
-            <br />
-            <button
-              onClick={this.submitAnswers}
-              style={{ width: "100%" }}
-              className="btn btn-primary"
+
+            <div
+              className="jumbotron"
+              style={{ border: "solid", borderColor: "LightGray" }}
             >
-              Submit
-            </button>
-          </ul>
+              <button
+                onClick={this.submitAnswers}
+                style={{ width: "100%" }}
+                className="btn btn-primary"
+              >
+                Submit
+              </button>
+            </div>
+          </ul>{" "}
+          <br />
         </div>
       );
     } else {
@@ -246,7 +251,7 @@ export default DisplayQuestions;
 class WorkStationSelecter extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
+
     this.state = { ...props };
     this.selectWorkStation = this.selectWorkStation.bind(this);
   }
@@ -291,7 +296,7 @@ class WorkStationSelecter extends React.Component {
 class Questions extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
+
     this.state = {
       ...props,
       QuestionAnswer: "",
@@ -347,9 +352,8 @@ class Questions extends React.Component {
     };
 
     questionCounter++;
-    console.log(newItem);
+
     results.push(newItem);
-    console.log(results);
 
     this.setState({
       QuestionComplete: true,
@@ -405,8 +409,6 @@ class Questions extends React.Component {
     questionCounter++;
     results.push(newItem);
 
-    console.log(results);
-
     this.setState({
       QuestionComplete: true,
       QuestionAccepted: false,
@@ -453,7 +455,6 @@ class Questions extends React.Component {
 
     questionCounter++;
     results.push(newItem);
-    console.log(results);
 
     this.setState({
       QuestionAccepted: false,
@@ -461,18 +462,6 @@ class Questions extends React.Component {
       questionProblem: false,
       QuestionComplete: true
     });
-
-    console.log(this.state.QuestionAndAnswer);
-
-    // fetch("Accept-question-answer", {
-    //   method: "POST", // or 'PUT'
-    //   headers: {
-    //     Accept: "application/json,",
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify(data)
-    // }).then(response => {
-    //   console.log("response before it is broken down " + response);
   }
 
   RevertAcceptedAnswer(e) {
@@ -483,8 +472,6 @@ class Questions extends React.Component {
       results.findIndex(r => r.questionId === this.state.questionId),
       1
     );
-
-    console.log(results);
 
     this.setState({
       completedQuestions: false,
@@ -527,8 +514,6 @@ class Questions extends React.Component {
       },
       body: JSON.stringify(data)
     }).then(response => {
-      console.log("response before it is broken down " + response);
-
       // return response.json();
     });
 
@@ -562,7 +547,6 @@ class Questions extends React.Component {
     };
     questionCounter++;
     results.push(newItem);
-    console.log(results);
 
     this.setState({
       QuestionAccepted: false,
@@ -603,7 +587,7 @@ class Questions extends React.Component {
 
             <button
               onClick={this.AcceptAnswer}
-              className="btn btn-secondary"
+              className="btn btn-primary"
               style={{
                 width: "35%",
                 marginLeft: "230px",
@@ -624,7 +608,7 @@ class Questions extends React.Component {
                 verticalAlign: "top"
               }}
               onClick={this.QuestionDecline}
-              className="btn btn-secondary"
+              className="btn btn-primary"
             >
               No
             </button>
@@ -665,7 +649,7 @@ class Questions extends React.Component {
             <li>
               {" "}
               <button
-                className="btn btn-secondary"
+                className="btn btn-primary"
                 style={{
                   width: "35%",
                   marginLeft: "230px",
@@ -675,7 +659,7 @@ class Questions extends React.Component {
                   // float: "right"
                 }}
                 onClick={this.AdmitProblem}
-                className="btn btn-secondary"
+                className="btn btn-primary"
                 // style={{ float: "left" }}
               >
                 Yes
@@ -689,7 +673,7 @@ class Questions extends React.Component {
                   verticalAlign: "top"
                 }}
                 onClick={this.AdmitNotProblem}
-                className="btn btn-secondary"
+                className="btn btn-primary"
                 // style={{ float: "left" }}
               >
                 {" "}
@@ -743,7 +727,7 @@ class Questions extends React.Component {
             />
             <button
               onClick={this.submitDeclinedQuestionSoloution}
-              className="btn btn-secondary"
+              className="btn btn-primary"
               style={{ width: "100%" }}
             >
               Submit suggestion

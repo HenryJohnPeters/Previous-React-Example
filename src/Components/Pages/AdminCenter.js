@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
 
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
-import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
+// import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 // import AdminButton from "../PageDetails/Buttons/AdminButton/AdminButton";
 import AdminDisplayQuestions from "../AdminComponents/AdminDisplayQuestions/AdminDisplayQuestions";
-import Fade from "react-reveal";
+// import Fade from "react-reveal";
 
 function Home() {
   return (
