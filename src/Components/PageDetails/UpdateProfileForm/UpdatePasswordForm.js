@@ -18,14 +18,14 @@ class ConfirmResetPasswordForm extends React.Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault();
+    
     const email = window.localStorage.getItem("User");
     if (
       this.state.password.length < 8 ||
       !(this.state.password === this.state.passwordConfirm)
     ) {
       toast.error("please enter the form correctly  ", {
-        // className: "custom-toast",
+        
         draggable: true,
 
         autoClose: 1500
@@ -52,6 +52,7 @@ class ConfirmResetPasswordForm extends React.Component {
         autoClose: 1500
       });
     }
+    window.location.reload()
   }
 
   catch(e) {
@@ -105,15 +106,8 @@ class ConfirmResetPasswordForm extends React.Component {
               >
                 <ToastContainer transition={Zoom} position="top-right" />
                 <div className="jumbotron">
-                  <h2>Update Password </h2>
-                  <div className="help">
-                    <Popup trigger={<Link> Help?</Link>} className="center">
-                      <div>
-                        Enter Codestone Email address and Password connected to
-                        the account.
-                      </div>
-                    </Popup>
-                  </div>
+                  <h2 style = {{textAlign: "center"}}>Update Password </h2>
+                  
 
                   <label htmlFor="email">Password</label>
                   <input

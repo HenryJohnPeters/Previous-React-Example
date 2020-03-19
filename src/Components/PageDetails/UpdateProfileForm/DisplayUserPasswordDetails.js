@@ -1,10 +1,62 @@
-import React from "react";
+import React, { useState , useEffect} from 'react';
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import UpdatePassword from "./UpdatePasswordForm";
 
-class DisplayUserAcountDetails extends React.Component {
+function DisplayUserAcountDetails(){
+  const[accountDetails,setAccountDetails]= useState([{}])
+
+
+ useEffect(() => {
+  var user = window.localStorage.getItem("User");
+  if (user) {
+    fetch(`/profile-account-details/${user}`)
+      .then(recordset => recordset.json())
+      .then(results => {
+        setAccountDetails(results.recordset)
+        
+      });
+  } else {
+    alert("user not set");
+  }
+  
+
+ },[])
+if(!accountDetails[0].LastPasswordUpdate){
+  return<>   <ul>
+  {accountDetails &&
+    accountDetails.map(function(AccountDetails, index) {
+      return (
+        <div className="jumbotron">
+          <DisplayAddWorkstation />
+          <h3>Password Details</h3>
+          <li>Last Updated: n/a</li>
+
+           <li></li>
+        </div>
+      );
+    })}
+</ul></>
+}else if (accountDetails[0].LastPasswordUpdate){
+  return<> <ul>{accountDetails &&
+    accountDetails.map(function(AccountDetails, index) {
+      return (
+        <div className="jumbotron">
+          <DisplayAddWorkstation />
+          <h3>Password Details</h3>
+          <li>Last Updated: {moment(AccountDetails.LastPasswordUpdate).format("LLL")} </li>
+
+           <li></li>
+        </div>
+      );
+    })}
+    </ul>
+ </>
+}}
+ 
+
+class DisplayUserAcountDetailss extends React.Component {
   constructor() {
     super();
 
@@ -24,50 +76,75 @@ class DisplayUserAcountDetails extends React.Component {
     }
   }
   //when the component mounts make the sql questions the
-  componentDidMount() {
+   componentDidMount() {
     this.setState({
       AccountDetails: this.getItems()
     });
+    
+     
   }
 
   render() {
-    return (
-      <>
-        {this.state.AccountDetails ? (
-          <ul>
-            {this.state.AccountDetails &&
-              this.state.AccountDetails.map(function(AccountDetails, index) {
-                return (
-                  <div className="jumbotron">
-                    <DisplayAddWorkstation />
-                    <h3>Password Details</h3>
-                    <li>
-                      {" "}
-                      Last Updated:{" "}
-                      {moment(AccountDetails.LastPasswordUpdate).format("LLL")}
-                      {/* {AccountDetails.LastPasswordUpdate} */}
-                    </li>
+    
+  
+      return (<>{this.state.AccountDetails}
+    
+    </>)
+    // }else if (){
+    //   return(<></>)
 
-                    <li></li>
-                  </div>
-                );
-              })}
-          </ul>
-        ) : (
-          <ul>
-            <div className="jumbotron">
-              <h3>Password Detail</h3>
-              <Link style={{ float: "right" }} to="/update-password-details">
-                <button className="btn btn-primary">Update</button>
-              </Link>
-              <li> Last Updated: Account has not been updated</li>
+    // }
+    // else{return<></>};
+    //   // <>
 
-              <li></li>
-            </div>
-          </ul>
-        )}
-      </>
-    );
+
+
+      //   {this.state.AccountDetails ? (
+      //     <ul>
+      //       {this.state.AccountDetails &&
+      //         this.state.AccountDetails.map(function(AccountDetails, index) {
+      //           return (
+      //             <div className="jumbotron">
+      //               <DisplayAddWorkstation />
+      //               <h3>Password Details</h3>
+      //               <li>
+                      
+      //                 Last Updated: 
+      //                 {
+      //                 AccountDetails.LastPasswordUpdate == "NULL" ?
+      //                  <>here </> 
+      //                  : <> not here </> }
+
+      //                 {/* { AccountDetails.LastPasswordUpdate == null
+      //         ? <Button type="button" style={{ display: 'block' }}>itsnotshere </Button>
+      //         : <Button type="button" style={{ display: 'none' }}>its here</Button>
+      //       } */}
+
+
+      //                 {/* {moment(AccountDetails.LastPasswordUpdate).format("LLL")} */}
+      //                 {/* {AccountDetails.LastPasswordUpdate} */}
+      //               </li>
+
+      //                <li></li>
+      //             </div>
+      //           );
+      //         })}
+      //     </ul>
+      // //   ) : (
+      //     <ul>
+      //       <div className="jumbotron">
+      //         <h3>Password Detail</h3>
+      //         <Link style={{ float: "right" }} to="/update-password-details">
+      //           <button className="btn btn-primary">Update</button>
+      //         </Link>
+      //         <li> Last Updated: Account has not been updated</li>
+
+      //         <li></li>
+      //       </div>
+      //     </ul>
+      //   )}
+      // </>
+    
   }
 }
 export default DisplayUserAcountDetails;

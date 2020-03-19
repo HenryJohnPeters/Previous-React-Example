@@ -114,10 +114,10 @@ class WorkStations extends React.Component {
 
   deleteWorkStation(e) {
     //console.log(`${this.state.AccountDetails.UDId}`);
-    let QuestionId = this.state.AccountDetails.UDId;
-    console.log(QuestionId);
+    let workstationId = this.state.AccountDetails.WSId;
+    alert(workstationId)
 
-    let data = { QuestionId };
+    let data = { workstationId };
 
     fetch("/delete-work-station", {
       method: "POST", // or 'PUT'
@@ -142,6 +142,7 @@ class WorkStations extends React.Component {
         >
           x
         </button>
+        
 
         <li key="Desk-Location">
           Desk Location : <b>{this.state.AccountDetails.AssignedWorkstation}</b>
@@ -193,13 +194,13 @@ class DisplayAddWorkstation extends React.Component {
           +
         </button>
 
-        <button
+        {/* <button
           style={{ float: "right" }}
           className="btn btn-secondary"
           onClick={this.handleRefresh}
         >
           ⟲
-        </button>
+        </button> */}
 
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton></Modal.Header>

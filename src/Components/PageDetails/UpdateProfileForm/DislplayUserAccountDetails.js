@@ -4,8 +4,8 @@ import { Modal } from "react-bootstrap";
 import UpdateAccountDetailsForm from "./UpdateAccountDetailsForm";
 
 class DisplayUserAcountDetails extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = { AccountDetails: [] };
   }
@@ -49,13 +49,13 @@ class DisplayUserAcountDetails extends React.Component {
             Manage Work stations
           </button>
         </Link>
-        <button
+        {/* <button
           style={{ float: "right" }}
           className="btn btn-secondary"
           onClick={this.handleRefresh}
         >
           ⟲
-        </button>
+        </button> */}
         <br />
         <br />
 
@@ -63,7 +63,9 @@ class DisplayUserAcountDetails extends React.Component {
           this.state.AccountDetails.map(function(AccountDetails, index) {
             return (
               <div className="jumbotron">
-                <UpdateAccountDetails />
+                <UpdateAccountDetails email ={AccountDetails.Email}
+                 name = {AccountDetails.NameOfUser}
+                 number ={AccountDetails.ContactNumber} />
                 <h3>Account Details</h3>
                 <li> Email: {AccountDetails.Email}</li>
                 <li> Name: {AccountDetails.NameOfUser}</li>
@@ -126,7 +128,9 @@ class UpdateAccountDetails extends React.Component {
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
-            <UpdateAccountDetailsForm />{" "}
+            <UpdateAccountDetailsForm email ={this.props.email}
+                 name = {this.props.name}
+                 number ={this.props.number} />{" "}
           </Modal.Body>
         </Modal>
       </div>

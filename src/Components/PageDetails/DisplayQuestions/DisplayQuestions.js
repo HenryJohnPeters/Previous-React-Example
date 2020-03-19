@@ -6,6 +6,8 @@ import { ErrorMessage } from "formik";
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Fade from "react-reveal";
+import {Redirect } from "react-router-dom"; 
+
 
 const queryString = require("query-string");
 
@@ -22,7 +24,8 @@ class DisplayQuestions extends React.Component {
       workstations: [],
       selectedWorkStation: "",
       QuestionAndAnswer: {},
-      AccountValidationMessage: ""
+      AccountValidationMessage: "",
+      redoToken: true
     };
     this.submitAnswers = this.submitAnswers.bind(this);
     this.pageRelocator = this.pageRelocator.bind(this);
@@ -61,13 +64,28 @@ class DisplayQuestions extends React.Component {
     });
     window.localStorage.removeItem("mssg");
   }
-  pageRelocator(mssg) {
-    window.localStorage.removeItem("mssg");
+  async pageRelocator(mssg) {
+    await window.localStorage.removeItem("mssg");
     if (mssg.length < 35) {
+    //   alert("set as no")
+    //  this.setState({redoToken : "no"})
       window.location.href = "http://localhost:3000/completed-assessment";
     } else if (mssg.length > 35) {
-      window.localStorage.setItem("mssg", mssg);
-      window.location.href = `http://localhost:3000/user-questions`;
+      let selectedWorkStation = window.localStorage.getItem("Workstation");
+      
+      toast.error(<><p>There is already an existing workstation self-assessment for this location. Please restart and the change workstaion.<br/>
+      Any existing workstation self-assessments can accessed via the home page.</p><br/>
+      <button className = "btn btn-primary" style ={{width : "100%"}} onClick = {()=> window.location.reload() }>Restart</button>
+      
+      </> , {
+        closeOnClick :false,
+        draggabletoast: true,
+
+        autoClose: 10000
+      });
+    //  this.setState({redoToken : "yes"})
+      //  window.localStorage.setItem("mssg", mssg);
+      // window.location.href = `http://localhost:3000/user-questions`;
     }
   }
   submitAnswers() {
@@ -121,7 +139,7 @@ class DisplayQuestions extends React.Component {
           .catch(err => console.log(err));
       } else {
         toast.error("Please enter all of The questions", {
-          draggable: true,
+          draggabletoast: true,
 
           autoClose: 1500
         });
@@ -137,12 +155,15 @@ class DisplayQuestions extends React.Component {
     if (this.state.workstations.length) {
       return (
         <div>
+{/*           
+{this.state.redoToken === "yes"  && <Redirect to="/user" />}
+ {!this.state.redoToken === "no" && <Redirect to="/home" />} */}
           <ToastContainer transition={Zoom} position="top-center" />
           <ul>
             <DropdownButton
               style={{ float: "right" }}
               id="dropdown-basic-button"
-              title="Select Workstation Location"
+              title = {selectedWorkStation}
             >
               {this.state.workstations &&
                 this.state.workstations.map(function(workstations, index) {
@@ -157,15 +178,16 @@ class DisplayQuestions extends React.Component {
                   );
                 })}
             </DropdownButton>
-            <br />
+          
+            <br/>
+            <br/>
+           
+             
 
             <div>
               <h6>
                 {" "}
-                <tr>
-                  Desk Location Selected :{" "}
-                  <u style={{ color: "grey" }}>{selectedWorkStation}</u>
-                </tr>
+                
               </h6>
             </div>
             {this.state.questions &&
@@ -207,7 +229,7 @@ class DisplayQuestions extends React.Component {
             <DropdownButton
               style={{ float: "right" }}
               id="dropdown-basic-button"
-              title="Select Workstation Location"
+              title ="Null"
             >
               {this.state.workstations &&
                 this.state.workstations.map(function(workstations, index) {
@@ -225,14 +247,12 @@ class DisplayQuestions extends React.Component {
             <div>
               <h6>
                 {" "}
-                <tr>
-                  Desk Location Selected : <u style={{ color: "grey" }}>NULL</u>
-                </tr>
+               
               </h6>
               <div className="jumbotron">
                 <li style={{ textAlign: "center" }}>
                   <b>
-                    This account has no workstations assigned to it. Please
+              This account has no workstations assigned to it. Please
                     Navigate to the workstations segment of the profile page to
                     create one
                   </b>{" "}
@@ -561,17 +581,8 @@ class Questions extends React.Component {
       if (!this.state.ShowInput) {
         return (
           <div>
-            <Popup
-              trigger={
-                <div style={{ float: "right" }}>
-                  {" "}
-                  <Link> ℹ️</Link>
-                </div>
-              }
-              position="left center"
-            >
-              <div>{this.state.questions.GuidanceNotes}</div>
-            </Popup>
+            <UpdateAccountDetails guidanceNote = {this.state.questions.GuidanceNotes}/> 
+            
 
             <li style={{ textAlign: "center" }}>
               <b
@@ -622,12 +633,7 @@ class Questions extends React.Component {
       ) {
         return (
           <div>
-            <Popup
-              trigger={<div style={{ float: "right" }}> ℹ️</div>}
-              position="left center"
-            >
-              <div>{this.state.questions.GuidanceNotes}</div>
-            </Popup>
+            <UpdateAccountDetails guidanceNote = {this.state.questions.GuidanceNotes}/> 
 
             <li style={{ textAlign: "center", color: "grey" }}>
               <b>{this.state.questions.Question}</b>
@@ -693,12 +699,7 @@ class Questions extends React.Component {
       ) {
         return (
           <>
-            <Popup
-              trigger={<div style={{ float: "right" }}> ℹ️</div>}
-              position="left center"
-            >
-              <div>{this.state.questions.GuidanceNotes}</div>
-            </Popup>
+             <UpdateAccountDetails guidanceNote = {this.state.questions.GuidanceNotes}/> 
             <h3>
               <li style={{ textAlign: "center", color: "grey" }}>
                 <b>{this.state.questions.Question}</b>
@@ -743,12 +744,7 @@ class Questions extends React.Component {
       ) {
         return (
           <>
-            <Popup
-              trigger={<div style={{ float: "right" }}> ℹ️</div>}
-              position="left center"
-            >
-              <div>{this.state.questions.GuidanceNotes}</div>
-            </Popup>
+            <UpdateAccountDetails guidanceNote = {this.state.questions.GuidanceNotes}/> 
             <h3>
               <li style={{ textAlign: "center", color: "grey" }}>
                 <b>{this.state.questions.Question}</b>
@@ -774,12 +770,7 @@ class Questions extends React.Component {
       ) {
         return (
           <>
-            <Popup
-              trigger={<div style={{ float: "right" }}> ℹ️</div>}
-              position="left center"
-            >
-              <div>{this.state.questions.GuidanceNotes}</div>
-            </Popup>
+             <UpdateAccountDetails guidanceNote = {this.state.questions.GuidanceNotes}/> 
             <h3>
               <li style={{ textAlign: "center", color: "grey" }}>
                 <b>{this.state.questions.Question}</b>
@@ -842,21 +833,9 @@ class Questions extends React.Component {
       ) {
         return (
           <>
-            <Popup
-              trigger={<div style={{ float: "right" }}> ℹ️</div>}
-              position="left center"
-            >
-              <div>{this.state.questions.GuidanceNotes}</div>
-            </Popup>
+          <UpdateAccountDetails guidanceNote = {this.state.questions.GuidanceNotes}/> 
             <h3>
-              {/* <button
-                onClick={this.RevertAcceptedAnswer}
-                style={{ float: "right" }}
-                className="btn btn-danger"
-              >
-                {" "}
-                Revert Answer
-              </button> */}
+             
               <br />
               <li style={{ textAlign: "center", color: "grey" }}>
                 {" "}
@@ -881,5 +860,67 @@ class Questions extends React.Component {
         );
       }
     }
+  }
+}
+
+
+
+
+class UpdateAccountDetails extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleClose = this.handleClose.bind(this);
+    this.handleShow = this.handleShow.bind(this);
+
+    this.handleRefresh = this.handleRefresh.bind(this);
+
+    this.state = {
+      show: false
+    };
+  }
+
+  handleClose() {
+    this.setState({
+      show: false,
+      show1: false
+    });
+  }
+
+  handleShow() {
+    this.setState({
+      show: true
+    });
+  }
+
+  handleRefresh() {
+    window.location.reload();
+  }
+
+  render() {
+    // console.log(this.state);
+
+    return (
+      <div className="header-container">
+        <div
+          // className="btn btn-primary"
+          style={{ float: "right", cursor: "pointer" }}
+          onClick={this.handleShow}
+        >
+          ℹ️
+        </div>
+
+        <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header closeButton ><b style = {{ textAlign : "justify"}}>Guidance Note</b></Modal.Header>
+          <Modal.Body><p >
+            {this.props.guidanceNote}</p>
+            <br/>
+          
+            <button onClick= {this.handleClose} className = "btn btn-primary" style ={{width: "100%"}}>Ok</button>
+             
+          </Modal.Body>
+        </Modal>
+      </div>
+    );
   }
 }

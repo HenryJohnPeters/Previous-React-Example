@@ -36,9 +36,9 @@ class LandingPage extends React.Component {
         /> */}
         <Zoom left>
           <div className="jumbotron blue">
-            <h2 style={{ textAlign: "center" }}>Congradulations</h2>
+            <h2 style={{ textAlign: "center" }}>Congratulations</h2>
             <p style={{ textAlign: "center" }}>
-              Your desk assessment has been completed. Return home to see this
+              Your workstation self-assessment has been completed. Return home to see this.
             </p>
             <Link to="/home">
               <button style={{ width: "100%" }} className="btn btn-primary">

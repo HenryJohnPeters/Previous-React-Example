@@ -459,6 +459,7 @@ app.get("/user-questions", async (req, res) => {
 ////////////////////////////////////////////////////////////////////////
 app.post("/login", async (req, response) => {
   try {
+    console.info("express work")
     var connectionok = true;
     await sql.connect(config).catch(err => {
       console.log("connection error ", err);
@@ -776,14 +777,14 @@ app.post("/admin-get-notes", async (req, res) => {
 app.post("/delete-work-station", async (req, response) => {
   try {
     await sql.connect(config);
-    let QuestionId = req.body.QuestionId;
+    let workstationId= req.body.workstationId;
 
-    console.info(`${QuestionId}`);
+     
     var request = new sql.Request();
 
-    request.input("QuestionId", sql.Int, QuestionId);
+    request.input("WSId", sql.Int, workstationId);
 
-    const DeleteWorkStation = await request.execute("dbo.DeleteWorkStations");
+    await request.execute("dbo.DeleteWorkStations");
 
     console.log("done done");
   } catch (err) {
@@ -1110,16 +1111,35 @@ app.post("/update-account-details", async (req, response) => {
 app.post("/add-workstation", async (req, response) => {
   try {
     await sql.connect(config);
-    const Email = req.body.email;
-    const Location = req.body.Location;
+    var request = new sql.Request();
+    const email = req.body.email;
+    const location = req.body.Location;
+
+    
+
+     
+    request.input("Email", sql.NVarChar, email);
+    request.input("Location", sql.NVarChar, location);
+    const results = await request.execute("dbo.CheckIfWorkstationExists");
+
+    if (results.recordsets[0].length > 0) {
+      console.info("this exists already")
+
+    }else {
+      console.info("this does not exist well done")
+
+    }
+
+
+    
     const date = req.body.date;
 
-    console.info(`${Email}${Location}${date}`);
+  
     var request = new sql.Request();
 
     //find ruid for user
-    request.input("Email", sql.NVarChar, Email);
-    request.input("DeskLocation", sql.NVarChar, Location);
+    request.input("Email", sql.NVarChar, email);
+    request.input("DeskLocation", sql.NVarChar, location);
     request.input("Date", sql.DateTime, date);
 
     const result = await request.execute("dbo.FindRuidAddWorkstationDetails");
