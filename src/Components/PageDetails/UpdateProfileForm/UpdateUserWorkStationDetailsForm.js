@@ -38,7 +38,7 @@ class AddWorkstation extends React.Component {
         const data = {
           email,
 
-          Location: this.state.Location,
+          location: this.state.Location,
 
           date
         };

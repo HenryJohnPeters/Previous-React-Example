@@ -3,10 +3,11 @@ import logo from "../codestone logo.png";
 import moment from "moment";
 
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
-
+import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 import { Modal } from "react-bootstrap";
 import Fade from "react-reveal";
 import { toast, Zoom, ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 class Home extends React.Component {
@@ -96,12 +97,11 @@ class Home extends React.Component {
     );
   }
 }
-
 function Header() {
   return (
     <div className="jumbotron">
       <div style={{ textAlign: "right" }}>
-        {/* <ProfileButton /> */}
+        <ProfileButton />
         <LogOutButton />
         {/* <AdminButton /> */}
       </div>
@@ -114,6 +114,13 @@ function Header() {
         width="340"
         height="60"
       />
+      <br />
+      <br />
+      <Link to="/home">
+        <button className="btn btn-secondary">
+          Home
+        </button>
+      </Link>
     </div>
   );
 }
@@ -576,6 +583,9 @@ class DisplayWSAAnsweredQuestions extends React.Component {
                       <div style={{ float: "right" }}>
                         {moment(r.Date).format("HH:MM  DD/MM/YYYY ")}
                       </div>
+                      <b>
+                        <>{r.UserName}: </>
+                      </b>
                       {r.Response}
                     </div>
                   );
