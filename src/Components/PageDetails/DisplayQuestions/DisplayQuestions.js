@@ -44,48 +44,48 @@ class DisplayQuestions extends React.Component {
       fetch(`/profile-work-station-detailss/${user}`)
         .then(recordset => recordset.json())
         .then(results => {
+          alert(results.recordset[0].AssignedWorkstation)
+          let selectedWS = ""
+          if(results.recordset.length == 1 )
+          {
+            selectedWS = results.recordset[0].AssignedWorkstation
+            alert("just one ws")
+
+          }
+          else if (results.recordset.length >= 2 ){
+            alert("there is more than one")
+
+          }
+        
           this.setState({ workstations: results.recordset });
         });
     }
   }
   componentDidMount() {
-    let mssg = window.localStorage.getItem("mssg");
-    if (mssg) {
-      toast.error(`${mssg}`, {
-        draggable: true,
-        autoClose: 10000,
-        position: "top-center"
-      });
-    }
-
-    this.setState({
-      questions: this.getItems(),
-      WorkStations: this.getWorkStations()
-    });
-    window.localStorage.removeItem("mssg");
+ this.setState({
+     questions:  this.getItems(),
+     WorkStations: this.getWorkStations(),
+      
+   });
+   
   }
   async pageRelocator(mssg) {
-    await window.localStorage.removeItem("mssg");
+  
     if (mssg.length < 35) {
-    //   alert("set as no")
-    //  this.setState({redoToken : "no"})
+   
       window.location.href = "http://localhost:3000/completed-assessment";
     } else if (mssg.length > 35) {
-      let selectedWorkStation = window.localStorage.getItem("Workstation");
-      
-      toast.error(<><p>There is already an existing workstation self-assessment for this location. Please restart and the change workstaion.<br/>
-      Any existing workstation self-assessments can accessed via the home page.</p><br/>
-      <button className = "btn btn-primary" style ={{width : "100%"}} onClick = {()=> window.location.reload() }>Restart</button>
-      
+
+      toast.error(<><p>There is already an existing workstation self-assessment for this location. <br/>View this from the home screen or restart and select a diffrent workstation<br/>
+     </p><br/>
+       <button className = "btn btn-primary" style ={{width : "99%"}} onClick = {()=> window.location.reload() }>Restart</button>
       </> , {
         closeOnClick :false,
         draggabletoast: true,
 
         autoClose: 10000
       });
-    //  this.setState({redoToken : "yes"})
-      //  window.localStorage.setItem("mssg", mssg);
-      // window.location.href = `http://localhost:3000/user-questions`;
+
     }
   }
   submitAnswers() {
@@ -155,9 +155,7 @@ class DisplayQuestions extends React.Component {
     if (this.state.workstations.length) {
       return (
         <div>
-{/*           
-{this.state.redoToken === "yes"  && <Redirect to="/user" />}
- {!this.state.redoToken === "no" && <Redirect to="/home" />} */}
+
           <ToastContainer transition={Zoom} position="top-center" />
           <ul>
             <DropdownButton

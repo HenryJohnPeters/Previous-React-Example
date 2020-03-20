@@ -17,6 +17,7 @@ class AddWorkstation extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    // this.setState({AccountValidationMessage : null})
     try {
       if (this.state.Location.length < 3) {
         toast.error("Location has to be 3 characters minimum", {
@@ -50,18 +51,29 @@ class AddWorkstation extends React.Component {
             "Content-Type": "application/json"
           },
           body: JSON.stringify(data)
-        });
-
-        window.location.reload();
+        }) .then(result => {
+          result.json().then(({ AccountValidationMessage }) => {
+          
+            if (AccountValidationMessage){ 
+              toast.error(`This workstation already exists`, {
+                draggable: true,
+        
+                autoClose: 1500
+              });
+              this.setState({AccountValidationMessage: AccountValidationMessage})}
+           
+          });
+        })
       }
     } catch (e) {
       console.log(e);
-    }
+    }if(this.state.AccountValidationMessage ){
+               window.location.reload()
+        } 
+      
   }
 
-  catch(e) {
-    console.log(e);
-  }
+   
 
   render() {
     return (

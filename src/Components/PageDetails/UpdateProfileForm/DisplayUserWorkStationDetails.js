@@ -115,7 +115,7 @@ class WorkStations extends React.Component {
   deleteWorkStation(e) {
     //console.log(`${this.state.AccountDetails.UDId}`);
     let workstationId = this.state.AccountDetails.WSId;
-    alert(workstationId)
+     
 
     let data = { workstationId };
 

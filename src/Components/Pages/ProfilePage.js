@@ -35,7 +35,7 @@ function Header() {
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
-        <AdminButton />
+        
       </div>
 
       <div className="User-Menu"></div>

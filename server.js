@@ -1113,7 +1113,8 @@ app.post("/add-workstation", async (req, response) => {
     await sql.connect(config);
     var request = new sql.Request();
     const email = req.body.email;
-    const location = req.body.Location;
+    const location = req.body.location;
+    let dateAdded = req.body.date;
 
     
 
@@ -1122,27 +1123,32 @@ app.post("/add-workstation", async (req, response) => {
     request.input("Location", sql.NVarChar, location);
     const results = await request.execute("dbo.CheckIfWorkstationExists");
 
+
     if (results.recordsets[0].length > 0) {
       console.info("this exists already")
+      const AccountValidationMessage = "This workstation already exists"
+      response.status(409).json({
+        AccountValidationMessage: AccountValidationMessage
+      });
 
     }else {
       console.info("this does not exist well done")
+     
+     
+    request.input("Date", sql.DateTime, dateAdded);
+
+    const result = await request.execute("dbo.FindRuidAddWorkstationDetails");
 
     }
 
 
     
-    const date = req.body.date;
+ 
 
   
     var request = new sql.Request();
 
-    //find ruid for user
-    request.input("Email", sql.NVarChar, email);
-    request.input("DeskLocation", sql.NVarChar, location);
-    request.input("Date", sql.DateTime, date);
-
-    const result = await request.execute("dbo.FindRuidAddWorkstationDetails");
+   
   } catch (err) {
     console.log("Err: ", err);
     response.status(500).send("Check api console.log for the error");
