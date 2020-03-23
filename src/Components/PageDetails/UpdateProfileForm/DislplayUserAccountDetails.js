@@ -46,7 +46,7 @@ class DisplayUserAcountDetails extends React.Component {
 
         <Link to="/profile-display-work-stations">
           <button className="btn btn-secondary" style={{ float: "left " }}>
-            Manage Work stations
+            My Workstations 
           </button>
         </Link>
         {/* <button
@@ -62,7 +62,8 @@ class DisplayUserAcountDetails extends React.Component {
         {this.state.AccountDetails &&
           this.state.AccountDetails.map(function(AccountDetails, index) {
             return (
-              <div className="jumbotron">
+              <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
+                
                 <UpdateAccountDetails email ={AccountDetails.Email}
                  name = {AccountDetails.NameOfUser}
                  number ={AccountDetails.ContactNumber} />

@@ -21,14 +21,14 @@ function Home() {
 
 function Header() {
   return (
-    <div className="jumbotron">
+    <div className="jumbotron" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div style={{ textAlign: "right" }}>
         {/* <ProfileButton /> */}
         <LogOutButton />
         {/* <AdminButton /> */}
       </div>
 
-      <div className="User-Menu"></div>
+       
       <img
         className="profile-image"
         alt="icon"

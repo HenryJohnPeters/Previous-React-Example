@@ -53,27 +53,32 @@ class AddWorkstation extends React.Component {
           body: JSON.stringify(data)
         }) .then(result => {
           result.json().then(({ AccountValidationMessage }) => {
+            
           
-            if (AccountValidationMessage){ 
+            if (AccountValidationMessage === false){ 
+               
               toast.error(`This workstation already exists`, {
                 draggable: true,
         
                 autoClose: 1500
               });
-              this.setState({AccountValidationMessage: AccountValidationMessage})}
+              this.setState({AccountValidationMessage: AccountValidationMessage})
+            }else if (AccountValidationMessage === true){
+               
+                window.location.reload()
+
+              }
            
           });
         })
       }
     } catch (e) {
       console.log(e);
-    }if(this.state.AccountValidationMessage ){
-               window.location.reload()
-        } 
       
-  }
-
-   
+    // }if(!this.state.AccountValidationMessage ){
+    //            window.location.reload()
+    //     }   
+  }}
 
   render() {
     return (

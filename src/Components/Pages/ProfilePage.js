@@ -31,7 +31,7 @@ export default ProfilePage;
 
 function Header() {
   return (
-    <div className="jumbotron">
+    <div className="jumbotron" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />

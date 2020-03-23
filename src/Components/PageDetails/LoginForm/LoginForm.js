@@ -141,7 +141,7 @@ class LoginForm extends React.Component {
                 method="POST"
               >
                 <ToastContainer transition={Zoom} position="top-right" />
-                <div className="jumbotron">
+                <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
                   <Fade left>
                     <h2>Login </h2>
                   </Fade>

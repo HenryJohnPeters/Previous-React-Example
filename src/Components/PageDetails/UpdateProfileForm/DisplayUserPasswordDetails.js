@@ -28,7 +28,7 @@ if(!accountDetails[0].LastPasswordUpdate){
   {accountDetails &&
     accountDetails.map(function(AccountDetails, index) {
       return (
-        <div className="jumbotron">
+        <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
           <DisplayAddWorkstation />
           <h3>Password Details</h3>
           <li>Last Updated: n/a</li>
@@ -42,7 +42,7 @@ if(!accountDetails[0].LastPasswordUpdate){
   return<> <ul>{accountDetails &&
     accountDetails.map(function(AccountDetails, index) {
       return (
-        <div className="jumbotron">
+        <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
           <DisplayAddWorkstation />
           <h3>Password Details</h3>
           <li>Last Updated: {moment(AccountDetails.LastPasswordUpdate).format("LLL")} </li>

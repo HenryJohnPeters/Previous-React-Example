@@ -23,11 +23,11 @@ export default AdminViewWorkstations;
 
 function Header() {
   return (
-    <div className="jumbotron">
+    <div className="jumbotron"style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div style={{ textAlign: "right" }}>
-        {/* <ProfileButton /> */}
+    
         <LogOutButton />
-        {/* <AdminButton /> */}
+ 
       </div>
 
       <div className="User-Menu"></div>
@@ -40,9 +40,7 @@ function Header() {
       />
       <br />
       <br />
-      {/* <Link to="./home">
-        <button className="btn btn-secondary">Home </button>
-      </Link> */}
+     
     </div>
   );
 }

@@ -820,6 +820,7 @@ app.post("/delete-question", async (req, response) => {
 
 app.post("/register", async (req, response) => {
   try {
+    console.info("made it here")
     await sql.connect(config);
     let Email = req.body.email;
     let PasswordHash = req.body.password;
@@ -828,38 +829,49 @@ app.post("/register", async (req, response) => {
 
     var request = new sql.Request();
 
-    console.info(`This is the Email${Email} 
-    + this is the password Hash ${PasswordHash}
-    + this is the contact Number ${ContactNumber}
-    + this is the name ${NameOfUser}
-    `);
+    request.input("Email", sql.NVarChar, Email);
+    let result = await request.execute("dbo.CheckEmailExists");
 
+    if (result.recordsets[0].length > 0) {
+      console.info("This email exists");
+    // let  error = "This email already has an account";
+    let accountExistsBool = true;
+      response.status(409).json({
+        // error: error,
+        accountExistsBool : accountExistsBool 
+      }); 
+    } else {
+      console.log("Email does not exists");
+    // let  error = "Email does not exists";
+    let accountExistsBool = false;
+      response.status(409).json({
+        // error: error,
+        accountExistsBool :accountExistsBool 
+      }); 
     request.input("ContactNumber", sql.VarChar, ContactNumber);
     request.input("NameOfUser", sql.VarChar, NameOfUser);
-    request.input("Email", sql.VarChar, Email);
     request.input("PasswordHash", sql.NVarChar, PasswordHash);
-    const register = await request.execute("dbo.RegisterUser");
+    let register = await request.execute("dbo.RegisterUser");
+    console.info("User signed up")
 
-    console.log("done done");
-
-    ///
+      // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     var transporter = nodemailer.createTransport({
+      
       service: "Gmail",
       auth: {
         user: "hpf9703@gmail.com",
         pass: "Cows4422"
-      }
+      },tls: {
+        rejectUnauthorized: false
+    }
     });
-    const url = `http://localhost:3000/`;
-
+     
     var mailOptions = {
-      from: "CodeStoneDeskAssessment@outlook.com",
+      from: "hpf9703@gmail.com",
       to: `${Email}`,
-      subject: `Account for ${Email} has been created.`,
-      text:
-        "Hi, This is an email sent  regarding the codestone desk assment site (do not reply to this email)",
-      html: `Congradulations you now have an account for the codestone Desk
-        Assesment site  . Go to the following link to login or navigat manually through the site: <a href = "${url}">${url} </a>`
+      subject: "Codestone Workstation Self-Assessment account created",
+
+      html: `To perform a workstation self-assessment  <a href = "http://localhost:3000/">Click Here </a>`
     };
 
     transporter.sendMail(mailOptions, function(error, info) {
@@ -869,7 +881,8 @@ app.post("/register", async (req, response) => {
         console.log("Email sent: " + info.response);
       }
     });
-    ///
+    }
+ 
   } catch (err) {
     console.log("Err: ", err);
     response.status(500).send("Check api console.log for the error");
@@ -1126,12 +1139,16 @@ app.post("/add-workstation", async (req, response) => {
 
     if (results.recordsets[0].length > 0) {
       console.info("this exists already")
-      const AccountValidationMessage = "This workstation already exists"
+      const AccountValidationMessage = false
       response.status(409).json({
         AccountValidationMessage: AccountValidationMessage
       });
 
     }else {
+      const AccountValidationMessage = true
+      response.status(409).json({
+        AccountValidationMessage: AccountValidationMessage
+      });
       console.info("this does not exist well done")
      
      

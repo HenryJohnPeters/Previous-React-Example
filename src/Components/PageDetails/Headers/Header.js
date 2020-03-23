@@ -6,7 +6,7 @@ import "./bootstrap.min.css";
 
 function Header() {
   return (
-    <div className="jumbotron">
+    <div className="jumbotron" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div className="User-Menu"></div>
       <img
         className="profile-image"

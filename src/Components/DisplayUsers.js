@@ -33,7 +33,7 @@ class DisplayUsers extends React.Component {
         {this.state.users &&
           this.state.users.map(function(user, index) {
             return (
-              <div className="jumbotron">
+              <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
                 <li> Severity: {user.severity}</li>
                 <li> User Name:{user.name}</li>
                 <li>User Email: {user.email}</li>

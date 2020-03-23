@@ -99,7 +99,7 @@ class Home extends React.Component {
 }
 function Header() {
   return (
-    <div className="jumbotron">
+    <div className="jumbotron"  style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
@@ -179,24 +179,24 @@ class DisplayWSAHeader extends React.Component {
                 {" "}
                 <ToastContainer transition={Zoom} position="top-right" />
                 <ul style={{ paddingBottom: "25px" }}>
-                  <div style={{ backgroundColor: "lightGrey" }}>
+                  <div   style={{  backgroundColor: "#E6E6E6", border: "solid", borderColor: "LightGray" }}>
                     <h3
                       style={{
                         textAlign: "center",
                         textDecoration: "underline"
                       }}
                     >
-                      Workstation Assessment
+                      Workstation Self-Assessment
                     </h3>
                     <ul style={{}}>
-                      <b>User:</b>
+                      <b>User: </b>
                       {header.NameOfUser}
                     </ul>
                     <ul>
-                      <b>Workstation :</b> {header.AssignedWorkstation}
+                      <b>Workstation: </b> {header.AssignedWorkstation}
                     </ul>
                     <ul>
-                      <b>Status :</b> {header.QuestionStatus}
+                      <b>Status: </b> {header.QuestionStatus}
                     </ul>
                     <ul>
                       <b> Email: </b>
@@ -337,11 +337,10 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         <>
           <ToastContainer transition={Zoom} position="top-right" />
           <div
-            style={{
-              backgroundColor: "#E6E6E6",
-              paddingBottom: "40px"
-            }}
-          >
+             style={{  backgroundColor: "#E6E6E6", border: "solid", borderColor: "LightGray",paddingBottom: "40px" }}>
+           
+            
+          
             {" "}
             <button
               className="btn btn-primary"
@@ -351,7 +350,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               }
             >
               {" "}
-              View Responses{" "}
+              Reponses{" "}
             </button>
             <ul>
               {" "}
@@ -373,11 +372,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         <>
           <ToastContainer transition={Zoom} position="top-right" />
           <div
-            style={{
-              backgroundColor: "#E6E6E6",
-              paddingBottom: "40px"
-            }}
-          >
+            style={{  backgroundColor: "#E6E6E6", border: "solid", borderColor: "LightGray",paddingBottom: "40px" }}>
+         
             {" "}
             <button
               className="btn btn-primary"
@@ -387,7 +383,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               }
             >
               {" "}
-              View Responses{" "}
+              Hide{" "}
             </button>
             <ul>
               {" "}
@@ -429,11 +425,9 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         <>
           <ToastContainer transition={Zoom} position="top-right" />
           <div
-            style={{
-              backgroundColor: "#E6E6E6",
-              paddingBottom: "40px"
-            }}
-          >
+             style={{  backgroundColor: "#E6E6E6", border: "solid", borderColor: "LightGray",paddingBottom: "40px" }}>
+            
+           
             <ul>
               {" "}
               {this.props.questionWhenAnswered}
@@ -452,11 +446,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         <>
           <ToastContainer transition={Zoom} position="top-right" />
           <div
-            style={{
-              backgroundColor: "#E6E6E6",
-              padding: "1px"
-            }}
-          >
+             style={{  backgroundColor: "#E6E6E6", border: "solid", borderColor: "LightGray",paddingBottom: "40px" }}>
+          
             <ul>
               {" "}
               {this.props.questionWhenAnswered}
@@ -491,11 +482,17 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         <>
           <ToastContainer transition={Zoom} position="top-right" />
           <div
-            style={{
-              backgroundColor: "#BDBDBD",
-              padding: "1px"
-            }}
-          >
+            
+            style={{  backgroundColor: "#D3D3D3", border: "solid", borderColor: "DarkGray",  }}>
+
+    <button
+              style={{  textAlign: "center", float: "right" ,padding: "5px"}}
+              className="btn btn-secondary"
+              onClick={this.viewDetails}
+            >
+              Show
+            </button> 
+          
             <ul>
               {this.props.questionWhenAnswered}
               <div style={{ float: "right" }}>❌ </div> <br />
@@ -520,17 +517,10 @@ class DisplayWSAAnsweredQuestions extends React.Component {
                     </div>
                   );
                 })}
-            </ul>
-            <button
-              style={{ width: "10%", textAlign: "center", float: "right" }}
-              className="btn btn-primary"
-              onClick={this.viewDetails}
-            >
-              Add Response
-            </button>{" "}
-            <br />
-            <br />
-            <AcceptSolutionModal
+         </ul>
+           {" "}
+           
+            {/* <AcceptSolutionModal
               responseId={this.props.ResponseId}
               amountOfQuestions={this.props.amountOfQuestions}
               questionWhenAnswered={this.props.questionWhenAnswered}
@@ -538,10 +528,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               WSAId={this.props.WSAId}
               workstation={this.props.workstation}
               userName={this.props.userName}
-            />
-            <br />
-            <br />
-            <br />
+            /> */}
+         
           </div>
         </>
       );
@@ -611,8 +599,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               </button>
             </ul>
 
-            <br />
-
+           
+{/* 
             <AcceptSolutionModal
               responseId={this.props.ResponseId}
               amountOfQuestions={this.props.amountOfQuestions}
@@ -621,11 +609,9 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               WSAHeader={this.props.WSAHeader}
               workstation={this.props.workstation}
               userName={this.props.userName}
-            />
+            /> */}
 
-            <br />
-            <br />
-            <br />
+            
           </div>
         </>
       );
@@ -633,106 +619,106 @@ class DisplayWSAAnsweredQuestions extends React.Component {
   }
 }
 
-class AcceptSolutionModal extends React.Component {
-  constructor(props) {
-    super(props);
+// class AcceptSolutionModal extends React.Component {
+//   constructor(props) {
+//     super(props);
 
-    this.handleClose = this.handleClose.bind(this);
-    this.handleShow = this.handleShow.bind(this);
+//     this.handleClose = this.handleClose.bind(this);
+//     this.handleShow = this.handleShow.bind(this);
 
-    this.handleRefresh = this.handleRefresh.bind(this);
-    this.acceptSoloution = this.acceptSoloution.bind(this);
+//     this.handleRefresh = this.handleRefresh.bind(this);
+//     this.acceptSoloution = this.acceptSoloution.bind(this);
 
-    this.state = {
-      show: false
-    };
-  }
-  componentDidMount() {
-    // console.log(this.props.WSAHeader[0].NameOfUser);
-    // console.log(this.props.WSAHeader[0].AssignedWorkstation);
-    // console.log(this.props.workstation);
-  }
+//     this.state = {
+//       show: false
+//     };
+//   }
+//   componentDidMount() {
+//     // console.log(this.props.WSAHeader[0].NameOfUser);
+//     // console.log(this.props.WSAHeader[0].AssignedWorkstation);
+//     // console.log(this.props.workstation);
+//   }
 
-  acceptSoloution() {
-    let email = window.localStorage.getItem("User");
+//   acceptSoloution() {
+//     let email = window.localStorage.getItem("User");
 
-    let data = {
-      WSAId: this.props.WSAId,
-      responseId: this.props.responseId,
-      // amountOfQuestions: this.props.amountOfQuestions,
-      email: email,
-      questionWhenAnswered: this.props.questionWhenAnswered,
-      userName: this.props.WSAHeader[0].NameOfUser,
-      workstation: this.props.WSAHeader[0].AssignedWorkstation
-    };
-    fetch("/update-response-to-confirmed", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
+//     let data = {
+//       WSAId: this.props.WSAId,
+//       responseId: this.props.responseId,
+//       // amountOfQuestions: this.props.amountOfQuestions,
+//       email: email,
+//       questionWhenAnswered: this.props.questionWhenAnswered,
+//       userName: this.props.WSAHeader[0].NameOfUser,
+//       workstation: this.props.WSAHeader[0].AssignedWorkstation
+//     };
+//     fetch("/update-response-to-confirmed", {
+//       method: "POST",
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify(data)
+//     });
 
-    toast.info("please enter the credentials correctly  ", {
-      // className: "custom-toast",
-      draggable: true,
+//     toast.info("please enter the credentials correctly  ", {
+//       // className: "custom-toast",
+//       draggable: true,
 
-      autoClose: 1500
-    });
+//       autoClose: 1500
+//     });
 
-    window.location.reload();
-  }
-  handleClose() {
-    this.setState({
-      show: false
-    });
-  }
+//     window.location.reload();
+//   }
+//   handleClose() {
+//     this.setState({
+//       show: false
+//     });
+//   }
 
-  handleShow() {
-    this.setState({
-      show: true
-    });
-  }
+//   handleShow() {
+//     this.setState({
+//       show: true
+//     });
+//   }
 
-  handleRefresh() {
-    window.location.reload();
-  }
+//   handleRefresh() {
+//     window.location.reload();
+//   }
 
-  render() {
-    return (
-      <div className="header-container">
-        <ToastContainer transition={Zoom} position="top-right" />
-        <button
-          className="btn btn-primary"
-          style={{ width: "10%", textAlign: "center", float: "right" }}
-          onClick={this.handleShow}
-        >
-          <ul> Accept </ul>Soloution
-        </button>
+//   render() {
+//     return (
+//       <div className="header-container">
+//         <ToastContainer transition={Zoom} position="top-right" />
+//         {/* <button
+//           className="btn btn-primary"
+//           style={{ width: "10%", textAlign: "center", float: "right" }}
+//           onClick={this.handleShow}
+//         >
+//           <ul> Accept </ul>Soloution
+//         </button> */}
 
-        <Modal show={this.state.show} onHide={this.handleClose}>
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>
-            <h4>Are you sure you want to accept this soloution? </h4>
-            <br />
-            <button
-              onClick={this.acceptSoloution}
-              className="btn btn-primary"
-              style={{ width: "50%" }}
-            >
-              Yes
-            </button>
-            <button
-              onClick={this.handleClose}
-              className="btn btn-primary"
-              style={{ width: "50%" }}
-            >
-              No
-            </button>
-          </Modal.Body>
-        </Modal>
-      </div>
-    );
-  }
-}
+//         <Modal show={this.state.show} onHide={this.handleClose}>
+//           <Modal.Header closeButton></Modal.Header>
+//           <Modal.Body>
+//             <h4>Are you sure you want to accept this soloution? </h4>
+//             <br />
+//             <button
+//               onClick={this.acceptSoloution}
+//               className="btn btn-primary"
+//               style={{ width: "50%" }}
+//             >
+//               Yes
+//             </button>
+//             <button
+//               onClick={this.handleClose}
+//               className="btn btn-primary"
+//               style={{ width: "50%" }}
+//             >
+//               No
+//             </button>
+//           </Modal.Body>
+//         </Modal>
+//       </div>
+//     );
+//   }
+// }

@@ -60,11 +60,11 @@ function AdminWorkstationss({ initialCount }) {
           <ul>
             <Slide right>
               <h2 style={{ textAlign: "center" }}>
-                Workstation Assessments(<b> Completed</b>)
+                Workstation Self-Assessments(<b> Completed</b>)
               </h2>
             </Slide>
             <button disabled className="btn btn-secondary">
-              Workstation Assessments
+              Workstation Self-Assessments
             </button>
             <Link to="./admin-center">
               <button className="btn btn-secondary">Edit Questions</button>
@@ -98,7 +98,7 @@ function AdminWorkstationss({ initialCount }) {
           {currentTodos.map(number => (
             <ul>
               {" "}
-              <div className="jumbotron">
+              <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
                 <Questions
                   workStation={number.AssignedWorkstation}
                   date={number.Date}

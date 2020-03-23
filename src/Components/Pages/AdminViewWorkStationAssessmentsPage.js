@@ -23,7 +23,7 @@ export default AdminViewWorkstations;
 
 function Header() {
   return (
-    <div className="jumbotron">
+    <div className="jumbotron" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div style={{ textAlign: "right" }}>
         <LogOutButton />
       </div>

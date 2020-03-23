@@ -55,7 +55,7 @@ class ManageWorkstations extends React.Component {
             className="btn btn-secondary"
             disabled
           >
-            Manage Workstations
+            My Workstations
           </button>
 
           <DisplayAddWorkstation />
@@ -133,7 +133,7 @@ class WorkStations extends React.Component {
 
   render() {
     return (
-      <div className="jumbotron">
+      <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
         <ToastContainer transition={Zoom} position="top-right" />
         <button
           onClick={this.deleteWorkStation}

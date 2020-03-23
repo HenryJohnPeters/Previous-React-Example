@@ -35,7 +35,7 @@ class LandingPage extends React.Component {
           height="60"
         /> */}
         <Zoom left>
-          <div className="jumbotron blue">
+          <div className="jumbotron blue" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
             <h2 style={{ textAlign: "center" }}>Congratulations</h2>
             <p style={{ textAlign: "center" }}>
               Your workstation self-assessment has been completed. Return home to see this.

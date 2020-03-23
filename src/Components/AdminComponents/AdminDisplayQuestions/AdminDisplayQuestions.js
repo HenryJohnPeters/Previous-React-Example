@@ -79,7 +79,7 @@ class DisplayQuestions extends React.Component {
                   className="btn btn-secondary"
                   style={{ float: "left " }}
                 >
-                  Workstation Assessments
+                  Workstation Self-Assessments
                 </button>
               </Link>
 
@@ -114,7 +114,7 @@ class DisplayQuestions extends React.Component {
               {this.state.questions &&
                 this.state.questions.map(function(questions, index) {
                   return (
-                    <div className="jumbotron">
+                    <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
                       <WorkStations questions={questions}></WorkStations>
                     </div>
                   );

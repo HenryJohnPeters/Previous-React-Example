@@ -101,7 +101,7 @@ class ResetPasswordForm extends React.Component {
                 action="auth"
                 method="POST"
               >
-                <div className="jumbotron">
+                <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
                   <Fade left>
                     <h2>Reset Password </h2>
                   </Fade>

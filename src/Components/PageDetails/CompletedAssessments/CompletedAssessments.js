@@ -57,7 +57,7 @@ function AdminWorkstations(props) {
           {currentTodos.map(number => (
             <ul>
               {" "}
-              <div className="jumbotron">
+              <div className="jumbotron" style={{ border: "solid", borderColor: "LightGray" }}>
                 <Questions
                   workStation={number.AssignedWorkstation}
                   date={number.Date}
@@ -156,17 +156,17 @@ function Questions(props) {
           }
         }}
       >
-        <button style={{ float: "right" }} className="btn btn-primary">
+        <button style={{ float: "right", padding: "5px" }} className="btn btn-primary">
           View Full Details
         </button>
       </Link>
 
       <br />
       <Fade left>
-        <li>
+        {/* <li>
           <b>User Id: </b>
           {props.RUId}
-        </li>
+        </li> */}
       </Fade>
       <Fade right>
         <li>

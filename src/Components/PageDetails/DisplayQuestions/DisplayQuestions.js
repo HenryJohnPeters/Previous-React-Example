@@ -44,16 +44,16 @@ class DisplayQuestions extends React.Component {
       fetch(`/profile-work-station-detailss/${user}`)
         .then(recordset => recordset.json())
         .then(results => {
-          alert(results.recordset[0].AssignedWorkstation)
+          
           let selectedWS = ""
           if(results.recordset.length == 1 )
           {
             selectedWS = results.recordset[0].AssignedWorkstation
-            alert("just one ws")
+            
 
           }
           else if (results.recordset.length >= 2 ){
-            alert("there is more than one")
+             
 
           }
         
@@ -76,16 +76,16 @@ class DisplayQuestions extends React.Component {
       window.location.href = "http://localhost:3000/completed-assessment";
     } else if (mssg.length > 35) {
 
-      toast.error(<><p>There is already an existing workstation self-assessment for this location. <br/>View this from the home screen or restart and select a diffrent workstation<br/>
+      toast.error(<><p>There is already an existing workstation self-assessment for this location.  
      </p><br/>
-       <button className = "btn btn-primary" style ={{width : "99%"}} onClick = {()=> window.location.reload() }>Restart</button>
+       {/* <button className = "btn btn-primary" style ={{width : "99%"}} onClick = {()=> window.location.reload() }>Restart</button> */}
       </> , {
         closeOnClick :false,
         draggabletoast: true,
 
-        autoClose: 10000
+        autoClose: 6000
       });
-
+      setTimeout(function(){ window.location.reload(); }, 2500);
     }
   }
   submitAnswers() {
@@ -148,6 +148,11 @@ class DisplayQuestions extends React.Component {
       console.info(e);
     }
   }
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      return <Redirect to='/target' />
+    }
+  }
 
   render() {
     let selectedWorkStation = window.localStorage.getItem("Workstation");
@@ -155,6 +160,7 @@ class DisplayQuestions extends React.Component {
     if (this.state.workstations.length) {
       return (
         <div>
+        
 
           <ToastContainer transition={Zoom} position="top-center" />
           <ul>

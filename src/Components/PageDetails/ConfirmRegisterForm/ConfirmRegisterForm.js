@@ -29,17 +29,45 @@ class ConfirmRegisterForm extends React.Component {
     e.preventDefault();
 
     if (
-      this.state.contactNumber.length < 10 ||
-      this.state.password.length < 8 ||
-      !(this.state.password === this.state.passwordConfirm)
+      this.state.contactNumber.length < 10
+       
+      
     ) {
-      toast.error("please enter the credentials correctly  ", {
-        // className: "custom-toast",
+
+     
+      toast.error("Contact number must be at least 11 numbers long", {    
         draggable: true,
 
-        autoClose: 1500
+        autoClose: 2500
       });
-    } else {
+    }else if (this.state.password.length < 8){
+      toast.error("Password length must be eight or more characters", {
+        draggable: true,
+
+        autoClose: 2500
+      });
+      
+
+    }
+    else if (!(this.state.password === this.state.passwordConfirm)){
+      toast.error("Password and password confirm must match", {
+        draggable: true,
+
+        autoClose: 2500
+      });
+
+    }
+    else if (isNaN(this.state.contactNumber)){
+      toast.error("Contact number must be a number", {
+        draggable: true,
+
+        autoClose: 2500
+      });
+
+    }
+    
+    
+    else {
       const data = {
         email: this.state.email,
         password: this.state.password,
@@ -54,15 +82,34 @@ class ConfirmRegisterForm extends React.Component {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
-      });
-      toast.info("Account Created", {
-        // className: "custom-toast",
-        draggable: true,
+      }) .then(response => {
+          console.log("response before it is broken down " + response);
 
-        autoClose: 1500
-      });
+          return response.json();
+        }).then(({ error, accountExistsBool }) => {
+          // alert (error) 
+          // alert(accountExistsBool)
+          if(accountExistsBool){
+            toast.error("An account with this email already exists. ", {
+              draggable: true,
+      
+              autoClose: 2500
+            });
 
-      window.location.href = "http://localhost:3000/";
+
+          }else if (!accountExistsBool){
+            toast.info("Account created", {
+              draggable: true,
+      
+              autoClose: 2500
+            });
+
+            setTimeout(function(){ window.location.href = 'http://localhost:3000/'; }, 1700);
+
+
+          }
+        })
+         
     }
   }
   catch(e) {
@@ -132,7 +179,7 @@ class ConfirmRegisterForm extends React.Component {
               >
                 <ToastContainer transition={Zoom} position="top-right" />
 
-                <div className="jumbotron">
+                <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
                   <Fade left>
                     <h2>Sign Up </h2>
                   </Fade>

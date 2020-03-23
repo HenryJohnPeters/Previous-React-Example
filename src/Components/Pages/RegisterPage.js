@@ -1,15 +1,15 @@
-import React from "react";
+// import React from "react";
 
-import "../bootstrap.min.css";
+// import "../bootstrap.min.css";
 
-import Header from "../PageDetails/Headers/Header";
+// import Header from "../PageDetails/Headers/Header";
 
-function Register() {
-  return (
-    <div className="App">
-      <Header />
-    </div>
-  );
-}
+// function Register() {
+//   return (
+//     <div className="App">
+//       <Header />
+//     </div>
+//   );
+// }
 
-export default Register;
+// export default Register;

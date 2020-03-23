@@ -46,7 +46,7 @@ function ModalCompletedQuestions(props) {
         <div className="header-container">
           <button
             className="btn btn-primary"
-            style={{ float: "right" }}
+            style={{ float: "right" , padding: "5px"}}
             onClick={handleShow}
           >
             Response Overview

@@ -20,7 +20,7 @@ function Home() {
 
 function Header() {
   return (
-    <div className="jumbotron">
+    <div className="jumbotron" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div style={{ textAlign: "right" }}>
         {/* <ProfileButton /> */}
         <LogOutButton />
@@ -77,14 +77,14 @@ class DisplayUsers extends React.Component {
       <>
         <Fade left>
           <ul>
-            <h2 style={{ textAlign: "center" }}>Registered Users</h2>
+            <h2 style={{ textAlign: "center" }}>View Users</h2>
           </ul>
         </Fade>
         <Fade right>
           <ul>
             <Link to="./admin-view-workstation-assessments">
               <button className="btn btn-secondary">
-                Workstation Assessments
+                Workstation Self-Assessments
               </button>
             </Link>
             <Link to="./admin-center">
@@ -97,7 +97,7 @@ class DisplayUsers extends React.Component {
             {this.state.users &&
               this.state.users.map(function(user, index) {
                 return (
-                  <div className="jumbotron">
+                  <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
                     <li>
                       <b>User Name: </b>
                       {user.NameOfUser}

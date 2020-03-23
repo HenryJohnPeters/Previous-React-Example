@@ -1,7 +1,9 @@
-import React from "react";
+ 
 import logo from "../codestone logo.png";
+import React, { useState, useEffect } from 'react';
 
 import "../bootstrap.min.css";
+import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
@@ -26,16 +28,35 @@ class PageTitle extends React.Component {
     return (
       <div>
         <Fade right>
-          <h2 style={{ textAlign: "center" }}>Workstation Assessments</h2>
+          <h2 style={{ textAlign: "center" }}>Workstation Self-Assessments</h2>
         </Fade>
       </div>
     );
   }
 }
 
-function Header() {
+function Header(props) {
+
+  const[workstations, setWorkstations] = useState([{}])
+
+  useEffect(() => {
+    var user = window.localStorage.getItem("User");
+    if (user) {
+      fetch(`/profile-work-station-detailss/${user}`)
+        .then(recordset => recordset.json())
+        .then(results => {
+          console.log(results.recordset) 
+          setWorkstations(results.recordset)
+             console.log(workstations)    
+          
+        
+        });
+    }
+    
+  },[]);
+   
   return (
-    <div className="jumbotron">
+    <div className="jumbotron" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div style={{ textAlign: "right" }}>
         <ProfileButton />
         <LogOutButton />
@@ -52,13 +73,91 @@ function Header() {
       />
       <br />
       <br />
+     
       <Link to="/user-questions">
         <button className="btn btn-secondary">
           Perform Workstation Self-Assessment
         </button>
-      </Link>
+      </Link>  <DisplayAddWorkstation workstations={workstations}/>
+      
+    
     </div>
   );
 }
 
+
+
+class DisplayAddWorkstation extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleClose = this.handleClose.bind(this);
+    this.handleShow = this.handleShow.bind(this);
+
+    this.handleRefresh = this.handleRefresh.bind(this);
+
+    this.state = {
+      show: false
+    };
+  }
+
+
+componentDidMount(){
+  console.log(this.props.workstations)
+}
+
+
+
+  handleClose() {
+    this.setState({
+      show: false
+    });
+  }
+  handleShow() {
+    this.setState({
+      show: true
+    });
+  }
+  handleRefresh() {
+    window.location.reload();
+  }
+  render() {
+    return (
+      <>
+        <button
+          className="btn btn-primary"
+          style={{ float: "left" }}
+          onClick={this.handleShow}
+        >
+          +
+        </button>
+
+
+        <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header closeButton> Select Workstation</Modal.Header>
+          <Modal.Body>
+
+          {this.props.workstations.map(number => (
+                <button
+                
+                >
+                  {number.DateAdded}
+                  {number.WSId}
+                </button>
+              ))}
+{/* 
+          {this.props.workstations.map(number => (
+                <button
+                 
+                >
+                  {number}
+                </button>
+              ))} */}
+          
+          </Modal.Body>
+        </Modal>
+      </>
+    );
+  }
+}
 export default Home;
