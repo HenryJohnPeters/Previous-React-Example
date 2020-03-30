@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import React from "react";
 
 import { Link } from "react-router-dom";
-import Fade from "react-reveal";
+// import Fade from "react-reveal";
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -45,11 +45,11 @@ class ResetPasswordForm extends React.Component {
           window.localStorage.setItem("resetToken", jwt);
           window.localStorage.setItem("User", user);
 
-          toast.error(`${EmailAvailability}`, {
+          toast.info(`${EmailAvailability}`, {
             // className: "custom-toast",
             draggable: true,
 
-            autoClose: 1500
+            autoClose: 5000
           });
         })
 
@@ -102,10 +102,10 @@ class ResetPasswordForm extends React.Component {
                 method="POST"
               >
                 <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
-                  <Fade left>
+                  {/* <Fade left> */}
                     <h2>Reset Password </h2>
-                  </Fade>
-                  <Fade right>
+                  {/* </Fade>
+                  <Fade right> */}
                     <div className="help">
                       <Popup trigger={<Link> Help?</Link>} className="center">
                         <div>
@@ -114,11 +114,11 @@ class ResetPasswordForm extends React.Component {
                         </div>
                       </Popup>
                     </div>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <label htmlFor="email">Email</label>
-                  </Fade>
-                  <Fade right>
+                  {/* </Fade>
+                  <Fade right> */}
                     <input
                       name="email"
                       type="email"
@@ -130,11 +130,11 @@ class ResetPasswordForm extends React.Component {
                       onBlur={handleBlur}
                       className={errors.email && touched.email && "error"}
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.email && touched.email && (
                     <div className="input-feedback">{errors.email}</div>
                   )}
-                  <Fade left>
+                  {/* <Fade left> */}
                     <button
                       className="btn btn-primary"
                       style={{ width: "100%" }}
@@ -143,17 +143,17 @@ class ResetPasswordForm extends React.Component {
                     >
                       Send Email
                     </button>
-                  </Fade>
-                  <Fade right>
+                  {/* </Fade>
+                  <Fade right> */}
                     <p>
                       <Link to="/"> Login </Link>
                     </p>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <p>
                       <Link to="/Register"> Sign Up </Link>
                     </p>
-                  </Fade>
+                  {/* </Fade> */}
                 </div>
               </form>
             );

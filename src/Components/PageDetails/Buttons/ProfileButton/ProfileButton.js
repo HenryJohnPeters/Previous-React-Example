@@ -5,9 +5,9 @@ class ProfileButton extends React.Component {
   render() {
     return (
       <Link to="/profile">
-        <button type="button" class="btn btn-secondary">
+        {/* <button type="button" class="btn btn-secondary"> */}
           Profile
-        </button>
+        {/* </button> */}
       </Link>
     );
   }

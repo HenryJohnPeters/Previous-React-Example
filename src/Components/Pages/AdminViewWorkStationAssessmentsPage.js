@@ -1,43 +1,20 @@
 import React from "react";
-import logo from "../codestone logo.png";
-
 import "../bootstrap.min.css";
-
-import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
-
+import AdminHeader from "../PageDetails/Headers/HeaderAdmin";
 import AdminWorkstations from "../AdminComponents/AdminDisplayQuestions/AdminViewWorkStations";
-import Fade from "react-reveal";
+// import Fade from "react-reveal";
 
 function AdminViewWorkstations() {
   return (
     <div>
-      <Header />
+      <AdminHeader />
 
-      <Fade right>
+      {/* <Fade right> */}
         <AdminWorkstations />
-      </Fade>
+      {/* </Fade> */}
     </div>
   );
 }
 export default AdminViewWorkstations;
 
-function Header() {
-  return (
-    <div className="jumbotron" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
-      <div style={{ textAlign: "right" }}>
-        <LogOutButton />
-      </div>
-
-      <div className="User-Menu"></div>
-      <img
-        className="profile-image"
-        alt="icon"
-        src={logo}
-        width="340"
-        height="60"
-      />
-      <br />
-      <br />
-    </div>
-  );
-}
+ 

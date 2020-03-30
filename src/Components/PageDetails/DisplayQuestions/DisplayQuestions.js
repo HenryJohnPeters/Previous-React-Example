@@ -5,7 +5,7 @@ import Popup from "reactjs-popup";
 import { ErrorMessage } from "formik";
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Fade from "react-reveal";
+ 
 import {Redirect } from "react-router-dom"; 
 
 
@@ -62,9 +62,12 @@ class DisplayQuestions extends React.Component {
     }
   }
   componentDidMount() {
+    console.log(this.props.location)
+    // alert(this.props.location.workstation)
  this.setState({
      questions:  this.getItems(),
      WorkStations: this.getWorkStations(),
+     
       
    });
    
@@ -76,7 +79,7 @@ class DisplayQuestions extends React.Component {
       window.location.href = "http://localhost:3000/completed-assessment";
     } else if (mssg.length > 35) {
 
-      toast.error(<><p>There is already an existing workstation self-assessment for this location.  
+      toast.error(<><p>There is already an existing workstation self-assessment in progress for this location.  
      </p><br/>
        {/* <button className = "btn btn-primary" style ={{width : "99%"}} onClick = {()=> window.location.reload() }>Restart</button> */}
       </> , {
@@ -197,14 +200,14 @@ class DisplayQuestions extends React.Component {
             {this.state.questions &&
               this.state.questions.map(function(questions, index) {
                 return (
-                  <Fade>
+                
                     <div
                       className="jumbotron"
                       style={{ border: "solid", borderColor: "LightGray" }}
                     >
                       <Questions questions={questions}></Questions>
                     </div>
-                  </Fade>
+                   
                 );
               })}
 

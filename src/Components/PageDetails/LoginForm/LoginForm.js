@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import React from "react";
 
 import { Link } from "react-router-dom";
-import Fade from "react-reveal";
+// import Fade from "react-reveal";
 
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -142,13 +142,13 @@ class LoginForm extends React.Component {
               >
                 <ToastContainer transition={Zoom} position="top-right" />
                 <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
-                  <Fade left>
+                  {/* <Fade left> */}
                     <h2>Login </h2>
-                  </Fade>
-                  <Fade right>
+                  {/* </Fade>
+                  <Fade right> */}
                     <label htmlFor="email">Email</label>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <input
                       name="email"
                       type="email"
@@ -160,14 +160,14 @@ class LoginForm extends React.Component {
                       onBlur={handleBlur}
                       className={errors.email && touched.email && "error"}
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.email && touched.email && (
                     <div className="input-feedback">{errors.email}</div>
                   )}
-                  <Fade right>
+                  {/* <Fade right> */}
                     <label htmlFor="email">Password</label>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <input
                       name="password"
                       type="password"
@@ -181,11 +181,11 @@ class LoginForm extends React.Component {
                       onBlur={handleBlur}
                       className={errors.password && touched.password && "error"}
                     />{" "}
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.password && touched.password && (
                     <div className="input-feedback">{errors.password} </div>
                   )}
-                  <Fade right>
+                  {/* <Fade right> */}
                     <button
                       className="btn btn-primary"
                       style={{ width: "100%" }}
@@ -194,17 +194,17 @@ class LoginForm extends React.Component {
                     >
                       Login
                     </button>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <p>
                       <Link to="/register"> Sign Up </Link>
                     </p>
-                  </Fade>
-                  <Fade right>
+                  {/* </Fade>
+                  <Fade right> */}
                     <p>
                       <Link to="/reset"> Reset Password </Link>
                     </p>
-                  </Fade>
+                  {/* </Fade> */}
                 </div>
               </form>
             );

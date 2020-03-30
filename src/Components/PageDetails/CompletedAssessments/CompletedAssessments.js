@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
 import ModalCompletedQuestions from "../../AdminComponents/AdminDisplayWorkstations/AdminViewWorkstationDetails";
-import Slide from "react-reveal";
-import Fade from "react-reveal";
+// import Slide from "react-reveal";
+// import Fade from "react-reveal";
 
 function AdminWorkstations(props) {
   const [WSAHeaders, setWSAHeaders] = useState([{}]);
@@ -21,7 +21,7 @@ function AdminWorkstations(props) {
   const indexOfFirstTodo = indexOfLastTodo - WSAPerPage;
   const currentTodos = WSAHeaders.slice(indexOfFirstTodo, indexOfLastTodo);
 
-  // const pageNumbers = [];
+  
 
   useEffect(() => {
     setLoadingToken(true);
@@ -51,10 +51,12 @@ function AdminWorkstations(props) {
   }
 
   if (!loadingToken) {
+    
     if (WSAHeaders.length) {
       return (
         <>
           {currentTodos.map(number => (
+            
             <ul>
               {" "}
               <div className="jumbotron" style={{ border: "solid", borderColor: "LightGray" }}>
@@ -64,6 +66,7 @@ function AdminWorkstations(props) {
                   completeToken={number.QuestionStatus}
                   RUId={number.RUId}
                   WSAId={number.WSAId}
+                  SeenStatus = {number.SeenStatus}
                 ></Questions>
               </div>
             </ul>
@@ -92,7 +95,7 @@ function AdminWorkstations(props) {
     } else if (!WSAHeaders.length) {
       return (
         <ul>
-          <div className="jumbotron">
+          <div className="jumbotron" >
             <p style={{ textAlign: "center" }}>
               <b>
                 You have not completed any workstation self-assessments. To view
@@ -140,8 +143,20 @@ export default AdminWorkstations;
 function Questions(props) {
   const [answeredQuestions, getAnsweredQuestion] = useState(0);
 
+
+    // const pageNumbers = [];
+
+    useEffect(() => {
+ 
+    }, []);
+
+    if(props.SeenStatus == false || props.SeenStatus === false ){
+ 
   return (
+
     <div>
+      <div style = {{float : "left", cursor : "pointer", color :"grey"}}> Updated</div>
+
       <ModalCompletedQuestions
         RUId={props.RUId}
         workStation={props.workStation}
@@ -150,7 +165,7 @@ function Questions(props) {
 
       <Link
         to={{
-          pathname: "/admin-view-full-user-wsa-responses",
+          pathname: "/view-full-user-wsa-responses",
           state: {
             WSAId: props.WSAId
           }
@@ -162,31 +177,79 @@ function Questions(props) {
       </Link>
 
       <br />
-      <Fade left>
+      {/* <Fade left> */}
         {/* <li>
           <b>User Id: </b>
           {props.RUId}
         </li> */}
-      </Fade>
-      <Fade right>
+      {/* </Fade>
+      <Fade right> */}
         <li>
           <b>Workstation: </b>
           {props.workStation}
+           
         </li>
-      </Fade>
-      <Fade left>
+      {/* </Fade>
+      <Fade left> */}
         <li>
           <b>Date: </b>
 
           {moment(props.date).format("LLL")}
         </li>
-      </Fade>
-      <Fade right>
+      {/* </Fade>
+      <Fade right> */}
         <li>
           <b>Complete Token: </b>
           {props.completeToken}
         </li>
-      </Fade>
+      {/* </Fade> */}
     </div>
   );
+} else {
+  
+  return (
+
+    <div>
+      <ModalCompletedQuestions
+        RUId={props.RUId}
+        workStation={props.workStation}
+        WSAId={props.WSAId}
+      />
+
+      <Link
+        to={{
+          pathname: "/view-full-user-wsa-responses",
+          state: {
+            WSAId: props.WSAId
+          }
+        }}
+      >
+        <button style={{ float: "right", padding: "5px" }} className="btn btn-primary">
+          View Full Details
+        </button>
+      </Link>
+
+      <br />
+    
+        <li>
+          <b>Workstation: </b>
+          {props.workStation}
+           
+        </li>
+    
+        <li>
+          <b>Date: </b>
+
+          {moment(props.date).format("LLL")}
+        </li>
+      
+        <li>
+          <b>Complete Token: </b>
+          {props.completeToken}
+        </li>
+      
+    </div>
+  );
+
+}
 }

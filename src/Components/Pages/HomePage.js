@@ -1,15 +1,12 @@
  
 import logo from "../codestone logo.png";
 import React, { useState, useEffect } from 'react';
-
 import "../bootstrap.min.css";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
-
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
-
 import CompletedAssessments from "../PageDetails/CompletedAssessments/CompletedAssessments";
-import Fade from "react-reveal";
+// import Fade from "react-reveal";
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -17,9 +14,9 @@ function Home() {
     <div>
       <Header />
       <PageTitle />
-      <Fade left>
+      {/* <Fade left> */}
         <CompletedAssessments />
-      </Fade>
+      {/* </Fade> */}
     </div>
   );
 }
@@ -27,9 +24,9 @@ class PageTitle extends React.Component {
   render() {
     return (
       <div>
-        <Fade right>
+        {/* <Fade right> */}
           <h2 style={{ textAlign: "center" }}>Workstation Self-Assessments</h2>
-        </Fade>
+        {/* </Fade> */}
       </div>
     );
   }
@@ -55,15 +52,28 @@ function Header(props) {
     
   },[]);
    
+   
+ 
   return (
     <div className="jumbotron" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
       <div style={{ textAlign: "right" }}>
-        <ProfileButton />
-        <LogOutButton />
+       
+        <Dropdown>
+  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+
+⚙️
+  </Dropdown.Toggle>
+
+  <Dropdown.Menu>
+    <Dropdown.Item href="#/action-1"><ProfileButton/></Dropdown.Item>
+    <Dropdown.Item href="#/action-2"><LogOutButton /> </Dropdown.Item>
+    
+  </Dropdown.Menu>
+</Dropdown>
         {/* <AdminButton /> */}
       </div>
 
-      <div className="User-Menu"></div>
+      <div className="User-Menu" style ={{float: "left"}}></div>
       <img
         className="profile-image"
         alt="icon"
@@ -72,20 +82,14 @@ function Header(props) {
         height="60"
       />
       <br />
-      <br />
+        <br /> <DisplayAddWorkstation workstations={workstations}/> <br /> 
      
-      <Link to="/user-questions">
-        <button className="btn btn-secondary">
-          Perform Workstation Self-Assessment
-        </button>
-      </Link>  <DisplayAddWorkstation workstations={workstations}/>
-      
-    
     </div>
   );
 }
+ 
 
-
+ 
 
 class DisplayAddWorkstation extends React.Component {
   constructor(props) {
@@ -103,7 +107,8 @@ class DisplayAddWorkstation extends React.Component {
 
 
 componentDidMount(){
-  console.log(this.props.workstations)
+  window.localStorage.removeItem("Workstation")
+ 
 }
 
 
@@ -122,14 +127,15 @@ componentDidMount(){
     window.location.reload();
   }
   render() {
+    if(this.props.workstations.length){
     return (
       <>
         <button
-          className="btn btn-primary"
+          className="btn btn-secondary"
           style={{ float: "left" }}
           onClick={this.handleShow}
         >
-          +
+          Perform Workstation Self-Assessment
         </button>
 
 
@@ -137,27 +143,56 @@ componentDidMount(){
           <Modal.Header closeButton> Select Workstation</Modal.Header>
           <Modal.Body>
 
-          {this.props.workstations.map(number => (
-                <button
-                
-                >
-                  {number.DateAdded}
-                  {number.WSId}
-                </button>
+          {this.props.workstations.map(workstation => (
+
+                <> 
+           
+               <Link onClick= {() => window.localStorage.setItem("Workstation", workstation.AssignedWorkstation)}
+                  to={{
+                    pathname: "./user-questions"
+                }}> <button  className = "btn btn-primary" style = {{textAlign: "center", alignContent: "center" , width : "100%"}}>
+                  <h4 style ={{color: "white"}}>{workstation.AssignedWorkstation}</h4>
+            </button>   <br/> <br/></Link> 
+              
+            
+        
+                   </>
               ))}
-{/* 
-          {this.props.workstations.map(number => (
-                <button
-                 
-                >
-                  {number}
-                </button>
-              ))} */}
+ 
           
           </Modal.Body>
         </Modal>
       </>
-    );
+    )}else if (!this.props.workstations.length){
+      return (<>
+        <button
+          className="btn btn-secondary"
+          style={{ float: "left" }}
+          onClick={this.handleShow}
+        >
+         Perform Workstation Self-Assessment
+        </button>
+
+
+        <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header closeButton style ={{textAlign: "center", alignContent: "center" }}> Select Workstation</Modal.Header>
+          <Modal.Body>
+            <><p>This account has no workstaions allocated. Please create a workstation to perform a workstation self-assessment.</p>
+            <Link to = "./profile-display-work-stations">
+            <button className = "btn btn-primary" style = {{width : "100%"}}>add workstation</button>
+            </Link>
+            </>
+
+
+           
+ 
+          
+          </Modal.Body>
+        </Modal>
+      </>)
+
+
+    }
   }
 }
 export default Home;

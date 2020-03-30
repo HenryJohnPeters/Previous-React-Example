@@ -1,22 +1,43 @@
 import React, { useState, useEffect } from "react";
+import logo from "../codestone logo.png";
 import moment from "moment";
-import { Modal } from "react-bootstrap";
-import AdminHeader from "../PageDetails/Headers/HeaderAdmin";
-// import Fade from "react-reveal";
-import { Link } from "react-router-dom";
-import { toast, Zoom, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
+import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
+import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
+ 
+import Fade from "react-reveal";
+import { toast, Zoom, ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
+import { Modal,  Dropdown } from "react-bootstrap";
+import "react-toastify/dist/ReactToastify.css";
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       answeredQuestions: [],
-      WSAHeader: []
+      WSAHeader: [],
+      Admins: []
     };
     this.getWSAAnsweredQuestions = this.getWSAAnsweredQuestions.bind(this);
     this.getWSAHeader = this.getWSAHeader.bind(this);
+    this.setHeaderAsSeen = this.setHeaderAsSeen.bind(this);
+    this.getAdmins = this.getAdmins.bind(this);  
+  }
+
+  setHeaderAsSeen(){
+    let data = {
+      WSAId: this.props.location.state.WSAId
+    };
+    fetch("/get-completed-questions", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+
   }
 
   getWSAAnsweredQuestions() {
@@ -60,29 +81,57 @@ class Home extends React.Component {
       });
   }
 
+  getAdmins() {
+    let data = {
+      adminBit: 1
+    };
+    fetch("/get-admins", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(recordset => recordset.json())
+      .then(results => {
+        console.log(results.recordset)
+        
+        this.setState({
+          Admins: results.recordset
+        });
+        
+       
+      });
+  }
+
   componentDidMount() {
+    this.getAdmins(); 
     this.getWSAHeader();
     this.getWSAAnsweredQuestions();
+    this.setHeaderAsSeen();
 
+     
+    
+     
+ 
   }
   render() {
-    console.log(this.state.WSAHeader);
+    console.log(this.state.Admins);
 
     console.log(this.state.WSAHeader.QuestionStatus);
 
     return (
       <>
         <div style={{ border: "offset" }}>
-          <AdminHeader>
-             
-          <div style ={{float : "left", paddingLeft : "5px"}}><Link to ="./admin-center"><button className = "btn btn-primary"> Go back</button></Link></div>
-          </AdminHeader>
+     
+          <Header />
           <ToastContainer transition={Zoom} position="top-right" />
 
-          {/* <Fade left> */}
+          <Fade left>
             <DisplayWSAHeader WSAHeader={this.state.WSAHeader} />
-          {/* </Fade>
-          <Fade right> */}
+          </Fade>
+          <Fade right>
             <WSAAnsweredQuestions
               WSAHeader={this.state.WSAHeader}
               workstation={this.state.workstation}
@@ -90,14 +139,52 @@ class Home extends React.Component {
               answeredQuestions={this.state.answeredQuestions}
               amountOfQuestions={this.state.answeredQuestions.length}
               WSAId={this.props.location.state.WSAId}
+              Admins = {this.state.Admins}
             />
-          {/* </Fade> */}
+          </Fade>
         </div>
       </>
     );
   }
 }
- 
+function Header() {
+  return (
+    <div className="jumbotron"  style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
+    <div style={{ textAlign: "right" }}>
+       
+       <Dropdown>
+ <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+
+⚙️
+ </Dropdown.Toggle>
+
+ <Dropdown.Menu>
+   <Dropdown.Item href="#/action-1"><ProfileButton/></Dropdown.Item>
+   <Dropdown.Item href="#/action-2"><LogOutButton /> </Dropdown.Item>
+   
+ </Dropdown.Menu>
+</Dropdown>
+       {/* <AdminButton /> */}
+     </div>
+
+      <div className="User-Menu"></div>
+      <img
+        className="profile-image"
+        alt="icon"
+        src={logo}
+        width="340"
+        height="60"
+      />
+      <br />
+      <br />
+      <Link to="/home">
+        <button className="btn btn-secondary">
+          Home
+        </button>
+      </Link>
+    </div>
+  );
+}
 
 export default Home;
 
@@ -129,6 +216,7 @@ class WSAAnsweredQuestions extends React.Component {
                     userName={this.props.userName}
                     workstation={this.props.workstation}
                     WSAId={this.props.WSAId}
+                    Admins ={this.props.Admins}
                   />
                 </div>
                 <br />
@@ -146,7 +234,6 @@ class DisplayWSAHeader extends React.Component {
   render() {
     return (
       <>
-     
         {this.props.WSAHeader &&
           this.props.WSAHeader.map(function(header, index) {
             return (
@@ -163,7 +250,7 @@ class DisplayWSAHeader extends React.Component {
                     >
                       Workstation Self-Assessment
                     </h3>
-                    <ul style={{}}>
+                    <ul >
                       <b>User: </b>
                       {header.NameOfUser}
                     </ul>
@@ -218,19 +305,19 @@ class DisplayWSAAnsweredQuestions extends React.Component {
           1}-${today.getUTCDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}.${today.getMilliseconds()} `;
       let email = window.localStorage.getItem("User");
 
-       
-
       let data = {
         responseId: this.props.ResponseId,
         response: this.state.noteToBeAdded,
         date: date,
-        seenStatus: 0,
+        seenStatus: 1,
         email: email,
         questionWhenAnswered: this.props.questionWhenAnswered,
-        userName: this.props.userName,
-        workstation: this.props.workstation,
+        // userName: this.props.userName,
+        // workstation: this.props.workstation,
         name: this.state.name[0].NameOfUser,
-        WSAId: this.props.WSAId
+        WSAId: this.props.WSAId,
+        thisIsAUserToken: true,
+        Admins : this.props.Admins
       };
 
       fetch("/submit-WSA-Response-Admin", {
@@ -282,6 +369,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
     this.getUserName();
 
     this.setState({ viewFullDetailsToken: true });
+    // alert(this.props.WSAId)
   }
 
   getUserName() {
@@ -316,7 +404,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
           <ToastContainer transition={Zoom} position="top-right" />
           <div
              style={{  backgroundColor: "#E6E6E6", border: "solid", borderColor: "LightGray",paddingBottom: "40px" }}>
-           
+    <h1>{this.props.Admin}</h1>
             
           
             {" "}
@@ -470,6 +558,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
             >
               Show
             </button> 
+             
+       
           
             <ul>
               {this.props.questionWhenAnswered}
@@ -494,20 +584,15 @@ class DisplayWSAAnsweredQuestions extends React.Component {
                       </b>
                       {r.Response}
                     </div>
-                    
+                     
                     </>
                   );
                 })}
-         </ul> <AcceptSolutionModal
-              responseId={this.props.ResponseId}
-              amountOfQuestions={this.props.amountOfQuestions}
-              questionWhenAnswered={this.props.questionWhenAnswered}
-              WSAHeader={this.props.WSAHeader}
-              WSAId={this.props.WSAId}
-              workstation={this.props.workstation}
-              userName={this.props.userName}
-            /><br/>
-             
+         </ul>
+         <br/>
+           {" "}
+           
+          
          
           </div>
         </>
@@ -520,10 +605,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
         <>
           <ToastContainer transition={Zoom} position="top-right" />
           <div
-            style={{
-              backgroundColor: "#BDBDBD",
-              padding: "1px"
-            }}
+          style={{  backgroundColor: "#D3D3D3", border: "solid", borderColor: "DarkGray",  }}
           >
             <button
               onClick={e => this.setState({ viewFullDetailsToken: true })}
@@ -543,7 +625,7 @@ class DisplayWSAAnsweredQuestions extends React.Component {
                   return (
                     <div
                       style={{
-                        backgroundColor: "#E5E5E5",
+                        backgroundColor: "white",
                         border: "inset"
                       }}
                     >
@@ -559,7 +641,8 @@ class DisplayWSAAnsweredQuestions extends React.Component {
                 })}
             </ul>
             <ul>
-              <br />
+              <br/>
+              
 
               <textarea
                 style={{
@@ -578,111 +661,13 @@ class DisplayWSAAnsweredQuestions extends React.Component {
               </button>
             </ul>
 
+           
+
 
             
           </div>
         </>
       );
     }
-  }
-}
-
-class AcceptSolutionModal extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleClose = this.handleClose.bind(this);
-    this.handleShow = this.handleShow.bind(this);
-
-    this.handleRefresh = this.handleRefresh.bind(this);
-    this.acceptSoloution = this.acceptSoloution.bind(this);
-
-    this.state = {
-      show: false
-    };
-  }
-  componentDidMount() {
-  
-  }
-
-  acceptSoloution() {
-    let email = window.localStorage.getItem("User");
-
-    let data = {
-      WSAId: this.props.WSAId,
-      responseId: this.props.responseId,
-     
-      email: email,
-      questionWhenAnswered: this.props.questionWhenAnswered,
-      userName: this.props.WSAHeader[0].NameOfUser,
-      workstation: this.props.WSAHeader[0].AssignedWorkstation
-    };
-    fetch("/update-response-to-confirmed", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-
-    
-
-    window.location.reload();
-  }
-  handleClose() {
-    this.setState({
-      show: false
-    });
-  }
-
-  handleShow() {
-    this.setState({
-      show: true
-    });
-  }
-
-  handleRefresh() {
-    window.location.reload();
-  }
-
-  render() {
-    return (
-      <div className="header-container">
-        <ToastContainer transition={Zoom} position="top-right" />
-        <ul>
-          <br/>
-        <button
-          className="btn btn-primary"
-          style={{ width: "100%", textAlign: "center"  }}
-          onClick={this.handleShow}
-        >
-          <ul>Accept</ul>
-        </button>
-        </ul>
-
-        <Modal show={this.state.show} onHide={this.handleClose}>
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>
-            <h4>Are you sure you want to accept this soloution? </h4>
-            <br />
-            <button
-              onClick={this.acceptSoloution}
-              className="btn btn-primary"
-              style={{ width: "50%" }}
-            >
-              Yes
-            </button>
-            <button
-              onClick={this.handleClose}
-              className="btn btn-primary"
-              style={{ width: "50%" }}
-            >
-              No
-            </button>
-          </Modal.Body>
-        </Modal>
-      </div>
-    );
   }
 }

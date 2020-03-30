@@ -6,7 +6,7 @@ import Popup from "reactjs-popup";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
-import Fade from "react-reveal";
+// import Fade from "react-reveal";
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,18 +23,41 @@ class ConfirmRegisterForm extends React.Component {
       email: ""
     };
     this.onSubmit = this.handleSubmit.bind(this);
+    this.isValidEmail = this.isValidEmail.bind(this);
   }
+
+
+
+   isValidEmail( value ) {
+    return /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,5}$/.test( value );
+  }
+
+
+  // componentDidMount(){
+  //   if(this.isValidEmail("henry5 ")){
+  //     alert("okay")
+
+  //   }else if (!this.isValidEmail("henr5 ")){
+  //     alert("not okay")
+
+  //   }
+    
+     
+    
+    
+  // }
+  
+  
+
+
 
   handleSubmit(e) {
     e.preventDefault();
 
     if (
       this.state.contactNumber.length < 10
-       
-      
-    ) {
 
-     
+    ) {
       toast.error("Contact number must be at least 11 numbers long", {    
         draggable: true,
 
@@ -59,6 +82,13 @@ class ConfirmRegisterForm extends React.Component {
     }
     else if (isNaN(this.state.contactNumber)){
       toast.error("Contact number must be a number", {
+        draggable: true,
+
+        autoClose: 2500
+      });
+
+    }else if (!this.isValidEmail(this.state.email)){
+      toast.error("Please enter a valid email", {
         draggable: true,
 
         autoClose: 2500
@@ -180,13 +210,13 @@ class ConfirmRegisterForm extends React.Component {
                 <ToastContainer transition={Zoom} position="top-right" />
 
                 <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
-                  <Fade left>
+                  {/* <Fade left> */}
                     <h2>Sign Up </h2>
-                  </Fade>
-                  <Fade right>
+                  {/* </Fade>
+                  <Fade right> */}
                     <label htmlFor="email">Email</label>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <input
                       name="email"
                       type="email"
@@ -198,14 +228,14 @@ class ConfirmRegisterForm extends React.Component {
                       onBlur={handleBlur}
                       className={errors.email && touched.email && "error"}
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.email && touched.email && (
                     <div className="input-feedback">{errors.email} </div>
                   )}
-                  <Fade right>
+                  {/* <Fade right> */}
                     <label htmlFor="email">Name</label>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <input
                       name="name"
                       type="name"
@@ -217,14 +247,14 @@ class ConfirmRegisterForm extends React.Component {
                       onBlur={handleBlur}
                       className={errors.name && touched.name && "error"}
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.name && touched.name && (
                     <div className="input-feedback">{errors.name} </div>
                   )}
-                  <Fade right>
+                  {/* <Fade right> */}
                     <label htmlFor="email">Contact Number</label>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <input
                       name="contactNumber"
                       type="contactNumber"
@@ -240,17 +270,17 @@ class ConfirmRegisterForm extends React.Component {
                         errors.contactNumber && touched.contactNumber && "error"
                       }
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.contactNumber && touched.contactNumber && (
                     <div className="input-feedback">
                       {errors.contactNumber}{" "}
                     </div>
                   )}
 
-                  <Fade right>
+                  {/* <Fade right> */}
                     <label htmlFor="email">Password</label>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <input
                       name="password"
                       type="password"
@@ -264,14 +294,14 @@ class ConfirmRegisterForm extends React.Component {
                       onBlur={handleBlur}
                       className={errors.password && touched.password && "error"}
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.password && touched.password && (
                     <div className="input-feedback">{errors.password} </div>
                   )}
-                  <Fade right>
+                  {/* <Fade right> */}
                     <label htmlFor="email">Password Confirm </label>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <input
                       name="passwordConfirm"
                       type="password"
@@ -289,13 +319,13 @@ class ConfirmRegisterForm extends React.Component {
                         "error"
                       }
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.passwordConfirm && touched.passwordConfirm && (
                     <div className="input-feedback">
                       {errors.passwordConfirm}{" "}
                     </div>
                   )}
-                  <Fade right>
+                  {/* <Fade right> */}
                     <button
                       className="btn btn-primary"
                       style={{ width: "100%" }}
@@ -304,17 +334,17 @@ class ConfirmRegisterForm extends React.Component {
                     >
                       Sign Up
                     </button>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <p>
                       <Link to="/"> Login Page </Link>
                     </p>
-                  </Fade>
-                  <Fade right>
+                  {/* </Fade>
+                  <Fade right> */}
                     <p>
                       <Link to="/reset"> Reset Password </Link>
                     </p>
-                  </Fade>
+                  {/* </Fade> */}
                 </div>
               </form>
             );

@@ -247,40 +247,40 @@ app.get("/showquestions-answered/:responseId", async (req, res) => {
     console.info(`recordset ${recordset}`);
   });
 });
-///////////////////////////////////////////////////////////////////////////////////
-app.get(
-  "/admin-show-workstations-Details/:date/:RUId/:completeToken/:workstation",
-  async (req, res) => {
-    // connect to your database
-    let RUId = req.params.RUId;
-    let workstation = req.params.workStation;
-    let completeToken = req.params.completeToken;
-    let date = req.params.date;
+// ///////////////////////////////////////////////////////////////////////////////////
+// app.get(
+//   "/admin-show-workstations-Details/:date/:RUId/:completeToken/:workstation",
+//   async (req, res) => {
+//     // connect to your database
+//     let RUId = req.params.RUId;
+//     let workstation = req.params.workStation;
+//     let completeToken = req.params.completeToken;
+//     let date = req.params.date;
 
-    await sql.connect(config);
+//     await sql.connect(config);
 
-    // create Request object
-    var request = new sql.Request();
+//     // create Request object
+//     var request = new sql.Request();
 
-    // query to the database and get the records
+//     // query to the database and get the records
 
-    request.input("Workstation", sql.NVarChar, workstation);
-    request.input("RUId", sql.Int, RUId);
-    request.input("CompleteToken", sql.NVarChar, completeToken);
-    request.input("Date", sql.Date, date);
-    request.execute("dbo.AdminShowWorkstationsDetails", function(
-      err,
-      recordset
-    ) {
-      if (err) console.log(err);
-      // send records as a response
-      res.json(recordset);
+//     request.input("Workstation", sql.NVarChar, workstation);
+//     request.input("RUId", sql.Int, RUId);
+//     request.input("CompleteToken", sql.NVarChar, completeToken);
+//     request.input("Date", sql.Date, date);
+//     request.execute("dbo.AdminShowWorkstationsDetails", function(
+//       err,
+//       recordset
+//     ) {
+//       if (err) console.log(err);
+//       // send records as a response
+//       res.json(recordset);
 
-      console.info(`recordset ${recordset}`);
-    });
-  }
-);
-///////////////////////////////////////////////////////////////////////////////////
+//       console.info(`recordset ${recordset}`);
+//     });
+//   }
+// );
+// ///////////////////////////////////////////////////////////////////////////////////
 app.get("/user-completed-Assessment/:Workstation/:Email", async (req, res) => {
   // connect to your database
   let Email = req.params.Email;
@@ -565,14 +565,16 @@ app.post("/reset-password-email", async (req, response) => {
       auth: {
         user: "hpf9703@gmail.com",
         pass: "Cows4422"
-      }
+      },tls: {
+        rejectUnauthorized: false
+    }
     });
     const url = `http://localhost:3000/confirm-Password`;
 
     var mailOptions = {
       from: "CodeStoneDeskAssessment@outlook.com",
       to: `${Email}`,
-      subject: "Reset Password Codestone Desk Assment",
+      subject: "Reset Password for Codestone workstation self-assessment",
 
       html: `Please click this link to confirm your password reset: <a href = "${url}">${url} </a>`
     };
@@ -611,14 +613,17 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
   let email = req.body.email;
   let questionWhenAnswered = req.body.questionWhenAnswered;
   let url = "http://localhost:3000/home";
-  let userName = req.body.userName;
-  let workstation = req.body.workstation;
+  
   let name = req.body.name;
+  let WSAId = req.body.WSAId;
+  let thisIsAUserToken = req.body.thisIsAUserToken;
+  let admins = req.body.Admins;
+  let adminList = []
+
+  admins.forEach(i => adminList.push(i.Email));
 
   await sql.connect(config);
-
   var request = new sql.Request();
-
   request.input("ResponseId", sql.Int, responseId);
   request.input("Response", sql.NVarChar, adminResponse);
   request.input("Date", sql.DateTime, date);
@@ -626,14 +631,26 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
   request.input("Name", sql.NVarChar, name);
 
   await request.execute("dbo.SubmitNoteAdmin");
-  console.info("done");
+  console.info("note submitted");
+
+  var request = new sql.Request();
+  request.input("WSAId", sql.Int, WSAId);
+  request.input("SeenStatus", sql.Bit, seenStatus);
+
+
+  await request.execute("dbo.UpdateHeaderSeenStatus");
+  console.info("seen status updated")
+  console.info("this is admin list " + adminList)
+  if(!thisIsAUserToken){
 
   var transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
       user: "hpf9703@gmail.com",
       pass: "Cows4422"
-    }
+    },tls: {
+      rejectUnauthorized: false
+  }
   });
 
   var mailOptions = {
@@ -642,10 +659,10 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
     subject: `Update on Workstation Self-Assessment question.`,
 
     html: `
-    Response added to workstation self-assessment.<br/>
+    Response added by admin for WSA .<br/>
      <b>Question</b> : "${questionWhenAnswered}"<br>
      <b>Response</b> : "${adminResponse}"<br>
-    Click this link to view your completed assessments <a href = "${url}">${url} </a>`
+    Click this link to view your completed assessments <a href = "http://localhost:3000/admin-view-workstation-assessments">http://localhost:3000/admin-view-workstation-assessments </a>`
   };
 
   transporter.sendMail(mailOptions, function(error, info) {
@@ -655,27 +672,55 @@ app.post("/submit-WSA-Response-Admin", async (req, response) => {
       console.log("Email sent: " + info.response);
     }
   });
+
+  }else if (thisIsAUserToken){
+  for (let i = 0 ; adminList.length > i; i++){
+     
+    
+  var transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: "hpf9703@gmail.com",
+      pass: "Cows4422"
+    },tls: {
+      rejectUnauthorized: false
+  }
+  });
+
+  var mailOptions = {
+    from: "CodeStoneDeskAssessment@outlook.com",
+    to: `${adminList[i]}`,
+    subject: `Update on Workstation Self-Assessment from ${name}`,
+
+    html: `
+    Response added by user (${name}) for WSA .<br/>
+     <b>Question</b> : "${questionWhenAnswered}"<br>
+     <b>Response</b> : "${adminResponse}"<br>
+    Click this link to view your completed assessments <a href = "http://localhost:3000/admin-view-workstation-assessments">http://localhost:3000/admin-view-workstation-assessments </a>`
+  };
+
+  transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+}}
 });
 
 app.post("/get-completed-questions", async (req, res) => {
   try {
     let WSAId = req.body.WSAId;
-    // let RUId = req.body.RUId;
-    // let workstation = req.body.Workstation;
-
-    // console.log("RUID + WORKSTAION" + RUId + workstation);
     await sql.connect(config);
     var request = new sql.Request();
-
-    // request.input("RUId", sql.Int, RUId);
-    // request.input("Workstation", sql.Bit, workstation);
     request.input("WSAId", sql.Int, WSAId);
     request.execute("dbo.AdminGetAnsweredQuestionsComplete", function(
       err,
       recordset
     ) {
       if (err) console.log(err);
-      // send records as a response
+   
       res.json(recordset);
     });
   } catch (e) {
@@ -693,6 +738,26 @@ app.post("/get-WSA-header", async (req, res) => {
 
     request.input("WSAId", sql.Int, WSAId);
     request.execute("dbo.AdminGetWSAHeaderComplete", function(err, recordset) {
+      if (err) console.log(err);
+      // send records as a response
+      res.json(recordset);
+    });
+  } catch (e) {
+    console.info(e);
+  }
+});
+/////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+app.post("/get-admins", async (req, res) => {
+  try {
+    await sql.connect(config);
+    let adminBit = req.body.adminBit;
+
+    var request = new sql.Request();
+
+    request.input("AdminBit", sql.Int, adminBit);
+    request.execute("dbo.GetAdmins", function(err, recordset) {
       if (err) console.log(err);
       // send records as a response
       res.json(recordset);

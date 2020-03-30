@@ -17,9 +17,9 @@ class LogoutButton extends React.Component {
   render() {
     return (
       <Link to="/">
-        <button type="button" class="btn btn-secondary" onClick={this.LogOut}>
+        {/* <button type="button" class="btn btn-secondary" onClick={this.LogOut}> */}
           Log Out
-        </button>
+        {/* </button> */}
       </Link>
     );
   }

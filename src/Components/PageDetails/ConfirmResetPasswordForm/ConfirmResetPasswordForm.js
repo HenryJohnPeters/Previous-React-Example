@@ -6,7 +6,7 @@ import Popup from "reactjs-popup";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
-import Fade from "react-reveal";
+// import Fade from "react-reveal";
 
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,16 +23,24 @@ class ConfirmResetPasswordForm extends React.Component {
     e.preventDefault();
     const email = window.localStorage.getItem("User");
     if (
-      this.state.password.length < 8 ||
-      !(this.state.password === this.state.passwordConfirm)
+      this.state.password.length < 8  
     ) {
-      toast.error("please enter the credentials correctly ", {
+      toast.error("Password length must be more than 8 characters ", {
         // className: "custom-toast",
         draggable: true,
 
-        autoClose: 1500
+        autoClose: 3500
       });
-    } else {
+    }else if (!(this.state.password === this.state.passwordConfirm)){
+      toast.error("Both Passwords must match ", {
+        // className: "custom-toast",
+        draggable: true,
+
+        autoClose: 3500
+      });
+
+    }
+     else {
       console.log({ email });
       const data = { email, password: this.state.password };
 
@@ -50,7 +58,8 @@ class ConfirmResetPasswordForm extends React.Component {
 
         autoClose: 1500
       });
-    }
+     window.location.href = "http://localhost:3000/" }
+  
   }
 
   catch(e) {
@@ -103,21 +112,14 @@ class ConfirmResetPasswordForm extends React.Component {
                 method="POST"
               >
                 <ToastContainer transition={Zoom} position="top-right" />
-                <div className="jumbotron">
-                  <Fade left>
+                <div className="jumbotron" style={{   borderStyle: "solid", borderColor: "LightGray",  }}>
+                  {/* <Fade left> */}
                     <h2>Confirm Password Reset </h2>
-                  </Fade>
-                  <Fade right>
-                    <div className="help">
-                      <Popup trigger={<Link> Help?</Link>} className="center">
-                        <div>
-                          Enter Codestone Email address and Password connected
-                          to the account.
-                        </div>
-                      </Popup>
-                    </div>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade right> */}
+                  
+                  {/* </Fade>
+                  <Fade left> */}
                     <label htmlFor="email">Password</label>
                     <input
                       name="password"
@@ -132,14 +134,14 @@ class ConfirmResetPasswordForm extends React.Component {
                       onBlur={handleBlur}
                       className={errors.password && touched.password && "error"}
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.password && touched.password && (
                     <div className="input-feedback">{errors.password} </div>
                   )}
-                  <Fade right>
+                  {/* <Fade right> */}
                     <label htmlFor="email">Password Confirm </label>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <input
                       name="passwordConfirm"
                       type="password"
@@ -157,31 +159,28 @@ class ConfirmResetPasswordForm extends React.Component {
                         "error"
                       }
                     />
-                  </Fade>
+                  {/* </Fade> */}
                   {errors.passwordConfirm && touched.passwordConfirm && (
                     <div className="input-feedback">
                       {errors.passwordConfirm}{" "}
                     </div>
                   )}
-                  <Fade right>
+                  {/* <Fade right> */}
                     <button
                       className="btn btn-primary"
                       type="submit"
                       onClick={this.onSubmit}
                     >
-                      Sign Up
+                      Update Password
                     </button>
-                  </Fade>
-                  <Fade left>
+                  {/* </Fade>
+                  <Fade left> */}
                     <p>
                       <Link to="/"> Login Page </Link>
                     </p>
-                  </Fade>
-                  <Fade right>
-                    <p>
-                      <Link to="/reset"> Reset Password </Link>
-                    </p>
-                  </Fade>
+                
+                  
+                  
                 </div>
               </form>
             );

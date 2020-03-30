@@ -2,7 +2,8 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 import "../bootstrap.min.css";
-
+import AdminHeader from "../PageDetails/Headers/HeaderAdmin";
+import { Dropdown } from "react-bootstrap";
 import LogOutButton from "../PageDetails/Buttons/LogOutButton/LogOutButton";
 import ProfileButton from "../PageDetails/Buttons/ProfileButton/ProfileButton";
 
@@ -16,24 +17,9 @@ class LandingPage extends React.Component {
   render() {
     return (
       <>
-        <Header />
+        <AdminHeader />
 
-        {/* <img
-          style={{ float: "left" }}
-          className="profile-image"
-          alt="icon"
-          src={balloons}
-          width="430"
-          height="60"
-        />
-        <img
-          style={{ float: "right" }}
-          className="profile-image"
-          alt="icon"
-          src={balloons}
-          width="340"
-          height="60"
-        /> */}
+       
         <Zoom left>
           <div className="jumbotron blue" style={{   borderBottomStyle: "solid", borderColor: "LightGray",  }}>
             <h2 style={{ textAlign: "center" }}>Congratulations</h2>
@@ -53,29 +39,6 @@ class LandingPage extends React.Component {
   }
 }
 
-function Header() {
-  return (
-    <div className="jumbotron">
-      <div style={{ textAlign: "right" }}>
-        <ProfileButton />
-        <LogOutButton />
-      </div>
 
-      <div className="User-Menu"></div>
-      <img
-        className="profile-image"
-        alt="icon"
-        src={logo}
-        width="340"
-        height="60"
-      />
-      <br />
-      <br />
-      {/* <Link to="./home">
-        <button className="btn btn-secondary">Home </button>
-      </Link> */}
-    </div>
-  );
-}
 
 export default LandingPage;

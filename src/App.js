@@ -3,7 +3,7 @@ import "./App.css";
 import "./bootstrap.min.css";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import LoginPage from "./Components/Pages/LoginPage";
-import RegisterPage from "./Components/Pages/RegisterPage";
+// import RegisterPage from "./Components/Pages/RegisterPage";
 import ConfirmRegisterPage from "./Components/Pages/ConfirmRegisterPage";
 import ResetPassword from "./Components/Pages/ResetPasswordPage";
 import Home from "./Components/Pages/HomePage";
@@ -19,11 +19,9 @@ import AdminViewWorkStationAssessmentsPage from "./Components/Pages/AdminViewWor
 import AdminViewWorkStationAssessmentsDeclinedPage from "./Components/Pages/AdminViewWorkStationAssessmentsDeclinedPage";
 import CompletedAssessmentLandingPage from "./Components/Pages/CompletedAssessmentLandingPage";
 import AdminViewFullUserWSAResponses from "./Components/Pages/AdminViewFullUserWSAResponses";
-////
-// import AdminViewUsersSeverityHigh from "./AdminComponents/AdminViewUsersSeverityHigh";
-// import AdminViewUsersSeverityMedium from "./AdminComponents/AdminViewUsersSeverityMedium";
-// import AdminViewUsersSeverityCompleted from "./AdminComponents/AdminViewUsersSeverityCompleted";
-// import AdminViewUsers from "./AdminComponents/AdminViewUsers";
+import ViewFullUserWSAResponses from "./Components/Pages/ViewFullUserWSAResponses";
+
+ 
 
 // import Parent from "./Components/Andys-examples/parent";
 
@@ -81,9 +79,12 @@ function Routing() {
         />
         <AuthRoute
           exact
-          path="/admin-view-full-user-wsa-responses"
-          component={AdminViewFullUserWSAResponses}
+          path="/view-full-user-wsa-responses"
+          component={ViewFullUserWSAResponses}
         />
+
+ <AuthRoute exact path="/admin-view-full-user-wsa-responses" component={AdminViewFullUserWSAResponses} />
+      
         <AuthRoute
           exact
           path="/completed-assessment"
@@ -125,22 +126,7 @@ function Routing() {
           path="/admin-view-workstation-assessments-declined"
           component={AdminViewWorkStationAssessmentsDeclinedPage}
         />
-        {/* <AuthRoute
-          exact
-          path="/admin-view-users-severity-high"
-          component={AdminViewUsersSeverityHigh}
-        />
-        <AuthRoute
-          exact
-          path="/admin-view-users-severity-medium"
-          component={AdminViewUsersSeverityMedium}
-        />
-        <AuthRoute
-          exact
-          path="/admin-view-users-severity-completed"
-          component={AdminViewUsersSeverityCompleted}
-        /> */}
-        {/* <AuthRoute exact path="/admin-view-users" component={AdminViewUsers} /> */}
+     
       </Switch>
     </BrowserRouter>
   );

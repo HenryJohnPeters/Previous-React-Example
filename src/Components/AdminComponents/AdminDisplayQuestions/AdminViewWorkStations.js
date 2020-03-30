@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 import { Modal, DropdownButton, Dropdown } from "react-bootstrap";
 import ReactDOM from "react-dom";
 import ModalCompletedQuestions from "../AdminDisplayWorkstations/AdminViewWorkstationDetails";
-import Slide from "react-reveal";
-import Fade from "react-reveal";
+// import Slide from "react-reveal";
+// import Fade from "react-reveal";
 import "./WSA.css";
 
 function AdminWorkstationss({ initialCount }) {
@@ -43,7 +43,7 @@ function AdminWorkstationss({ initialCount }) {
 
     setLoadingToken(false);
     console.log(WSAHeaders);
-    console.log(WSAHeaders[0].WSAId);
+     
   }, []);
 
   function handleClick(event) {
@@ -51,18 +51,17 @@ function AdminWorkstationss({ initialCount }) {
   }
 
   if (!loadingToken) {
-    if (!loadingToken) {
+    if (WSAHeaders.length) {
       return (
         <>
-          {/* <Fade> */}
-
-          {/* </Fade> */}
+           
           <ul>
-            <Slide right>
+            {/* <Slide right> */}
               <h2 style={{ textAlign: "center" }}>
-                Workstation Self-Assessments(<b> Completed</b>)
+                Workstation Self-Assessments(<b>Completed</b>)
               </h2>
-            </Slide>
+              <br/>
+            {/* </Slide> */}
             <button disabled className="btn btn-secondary">
               Workstation Self-Assessments
             </button>
@@ -130,16 +129,15 @@ function AdminWorkstationss({ initialCount }) {
           <br />
         </>
       );
-    } else if (loadingToken) {
+    } else if (!WSAHeaders.length) {
       return (
         <>
-          <Fade>
-            <Slide left>
+         
               <h2 style={{ textAlign: "center" }}>
                 Workstation Assessments(<b> Completed</b>)
               </h2>
-            </Slide>
-          </Fade>
+              <br/>
+            
           <ul>
             <button disabled className="btn btn-secondary">
               Workstation Assessments
@@ -174,7 +172,7 @@ function AdminWorkstationss({ initialCount }) {
             </DropdownButton>{" "}
           </ul>
           <ul>
-            <div className="jumbotron">
+            <div className="jumbotron" style={{   border: "solid", borderColor: "LightGray",  }}>
               <p style={{ textAlign: "center" }}>
                 <b>No Workstation assessments found with status of completed</b>
               </p>
@@ -248,7 +246,7 @@ class Questions extends React.Component {
             }
           }}
         >
-          <button style={{ float: "right" }} className="btn btn-primary">
+          <button style={{ float: "right" , padding : "5px"}} className="btn btn-primary">
             View Full Details
           </button>
         </Link>

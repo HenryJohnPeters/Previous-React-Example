@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import AddQuestion from "./AdminAddQuestion";
-import Fade from "react-reveal";
+// import Fade from "react-reveal";
 import { toast, Zoom, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -67,12 +67,12 @@ class DisplayQuestions extends React.Component {
 
     return (
       <>
-        <Fade>
+        {/* <Fade> */}
           <ToastContainer transition={Zoom} position="top-right" />
-          <Fade left>
+          {/* <Fade left> */}
             <h3 style={{ textAlign: "center" }}>Edit Questions</h3>
-          </Fade>
-          <Fade right>
+          {/* </Fade>
+          <Fade right> */}
             <ul>
               <Link to="/admin-view-workstation-assessments">
                 <button
@@ -120,8 +120,8 @@ class DisplayQuestions extends React.Component {
                   );
                 })}
             </ul>
-          </Fade>
-        </Fade>
+          {/* </Fade>
+        </Fade> */}
       </>
     );
   }
